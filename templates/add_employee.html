@@ -15,6 +15,22 @@
       --bg-light: #f9fafb;
       --card-bg: #ffffff;
       --border-color: #d1d5db;
+      --header-bg: #ffffff;
+      --overlay-bg: rgba(255, 255, 255, 0.9);
+      --input-bg: #ffffff;
+    }
+
+    body.dark-mode {
+      --primary-blue: #3b82f6;
+      --secondary-blue: rgba(59, 130, 246, 0.15);
+      --text-dark: #f1f5f9;
+      --text-gray: #94a3b8;
+      --bg-light: #0f172a;
+      --card-bg: #1e293b;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --header-bg: #1e293b;
+      --overlay-bg: rgba(15, 23, 42, 0.9);
+      --input-bg: #1e293b;
     }
 
     body {
@@ -25,6 +41,7 @@
       color: var(--text-dark);
       display: flex;
       flex-direction: column;
+      transition: color 0.3s ease;
     }
 
     .overlay {
@@ -33,18 +50,20 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.9);
+      background: var(--overlay-bg);
       backdrop-filter: blur(8px);
       z-index: -1;
+      transition: background 0.3s ease;
     }
 
     .header {
-      background: var(--card-bg);
+      background: var(--header-bg);
       padding: 1rem 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease;
     }
 
     .logo-section {
@@ -55,7 +74,7 @@
     }
 
     .logo-section h1 {
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       color: var(--primary-blue);
       margin: 0;
     }
@@ -71,11 +90,12 @@
     .form-card {
       background: var(--card-bg);
       width: 100%;
-      max-width: 500px;
+      max-width: 550px;
       padding: 40px;
       border-radius: 16px;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      transition: background 0.3s ease, border 0.3s ease;
     }
 
     .form-card h2 {
@@ -100,12 +120,13 @@
     .form-group input,
     .form-group select {
       width: 100%;
-      padding: 10px 12px;
+      padding: 12px 14px;
       border: 1.5px solid var(--border-color);
       border-radius: 8px;
       font-size: 1rem;
       transition: all 0.2s;
-      background: white;
+      background: var(--input-bg);
+      color: var(--text-dark);
       box-sizing: border-box;
     }
 
@@ -118,7 +139,7 @@
 
     .btn-submit {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       background: var(--primary-blue);
       color: white;
       border: none;
@@ -126,7 +147,7 @@
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: 0.2s;
       margin-top: 10px;
     }
 
@@ -137,49 +158,62 @@
     .btn-back {
       display: block;
       text-align: center;
-      margin-top: 20px;
+      margin-top: 24px;
       text-decoration: none;
       color: var(--text-gray);
       font-size: 0.875rem;
       font-weight: 500;
     }
 
-    .btn-back:hover {
-      color: var(--primary-blue);
+    .flash-messages {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
     }
 
     .flash-messages li {
       padding: 12px;
       border-radius: 8px;
       font-size: 0.875rem;
-      margin-bottom: 12px;
-      border: 1px solid transparent;
+      margin-bottom: 8px;
     }
 
     .flash-error {
       background-color: #fee2e2;
       color: #991b1b;
-      border-color: #fecaca;
+      border: 1px solid #fecaca;
     }
 
     .flash-success {
       background-color: #dcfce7;
       color: #166534;
-      border-color: #bbf7d0;
+      border: 1px solid #bbf7d0;
     }
   </style>
 </head>
 
 <body>
   <div class="overlay"></div>
-
   <header class="header">
     <a href="/home" class="logo-section">
       <img src="{{ url_for('static', filename='employee.png') }}" style="width:40px; height:40px; border-radius:8px;"
         alt="Logo">
       <h1>Debre Berhan ESS</h1>
     </a>
+    <div style="display:flex; align-items:center; gap:15px;">
+      <button id="theme-toggle"
+        style="background: var(--secondary-blue); color: var(--primary-blue); border: none; padding: 8px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+        title="Toggle Theme">
+        <i data-lucide="moon" id="theme-icon"></i>
+      </button>
+    </div>
   </header>
+
+  <script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+  </script>
 
   <main class="main-content">
     <div class="form-card">
@@ -267,6 +301,24 @@
 
   <script>
     lucide.createIcons();
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    function updateIcon(theme) {
+      themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    if (localStorage.getItem('theme') === 'dark') {
+      updateIcon('dark');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      localStorage.setItem('theme', theme);
+      updateIcon(theme);
+    });
   </script>
 </body>
 
