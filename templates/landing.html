@@ -489,15 +489,15 @@
             ESS Debre Berhan
         </a>
         <div style="display:flex; align-items:center;">
-            <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
-                <i data-lucide="moon" id="theme-icon"></i>
-            </button>
             <button class="mobile-nav-toggle" id="mobile-toggle">
                 <i data-lucide="menu" id="menu-icon"></i>
             </button>
         </div>
         <div class="nav-links" id="nav-links">
             <a href="#about" style="text-decoration:none; color:var(--text-gray); font-weight:500;">About</a>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                <i data-lucide="moon" id="theme-icon"></i>
+            </button>
             <a href="#contact" style="text-decoration:none; color:var(--text-gray); font-weight:500;">Contact</a>
             {% if current_user.is_authenticated %}
             <a href="{{ url_for('home') }}"

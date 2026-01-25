@@ -197,30 +197,6 @@
             }
         }
 
-        /* Staggered animation for rows */
-            {
-            % for i in range(20) %
-        }
-
-        tr:nth-child({
-                {
-                i + 1
-            }
-
-        }) {
-            animation-delay: {
-                    {
-                    i * 0.05
-                }
-            }
-
-            s;
-        }
-
-            {
-            % endfor %
-        }
-
         tr:hover td {
             background: var(--accent);
         }
