@@ -44,9 +44,40 @@
             background: var(--bg-light);
             line-height: 1.6;
             transition: background 0.3s, color 0.3s;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Navbar */
+        /* Animated Background Particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 50%);
+            animation: gradientShift 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Navbar with scroll effect */
         .navbar {
             position: fixed;
             top: 0;
@@ -58,7 +89,17 @@
             align-items: center;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             z-index: 1000;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.75rem 5%;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        body.dark-mode .navbar.scrolled {
+            background: rgba(30, 41, 59, 0.95);
         }
 
         .theme-toggle {
@@ -71,13 +112,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-right: 15px;
         }
 
         .theme-toggle:hover {
-            transform: rotate(15deg);
-            scale: 1.1;
+            transform: rotate(180deg) scale(1.15);
+            background: rgba(37, 99, 235, 0.15);
         }
 
         .logo {
@@ -88,12 +129,22 @@
             color: var(--primary-blue);
             font-weight: 800;
             font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .logo img {
             width: 40px;
             height: 40px;
             border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover img {
+            transform: rotate(10deg);
         }
 
         .nav-links {
@@ -102,7 +153,7 @@
             align-items: center;
         }
 
-        /* Hero Section */
+        /* Hero Section with enhanced animations */
         .hero {
             height: 100vh;
             background: linear-gradient(var(--glass-bg), var(--glass-bg)),
@@ -113,10 +164,25 @@
             padding: 0 10%;
             padding-top: 80px;
             transition: background 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-content {
             max-width: 600px;
+            animation: slideInLeft 1s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .hero-content h1 {
@@ -124,18 +190,48 @@
             font-weight: 900;
             line-height: 1.1;
             margin-bottom: 20px;
-            color: var(--primary-blue);
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hero-content p {
             font-size: 1.25rem;
             color: var(--text-gray);
             margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out 0.5s both;
         }
 
         .hero-illustration {
             width: 45%;
             max-width: 500px;
+            animation: slideInRight 1s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .hero-illustration svg {
@@ -152,16 +248,32 @@
             padding: 5px;
         }
 
-        /* About Section */
+        /* About Section with enhanced card effects */
         .section {
             padding: 100px 10%;
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
 
         .section h2 {
             font-size: 2.5rem;
             margin-bottom: 50px;
             color: var(--text-dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 2px;
         }
 
         .about-grid {
@@ -175,20 +287,53 @@
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .about-card:hover::before {
+            opacity: 1;
         }
 
         .about-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2);
         }
 
         .about-card i {
             color: var(--primary-blue);
             margin-bottom: 20px;
+            transition: all 0.4s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-card:hover i {
+            transform: scale(1.2) rotate(360deg);
         }
 
         .about-card h3 {
             margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-card p {
+            position: relative;
+            z-index: 1;
         }
 
         /* Contact Section */
@@ -210,6 +355,20 @@
             align-items: center;
             gap: 15px;
             color: var(--text-gray);
+            transition: all 0.3s;
+        }
+
+        .contact-info p:hover {
+            transform: translateX(10px);
+            color: var(--primary-blue);
+        }
+
+        .contact-info p i {
+            transition: transform 0.3s;
+        }
+
+        .contact-info p:hover i {
+            transform: scale(1.3);
         }
 
         .contact-form {
@@ -217,6 +376,11 @@
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .contact-form:hover {
+            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.15);
         }
 
         .contact-form input,
@@ -227,16 +391,43 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             font-family: inherit;
+            transition: all 0.3s;
         }
 
         .contact-form button {
-            background: var(--primary-blue);
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
             color: white;
             padding: 12px 30px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-form button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .contact-form button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .contact-form button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
         }
 
         /* Modal Overlay */
@@ -317,6 +508,8 @@
             text-align: center;
             color: var(--text-gray);
             font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
         }
 
         @media (max-width: 1024px) {
@@ -393,12 +586,25 @@
             }
         }
 
-        /* Interactive Enhancements */
+        /* Enhanced Interactive Effects */
         .dropbtn {
             position: relative;
             z-index: 1;
             overflow: hidden;
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 4px 25px rgba(37, 99, 235, 0.6);
+            }
         }
 
         .dropbtn::before {
@@ -408,9 +614,13 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transition: 0.5s;
             z-index: -1;
+        }
+
+        .dropbtn:hover {
+            transform: translateY(-3px) scale(1.05);
         }
 
         .dropbtn:hover::before {
@@ -423,6 +633,7 @@
 
         .nav-links a {
             position: relative;
+            transition: all 0.3s;
         }
 
         .nav-links a::after {
@@ -432,8 +643,12 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: var(--primary-blue);
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
             transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
         }
 
         .nav-links a:hover::after {
@@ -451,31 +666,63 @@
 
         .hero-illustration svg {
             animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 10px 20px rgba(37, 99, 235, 0.2));
         }
 
         @keyframes float {
-            0% {
-                transform: translateY(0px);
-            }
 
-            50% {
-                transform: translateY(-20px);
-            }
-
+            0%,
             100% {
-                transform: translateY(0px);
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            33% {
+                transform: translateY(-15px) rotate(2deg);
+            }
+
+            66% {
+                transform: translateY(-5px) rotate(-2deg);
             }
         }
 
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(50px);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .reveal.active {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Scroll indicator for hero */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
         }
     </style>
 </head>
@@ -494,10 +741,10 @@
             </button>
         </div>
         <div class="nav-links" id="nav-links">
-            <a href="#about" style="text-decoration:none; color:var(--text-gray); font-weight:500;">About</a>
             <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
                 <i data-lucide="moon" id="theme-icon"></i>
             </button>
+            <a href="#about" style="text-decoration:none; color:var(--text-gray); font-weight:500;">About</a>
             <a href="#contact" style="text-decoration:none; color:var(--text-gray); font-weight:500;">Contact</a>
             {% if current_user.is_authenticated %}
             <a href="{{ url_for('home') }}"
@@ -539,6 +786,9 @@
                 <line x1="180" y1="280" x2="280" y2="280" stroke="#ddd" stroke-width="4" />
                 <circle cx="250" cy="360" r="25" fill="#2563eb" />
             </svg>
+        </div>
+        <div class="scroll-indicator" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
+            <i data-lucide="chevron-down" size="32" style="color: var(--primary-blue);"></i>
         </div>
     </section>
 
@@ -644,6 +894,16 @@
         }, observerOptions);
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
     </script>
 </body>
 
