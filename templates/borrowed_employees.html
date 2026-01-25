@@ -15,6 +15,21 @@
             --bg-light: #f9fafb;
             --card-bg: #ffffff;
             --accent-red: #ef4444;
+            --border-color: rgba(0, 0, 0, 0.05);
+            --header-bg: #ffffff;
+            --overlay-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark-mode {
+            --primary-blue: #3b82f6;
+            --secondary-blue: rgba(59, 130, 246, 0.15);
+            --text-dark: #f1f5f9;
+            --text-gray: #94a3b8;
+            --bg-light: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --header-bg: #1e293b;
+            --overlay-bg: rgba(15, 23, 42, 0.9);
         }
 
         body {
@@ -23,6 +38,7 @@
             min-height: 100vh;
             margin: 0;
             color: var(--text-dark);
+            transition: color 0.3s ease;
         }
 
         .overlay {
@@ -31,13 +47,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--overlay-bg);
             backdrop-filter: blur(8px);
             z-index: -1;
+            transition: background 0.3s ease;
         }
 
         .header {
-            background: var(--card-bg);
+            background: var(--header-bg);
             padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
@@ -46,6 +63,25 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-blue);
+            color: var(--primary-blue);
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+            scale: 1.1;
         }
 
         .logo-section {
@@ -156,10 +192,21 @@
                 style="width:40px; height:40px; border-radius:8px;" alt="Logo">
             <h1>Debre Berhan ESS</h1>
         </a>
-        <div style="font-weight: 500; font-size: 0.9rem; color: var(--text-gray);">
-            Borrowed Materials Tracking
+        <div style="display:flex; align-items:center; gap:15px;">
+            <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">
+                <i data-lucide="moon" id="theme-icon"></i>
+            </button>
+            <div style="font-weight: 500; font-size: 0.9rem; color: var(--text-gray);">
+                Borrowed Materials Tracking
+            </div>
         </div>
     </header>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
 
     <main class="main-content">
         <div class="page-header">
@@ -229,7 +276,26 @@
 
     <script>
         lucide.createIcons();
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+        function updateIcon(theme) {
+            themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            updateIcon('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+            updateIcon(theme);
+        });
     </script>
 </body>
+
 
 </html>

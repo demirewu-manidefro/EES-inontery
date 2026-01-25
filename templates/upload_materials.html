@@ -15,6 +15,20 @@
       --bg-light: #f9fafb;
       --card-bg: #ffffff;
       --border-color: #d1d5db;
+      --header-bg: #ffffff;
+      --overlay-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    body.dark-mode {
+      --primary-blue: #3b82f6;
+      --secondary-blue: rgba(59, 130, 246, 0.15);
+      --text-dark: #f1f5f9;
+      --text-gray: #94a3b8;
+      --bg-light: #0f172a;
+      --card-bg: #1e293b;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --header-bg: #1e293b;
+      --overlay-bg: rgba(15, 23, 42, 0.9);
     }
 
     body {
@@ -23,6 +37,7 @@
       min-height: 100vh;
       margin: 0;
       color: var(--text-dark);
+      transition: color 0.3s ease;
     }
 
     .overlay {
@@ -31,18 +46,38 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.9);
+      background: var(--overlay-bg);
       backdrop-filter: blur(8px);
       z-index: -1;
+      transition: background 0.3s ease;
     }
 
     .header {
-      background: var(--card-bg);
+      background: var(--header-bg);
       padding: 1rem 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease;
+    }
+
+    .theme-toggle {
+      background: var(--secondary-blue);
+      color: var(--primary-blue);
+      border: none;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(15deg);
+      scale: 1.1;
     }
 
     .main-content {
@@ -56,8 +91,9 @@
       padding: 40px;
       border-radius: 16px;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
       text-align: center;
+      transition: background 0.3s ease, border 0.3s ease;
     }
 
     .file-input-wrapper {
@@ -92,8 +128,34 @@
       background: var(--bg-light);
       padding: 15px;
       border-radius: 8px;
+      transition: background 0.3s ease;
+    }
+
+    .flash-messages div {
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .flash-error {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .flash-success {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
     }
   </style>
+  <script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark-mode');
+      window.addEventListener('DOMContentLoaded', () => document.body.classList.add('dark-mode'));
+    }
+  </script>
 </head>
 
 <body>
@@ -103,6 +165,9 @@
       <img src="{{ url_for('static', filename='employee.png') }}" style="width:40px; height:40px;" alt="Logo">
       <h1 style="font-size:1.25rem; color:var(--primary-blue);">Debre Berhan ESS</h1>
     </a>
+    <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">
+      <i data-lucide="moon" id="theme-icon"></i>
+    </button>
   </header>
 
   <main class="main-content">
@@ -113,11 +178,13 @@
 
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-      {% for category, message in messages %}
-      <div style="padding: 12px; border-radius: 8px; background: #fee2e2; color: #991b1b; margin-top: 20px;">
-        {{ message }}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash-{{ 'error' if category == 'error' else 'success' }}">
+          {{ message }}
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
       {% endif %}
       {% endwith %}
 
@@ -139,7 +206,27 @@
       <a href="/home" style="display:block; margin-top:20px; text-decoration:none; color:var(--text-gray);">Cancel</a>
     </div>
   </main>
-  <script>lucide.createIcons();</script>
+  <script>
+    lucide.createIcons();
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    function updateIcon(theme) {
+      themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    if (localStorage.getItem('theme') === 'dark') {
+      updateIcon('dark');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      localStorage.setItem('theme', theme);
+      updateIcon(theme);
+    });
+  </script>
 </body>
 
 </html>

@@ -15,6 +15,20 @@
             --bg-light: #f3f4f6;
             --white: #ffffff;
             --glass-bg: rgba(255, 255, 255, 0.9);
+            --border-color: #ddd;
+            --footer-text: #4b5563;
+        }
+
+        body.dark-mode {
+            --primary-blue: #3b82f6;
+            --secondary-blue: #60a5fa;
+            --text-dark: #f8fafc;
+            --text-gray: #94a3b8;
+            --bg-light: #0f172a;
+            --white: #1e293b;
+            --glass-bg: rgba(30, 41, 59, 0.9);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --footer-text: #94a3b8;
         }
 
         * {
@@ -29,6 +43,7 @@
             color: var(--text-dark);
             background: var(--bg-light);
             line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
         }
 
         /* Navbar */
@@ -43,6 +58,26 @@
             align-items: center;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             z-index: 1000;
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle {
+            background: rgba(128, 128, 128, 0.1);
+            color: var(--primary-blue);
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-right: 15px;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+            scale: 1.1;
         }
 
         .logo {
@@ -67,80 +102,17 @@
             align-items: center;
         }
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-gray);
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-blue);
-        }
-
-        /* Dropdown */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropbtn {
-            background: var(--primary-blue);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.3s;
-        }
-
-        .dropbtn:hover {
-            background: var(--secondary-blue);
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: var(--white);
-            min-width: 160px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            color: var(--text-dark);
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            font-size: 0.9rem;
-        }
-
-        .dropdown-content a:hover {
-            background-color: var(--bg-light);
-            color: var(--primary-blue);
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
         /* Hero Section */
         .hero {
             height: 100vh;
-            background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)),
+            background: linear-gradient(var(--glass-bg), var(--glass-bg)),
             url("{{ url_for('static', filename='debre_berhan_workspace.png') }}") no-repeat center center/cover;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 10%;
             padding-top: 80px;
+            transition: background 0.3s ease;
         }
 
         .hero-content {
@@ -366,16 +338,29 @@
             ESS Debre Berhan
         </a>
         <div class="nav-links">
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                <i data-lucide="moon" id="theme-icon"></i>
+            </button>
+            <a href="#about" style="text-decoration:none; color:var(--text-gray); font-weight:500;">About</a>
+            <a href="#contact" style="text-decoration:none; color:var(--text-gray); font-weight:500;">Contact</a>
             {% if current_user.is_authenticated %}
-            <a href="{{ url_for('home') }}">Dashboard</a>
-            <a href="{{ url_for('logout') }}" style="color: #ef4444;">Logout</a>
+            <a href="{{ url_for('home') }}"
+                style="text-decoration:none; color:var(--text-gray); font-weight:500;">Dashboard</a>
+            <a href="{{ url_for('logout') }}" style="color: #ef4444; text-decoration:none; font-weight:500;">Logout</a>
             {% else %}
-            <a href="{{ url_for('login') }}" class="dropbtn" style="text-decoration: none;">Get Started</a>
+            <a href="{{ url_for('login') }}" class="dropbtn"
+                style="text-decoration: none; background: var(--primary-blue); color: white; padding: 10px 20px; border-radius: 50px; font-weight:600;">Get
+                Started</a>
             {% endif %}
         </div>
     </nav>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+            window.addEventListener('DOMContentLoaded', () => document.body.classList.add('dark-mode'));
+        }
+    </script>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -451,7 +436,26 @@
 
     <script>
         lucide.createIcons();
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+        function updateIcon(theme) {
+            themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            updateIcon('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+            updateIcon(theme);
+        });
     </script>
 </body>
+
 
 </html>
