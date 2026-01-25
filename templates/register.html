@@ -162,14 +162,46 @@
             font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-register:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
             background: var(--primary-dark);
+        }
+
+        .btn-register:active {
+            transform: scale(0.98);
+        }
+
+        .btn-register::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-register:hover::after {
+            left: 100%;
+        }
+
+        .input-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--accent);
+            transform: scale(1.01);
+        }
+
+        .input-box {
+            transition: 0.3s;
         }
 
         .footer {
@@ -234,6 +266,35 @@
             color: #166534;
             border-color: #bbf7d0;
         }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+
+        .toggle-password:hover {
+            color: var(--primary);
+        }
+
+        .register-card {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .register-card:hover {
+            transform: translateY(-5px);
+        }
     </style>
 </head>
 
@@ -270,9 +331,13 @@
             <div class="form-group">
                 <label>Security Password</label>
                 <div class="input-wrapper">
-                    <input type="password" name="password" class="input-box" required
+                    <input type="password" name="password" id="reg-password" class="input-box" required
                         placeholder="Choose a secure password" autocomplete="new-password">
                     <i data-lucide="shield-check" size="18"></i>
+                    <button type="button" class="toggle-password"
+                        onclick="togglePassword('reg-password', 'eye-icon-reg')">
+                        <i data-lucide="eye" id="eye-icon-reg" size="18"></i>
+                    </button>
                 </div>
             </div>
 
@@ -298,6 +363,21 @@
 
     <script>
         lucide.createIcons();
+
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         if (localStorage.getItem('theme') === 'dark') {
