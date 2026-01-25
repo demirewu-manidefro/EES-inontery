@@ -188,6 +188,18 @@
             align-items: center;
             gap: 4px;
         }
+
+        .flash-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .flash-success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
     </style>
 </head>
 
@@ -209,8 +221,8 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div
-            style="margin-bottom: 15px; padding: 10px; border-radius: 6px; background: {{ '#fee2e2' if category == 'error' else '#dcfce7' }}; color: {{ '#991b1b' if category == 'error' else '#166534' }}; font-size: 0.8rem;">
+        <div class="flash-msg flash-{{ 'error' if category == 'error' else 'success' }}"
+            style="margin-bottom: 15px; padding: 10px; border-radius: 6px; font-size: 0.8rem;">
             {{ message }}
         </div>
         {% endfor %}

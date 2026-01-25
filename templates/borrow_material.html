@@ -158,6 +158,31 @@
       font-size: 0.875rem;
       font-weight: 500;
     }
+
+    .flash-messages {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .flash-messages li {
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-bottom: 8px;
+    }
+
+    .flash-error {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .flash-success {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
   </style>
 </head>
 
@@ -175,10 +200,9 @@
       <h2>Borrow Material</h2>
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-      <ul style="list-style:none; padding:0; margin-bottom:20px;">
+      <ul class="flash-messages">
         {% for category, message in messages %}
-        <li
-          style="padding:10px; border-radius:6px; font-size:0.875rem; margin-bottom:8px; background: {{ '#fee2e2' if category == 'error' else '#dcfce7' }}; color: {{ '#991b1b' if category == 'error' else '#166534' }};">
+        <li class="flash-{{ 'error' if category == 'error' else 'success' }}">
           {{ message }}
         </li>
         {% endfor %}

@@ -94,11 +94,16 @@
       border-radius: 8px;
     }
 
-    .flash-msg {
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-bottom: 20px;
+    .flash-error {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .flash-success {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
     }
   </style>
 </head>
@@ -121,8 +126,7 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       {% for category, message in messages %}
-      <div class="flash-msg"
-        style="background: {% if category == 'error' %}#fee2e2{% else %}#dcfce7{% endif %}; color: {% if category == 'error' %}#991b1b{% else %}#166534{% endif %};">
+      <div class="flash-msg flash-{{ 'error' if category == 'error' else 'success' }}">
         {{ message }}
       </div>
       {% endfor %}

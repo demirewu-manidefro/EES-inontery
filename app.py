@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, send_file
-from models import Employee, Material, BorrowedMaterial, LeaveOutMember, WaitingReturn
+from models import Employee, Material, BorrowedMaterial, LeaveOutMember, WaitingReturn, User
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import db
@@ -10,7 +10,8 @@ from werkzeug.utils import secure_filename
 import io
 from datetime import datetime
 from config import Config
-from models import User
+import psycopg2
+from urllib.parse import urlparse
 
 print("Current working directory:", os.getcwd())
 print("Templates folder contents:", os.listdir(os.path.join(os.getcwd(), "templates")))
@@ -19,9 +20,6 @@ print("Templates folder contents:", os.listdir(os.path.join(os.getcwd(), "templa
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
-import os
-import psycopg2
-from urllib.parse import urlparse
 
 @app.route("/ping-db")
 def ping_db():
@@ -49,9 +47,6 @@ def ping_db():
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-from werkzeug.security import generate_password_hash
-from models import User
-from db import db
 
 @app.route("/create-admin")
 def create_admin():
@@ -539,7 +534,6 @@ def borrowed_employees():
 
 
 
-# Upload employees via Excel/CSV
 # Upload employees via Excel/CSV
 @app.route('/upload-employees', methods=['GET', 'POST'])
 def upload_employees():
