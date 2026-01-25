@@ -8,29 +8,29 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --primary-blue: #2563eb;
+            --primary-blue: #3b82f6;
+            --primary-dark: #1e40af;
             --secondary-blue: #eff6ff;
-            --text-dark: #1f2937;
-            --text-gray: #6b7280;
-            --bg-light: #f9fafb;
-            --card-bg: #ffffff;
-            --accent-green: #10b981;
-            --accent-orange: #f59e0b;
-            --border-color: rgba(0, 0, 0, 0.05);
-            --overlay-bg: rgba(255, 255, 255, 0.88);
-            --header-bg: #ffffff;
+            --accent-glow: rgba(59, 130, 246, 0.4);
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(255, 255, 255, 0.3);
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --sidebar-bg: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body.dark-mode {
-            --primary-blue: #3b82f6;
-            --secondary-blue: rgba(59, 130, 246, 0.15);
-            --text-dark: #f1f5f9;
-            --text-gray: #94a3b8;
-            --bg-light: #0f172a;
-            --card-bg: #1e293b;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --overlay-bg: rgba(15, 23, 42, 0.9);
-            --header-bg: #1e293b;
+            --text-dark: #f8fafc;
+            --text-muted: #94a3b8;
+            --bg-body: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --header-bg: rgba(15, 23, 42, 0.8);
+            --sidebar-bg: #1e293b;
+            --secondary-blue: rgba(59, 130, 246, 0.1);
         }
 
         * {
@@ -40,241 +40,431 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: url("{{ url_for('static', filename='debre_berhan_workspace.png') }}") no-repeat center center/cover fixed;
-            height: 100vh;
-            overflow: hidden;
+            font-family: 'Outfit', 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-body), var(--secondary-blue));
+            min-height: 100vh;
             color: var(--text-dark);
-            transition: color 0.3s ease;
+            transition: var(--transition);
+            overflow-x: hidden;
         }
 
-        .overlay {
+        .bg-pattern {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--overlay-bg);
-            backdrop-filter: blur(8px);
+            background-image: radial-gradient(var(--accent-glow) 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.1;
             z-index: -1;
-            transition: background 0.3s ease;
         }
 
         .header {
             background: var(--header-bg);
-            padding: 0.5rem 5%;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0.75rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s ease;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--card-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
         }
 
         .logo-section {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .logo-section img {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .logo-section h1 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-        }
-
-        .theme-toggle {
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-            border: none;
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .theme-toggle:hover {
-            transform: rotate(15deg);
-            scale: 1.1;
-        }
-
-        .logout-btn {
-            background: var(--primary-blue);
-            color: #ffffff;
-            padding: 6px 14px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .main-content {
-            height: calc(100vh - 60px);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .welcome-section {
-            margin-bottom: 5px;
-        }
-
-        .welcome-section h2 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 800;
-            margin-bottom: 2px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, var(--primary-blue), var(--primary-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .welcome-section p {
-            font-size: 0.85rem;
-            color: var(--text-gray);
+        .main-container {
+            padding: 2rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-header {
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-header h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
         }
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 15px;
-            flex-grow: 1;
-            min-height: 0;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 1.75rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
+            position: relative;
             overflow: hidden;
-            transition: transform 0.2s, background 0.3s ease, border 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.08);
+            border-color: var(--accent-glow);
         }
 
         .card-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            z-index: 1;
         }
 
         .icon-box {
-            min-width: 32px;
-            height: 32px;
+            width: 44px;
+            height: 44px;
             background: var(--secondary-blue);
             color: var(--primary-blue);
-            border-radius: 8px;
+            border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: var(--transition);
         }
 
-        .icon-box i {
-            width: 18px;
-            height: 18px;
+        .card:hover .icon-box {
+            background: var(--primary-blue);
+            color: white;
+            transform: scale(1.1);
         }
 
         .card h3 {
-            font-size: 0.95rem;
+            font-size: 1.15rem;
             font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            background: rgba(128, 128, 128, 0.05);
+            padding: 1rem;
+            border-radius: 15px;
+            transition: var(--transition);
+        }
+
+        .stat-item:hover {
+            background: rgba(128, 128, 128, 0.08);
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .action-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 0.75rem;
         }
 
         .action-link {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 12px;
-            background: var(--bg-light);
-            border-radius: 6px;
+            padding: 0.85rem 1.25rem;
+            background: rgba(128, 128, 128, 0.03);
+            border: 1px solid transparent;
+            border-radius: 12px;
             color: var(--text-dark);
             text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: background 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition);
         }
 
         .action-link:hover {
             background: var(--secondary-blue);
             color: var(--primary-blue);
+            border-color: var(--accent-glow);
+            padding-left: 1.5rem;
         }
 
-        .stat-grid {
+        .action-link i {
+            width: 18px;
+            height: 18px;
+            opacity: 0.7;
+        }
+
+        .btn-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 0.75rem;
         }
 
-        .stat-item {
-            background: var(--bg-light);
-            padding: 8px;
-            border-radius: 8px;
+        .small-btn {
+            padding: 0.75rem;
+            font-size: 0.8rem;
             text-align: center;
-            transition: background 0.3s ease;
+            border-radius: 10px;
+            background: rgba(128, 128, 128, 0.05);
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
         }
 
-        .stat-value {
-            display: block;
-            font-size: 1.1rem;
+        .small-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .export-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.85rem;
+            border-radius: 12px;
+            text-decoration: none;
             font-weight: 700;
-            color: var(--primary-blue);
+            font-size: 0.9rem;
+            transition: var(--transition);
+            margin-bottom: 0.5rem;
         }
 
-        .stat-label {
-            font-size: 0.65rem;
-            color: var(--text-gray);
-            text-transform: uppercase;
+        .export-excel {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .export-excel:hover {
+            background: #16a34a;
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .export-pdf {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .export-pdf:hover {
+            background: #ef4444;
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .export-items {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .export-items:hover {
+            background: #0ea5e9;
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .export-waitlist {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .export-waitlist:hover {
+            background: #f59e0b;
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .theme-toggle {
+            background: var(--secondary-blue);
+            color: var(--primary-blue);
+            border: none;
+            padding: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(20deg) scale(1.1);
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            padding: 0.6rem 1.25rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
         }
 
         .flash-msg {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border-left: 4px solid #22c55e;
-            font-size: 0.8rem;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            animation: slideInRight 0.5s ease-out;
         }
 
-        .flash-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border-left-color: #ef4444;
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .flash-success {
-            background: #dcfce7;
-            color: #166534;
-            border-left-color: #22c55e;
+            background: rgba(34, 197, 94, 0.15);
+            color: #15803d;
+            border-left: 5px solid #22c55e;
         }
 
-        .announcement-item {
-            padding: 10px;
-            background: var(--bg-light);
-            border-radius: 8px;
-            font-size: 0.8rem;
-            transition: background 0.3s ease;
+        .flash-error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #b91c1c;
+            border-left: 5px solid #ef4444;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 25px var(--accent-glow);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 1001;
+            text-decoration: none;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: var(--primary-dark);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 0.75rem 4%;
+            }
+
+            .welcome-header h2 {
+                font-size: 1.75rem;
+            }
         }
     </style>
     <script>
@@ -287,7 +477,7 @@
 </head>
 
 <body>
-    <div class="overlay"></div>
+    <div class="bg-pattern"></div>
 
     <header class="header">
         <div class="logo-section">
@@ -298,18 +488,21 @@
             <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
                 <i data-lucide="moon" id="theme-icon"></i>
             </button>
-            <span style="font-size:0.8rem; font-weight:500;">Welcome, {{ current_user.username }}</span>
+            <div style="text-align: right; margin-right: 10px;">
+                <div style="font-size:0.85rem; font-weight:800;">{{ current_user.username }}</div>
+                <div style="font-size:0.7rem; color:var(--text-muted);">{{ current_user.role|capitalize }}</div>
+            </div>
             <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
         </div>
     </header>
 
-    <main class="main-content">
+    <main class="main-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div id="flash-container">
             {% for category, message in messages %}
             <div class="flash-msg flash-{{ 'error' if category == 'error' else 'success' }}">
-                <i data-lucide="{{ 'alert-circle' if category == 'error' else 'check-circle' }}" size="14"></i>
+                <i data-lucide="{{ 'alert-circle' if category == 'error' else 'check-circle' }}" size="20"></i>
                 {{ message }}
             </div>
             {% endfor %}
@@ -317,118 +510,135 @@
         {% endif %}
         {% endwith %}
 
-        <div class="welcome-section">
+        <div class="welcome-header">
             <h2>System Dashboard</h2>
+            <p>Pulse overview of material management & workforce activity.</p>
         </div>
 
         <div class="dashboard-grid">
-            <!-- 1. Employee Snapshot -->
+            <!-- 1. Employee Intelligence -->
             <div class="card">
                 <div class="card-header">
-                    <div class="icon-box"><i data-lucide="user"></i></div>
-                    <h3>Employee Status</h3>
+                    <div class="icon-box"><i data-lucide="users"></i></div>
+                    <h3>Workforce Data</h3>
                 </div>
                 <div class="stat-grid">
-                    <div class="stat-item"><span class="stat-value">Active</span><span class="stat-label">Status</span>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ stats.total_employees }}</span>
+                        <span class="stat-label">Total Staff</span>
                     </div>
-                    <div class="stat-item"><span class="stat-value">{{ current_user.role|capitalize }}</span><span
-                            class="stat-label">Role</span></div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ stats.leave_count }}</span>
+                        <span class="stat-label">On Leave</span>
+                    </div>
                 </div>
-                <div style="margin-top: auto; padding-top: 10px;">
-                    <a href="/employees" class="action-link">View Directory <i data-lucide="chevron-right"
-                            size="14"></i></a>
+                <a href="/employees" class="action-link">
+                    Staff Directory <i data-lucide="chevron-right"></i>
+                </a>
+                <div class="btn-group" style="margin-top: 10px;">
+                    <a href="/add_employee" class="small-btn">+ New Staff</a>
+                    <a href="/upload-employees" class="small-btn">Bulk Import</a>
                 </div>
             </div>
 
-            <!-- 2. Inventory & Logistics -->
+            <!-- 2. Inventory Management -->
             <div class="card">
                 <div class="card-header">
                     <div class="icon-box"><i data-lucide="package"></i></div>
-                    <h3>Inventory & Logistics</h3>
+                    <h3>Inventory & Stock</h3>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ stats.total_materials }}</span>
+                        <span class="stat-label">Total Items</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ stats.borrowed_count }}</span>
+                        <span class="stat-label">Borrowed</span>
+                    </div>
                 </div>
                 <ul class="action-list">
-                    <li><a href="/borrow" class="action-link">Borrow Material <i data-lucide="plus" size="14"></i></a>
+                    <li><a href="/materials" class="action-link">View Stock List <i data-lucide="list"></i></a></li>
+                    <li><a href="/borrow" class="action-link">Issue Material <i data-lucide="plus-circle"></i></a></li>
+                    <li><a href="/borrowed-employees" class="action-link">Track Borrowed <i data-lucide="clock"></i></a>
                     </li>
-                    <li><a href="/materials" class="action-link">Stock List <i data-lucide="list" size="14"></i></a>
-                    </li>
-                    <li><a href="/borrowed-employees" class="action-link">Currently Borrowed <i data-lucide="clock"
-                                size="14"></i></a></li>
-                    <li><a href="/return" class="action-link">Return All Items <i data-lucide="rotate-ccw"
-                                size="14"></i></a></li>
-                    <li><a href="/return-individual" class="action-link">Return One Item <i data-lucide="minus-square"
-                                size="14"></i></a></li>
+                </ul>
+                <div class="btn-group" style="margin-top: 10px;">
+                    <a href="/add-material" class="small-btn">+ New Item</a>
+                    <a href="/upload-materials" class="small-btn">Bulk Upload</a>
+                </div>
+            </div>
+
+            <!-- 3. Returns & Logistics -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon-box"><i data-lucide="rotate-ccw"></i></div>
+                    <h3>Returns & Queue</h3>
+                </div>
+                <div class="stat-grid" style="margin-bottom: 2rem;">
+                    <div class="stat-item" style="width: 100%; grid-column: span 2;">
+                        <span class="stat-value">{{ stats.waiting_count }}</span>
+                        <span class="stat-label">Employees in Return Queue</span>
+                    </div>
+                </div>
+                <ul class="action-list">
+                    <li><a href="/return" class="action-link">Bulk Return Process <i data-lucide="layers"></i></a></li>
+                    <li><a href="/return-individual" class="action-link">Return Single Item <i
+                                data-lucide="minus-square"></i></a></li>
+                    <li><a href="/waiting-return" class="action-link">Manage Return Queue <i
+                                data-lucide="align-left"></i></a></li>
                 </ul>
             </div>
 
-            <!-- 3. Managerial Tools -->
-            <div class="card" style="border-right: 4px solid var(--primary-blue);">
-                <div class="card-header">
-                    <div class="icon-box"><i data-lucide="settings"></i></div>
-                    <h3>Execution Tools</h3>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                    <a href="/add_employee" class="action-link" style="padding:6px; font-size:0.75rem;">+ Employee</a>
-                    <a href="/add-material" class="action-link" style="padding:6px; font-size:0.75rem;">+ Material</a>
-                    <a href="/upload-employees" class="action-link" style="padding:6px; font-size:0.75rem;">Bulk Emp</a>
-                    <a href="/upload-materials" class="action-link" style="padding:6px; font-size:0.75rem;">Bulk Mat</a>
-                    <a href="/waiting-return" class="action-link" style="padding:6px; font-size:0.75rem;">Return
-                        Queue</a>
-                    <a href="/admin/approve-users" class="action-link"
-                        style="padding:6px; font-size:0.75rem;">Approvals</a>
-                </div>
-            </div>
-
-            <!-- 4. Attendance & Leave -->
+            <!-- 4. Managerial Controls -->
             <div class="card">
                 <div class="card-header">
-                    <div class="icon-box"><i data-lucide="calendar"></i></div>
-                    <h3>Attendance & Leave</h3>
+                    <div class="icon-box"><i data-lucide="shield-check"></i></div>
+                    <h3>Administration</h3>
                 </div>
-                <div class="stat-grid" style="margin-bottom: 10px;">
-                    <div class="stat-item"><span class="stat-value">22/22</span><span class="stat-label">Present</span>
-                    </div>
-                    <div class="stat-item"><span class="stat-value">12</span><span class="stat-label">Leave Bal.</span>
-                    </div>
-                </div>
-                <div style="margin-top:auto;">
-                    <a href="/leave-out" class="action-link">Leave Records <i data-lucide="send" size="14"></i></a>
-                </div>
+                <ul class="action-list" style="margin-bottom: 1.5rem;">
+                    <li><a href="/admin/approve-users" class="action-link">User Approvals <i
+                                data-lucide="user-check"></i></a></li>
+                    <li><a href="/admin/upload-users" class="action-link">Import System Accounts <i
+                                data-lucide="key"></i></a></li>
+                    <li><a href="/leave-out" class="action-link">Leave History <i data-lucide="history"></i></a></li>
+                </ul>
+                <a href="{{ url_for('change_password') }}" class="action-link"
+                    style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
+                    Security Settings <i data-lucide="settings"></i>
+                </a>
             </div>
 
-            <!-- 5. System Data & Exports -->
-            <div class="card">
+            <!-- 5. Exports & Intelligence -->
+            <div class="card" style="grid-column: span min(2, 100%);">
                 <div class="card-header">
-                    <div class="icon-box"><i data-lucide="file-text"></i></div>
-                    <h3>Reports & Account</h3>
+                    <div class="icon-box"><i data-lucide="download"></i></div>
+                    <h3>Exports & Reports</h3>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:6px;">
-                    <a href="{{ url_for('export_borrowed_and_available') }}" class="action-link"
-                        style="background:#f0fdf4; color:#16a34a; border: 1px solid #dcfce7;">
-                        Export Items <i data-lucide="sheet" size="14"></i>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    <a href="{{ url_for('export_excel') }}" class="export-btn export-excel">
+                        <i data-lucide="file-spreadsheet"></i> Full Staff Report
                     </a>
-                    <a href="{{ url_for('export_waiting_return') }}" class="action-link"
-                        style="background:#fffcf2; color:#b45309; border: 1px solid #fef3c7;">
-                        Export Waitlist <i data-lucide="download" size="14"></i>
+                    <a href="{{ url_for('export_available_materials') }}" class="export-btn export-items">
+                        <i data-lucide="box"></i> Stock Availability
                     </a>
-                    <a href="/admin/upload-users" class="action-link">Import Accounts <i data-lucide="user-plus"
-                            size="14"></i></a>
+                    <a href="{{ url_for('export_borrowed_and_available') }}" class="export-btn export-waitlist">
+                        <i data-lucide="clipboard-list"></i> Combined Status
+                    </a>
+                    <a href="{{ url_for('export_waiting_return') }}" class="export-btn export-pdf">
+                        <i data-lucide="download-cloud"></i> Return Waitlist
+                    </a>
                 </div>
-            </div>
-
-            <!-- 6. Notifications -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="icon-box"><i data-lucide="megaphone"></i></div>
-                    <h3>Announcements</h3>
-                </div>
-                <div class="announcement-item">
-                    <strong style="color:var(--primary-blue); font-size:0.75rem;">Next Monday</strong>
-                    <p style="font-size:0.8rem; line-height:1.2;">Quarterly inventory audit will commence at 9:00 AM
-                        sharp.</p>
+                <div style="margin-top: 15px; font-size: 0.75rem; color: var(--text-muted); text-align: center;">
+                    Reports are generated in Excel (.xlsx) format for professional data analysis.
                 </div>
             </div>
         </div>
     </main>
+
+    <a href="/borrow" class="fab" title="Quick Issue">
+        <i data-lucide="plus" size="28"></i>
+    </a>
 
     <script>
         lucide.createIcons();
@@ -453,15 +663,16 @@
             updateIcon(theme);
         });
 
-        // Flash message auto-dismiss
+        // Flash message auto-dismiss with fade out
         setTimeout(() => {
             const container = document.getElementById('flash-container');
             if (container) {
-                container.style.transition = 'opacity 1s';
+                container.style.transition = 'all 0.8s ease';
                 container.style.opacity = '0';
-                setTimeout(() => container.remove(), 1000);
+                container.style.transform = 'translateX(50px)';
+                setTimeout(() => container.remove(), 800);
             }
-        }, 3000);
+        }, 4000);
     </script>
 </body>
 

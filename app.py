@@ -164,7 +164,23 @@ def root():
 @app.route("/home")
 @login_required
 def home():
-    return render_template("index.html", user=current_user)
+    total_employees = Employee.query.count()
+    total_materials = Material.query.count()
+    borrowed_count = BorrowedMaterial.query.filter_by(is_returned=False).count()
+    waiting_count = WaitingReturn.query.count()
+    leave_count = LeaveOutMember.query.count()
+    
+    return render_template(
+        "index.html", 
+        user=current_user,
+        stats={
+            "total_employees": total_employees,
+            "total_materials": total_materials,
+            "borrowed_count": borrowed_count,
+            "waiting_count": waiting_count,
+            "leave_count": leave_count
+        }
+    )
 
 # Add Employee with separatename and father_name fields
 @app.route('/add_employee', methods=['GET', 'POST'])
