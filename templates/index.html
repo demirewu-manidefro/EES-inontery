@@ -615,13 +615,7 @@
             </nav>
         </div>
 
-        <div style="padding: 1.5rem; border-top: 1px solid var(--border);">
-            <button id="theme-toggle" class="nav-link"
-                style="width: 100%; border: none; background: none; cursor: pointer;">
-                <i data-lucide="moon" id="theme-icon"></i>
-                <span>Switch Appearance</span>
-            </button>
-        </div>
+
     </aside>
 
     <div class="main-wrapper">
@@ -634,14 +628,23 @@
                     Control</div>
             </div>
 
-            <div class="user-pill">
-                <div class="user-info">
-                    <div class="name">{{ current_user.username }}</div>
-                    <div class="role">{{ current_user.role|capitalize }}</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button id="theme-toggle"
+                    style="width: 38px; height: 38px; background: var(--accent); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition);"
+                    onmouseover="this.style.boxShadow='0 4px 12px var(--glow)'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.boxShadow=''; this.style.transform='scale(1)'">
+                    <i data-lucide="moon" id="theme-icon" size="18" style="color: var(--primary);"></i>
+                </button>
+
+                <div class="user-pill">
+                    <div class="user-info">
+                        <div class="name">{{ current_user.username }}</div>
+                        <div class="role">{{ current_user.role|capitalize }}</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="logout-btn" title="Sign Out">
+                        <i data-lucide="log-out" size="16"></i>
+                    </a>
                 </div>
-                <a href="{{ url_for('logout') }}" class="logout-btn" title="Sign Out">
-                    <i data-lucide="log-out" size="16"></i>
-                </a>
             </div>
         </header>
 
