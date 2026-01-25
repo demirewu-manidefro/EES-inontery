@@ -46,9 +46,9 @@
             height: 100vh;
             overflow: hidden;
             display: flex;
+            transition: background-color 0.3s;
         }
 
-        /* --- Sidebar & Layout (Same as Dashboard) --- */
         .sidebar {
             width: var(--sidebar-width);
             background: var(--bg-sidebar);
@@ -56,6 +56,7 @@
             display: flex;
             flex-direction: column;
             z-index: 1000;
+            transition: var(--transition);
         }
 
         .sidebar-inner {
@@ -104,6 +105,7 @@
         .nav-link.active {
             background: var(--accent);
             color: var(--primary);
+            transform: translateX(5px);
         }
 
         .nav-link i {
@@ -116,6 +118,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
 
         .top-navbar {
@@ -133,27 +136,50 @@
             flex: 1;
             overflow-y: auto;
             padding: 2rem;
+            transition: padding 0.3s;
         }
 
-        /* --- Table Styling --- */
+        .header-msg {
+            margin-bottom: 2rem;
+        }
+
+        .header-msg h2 {
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        .header-msg p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* --- table responsiveness --- */
         .table-container {
             background: var(--bg-card);
-            border-radius: 20px;
+            border-radius: 24px;
             border: 1px solid var(--border);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
+            min-width: 900px;
         }
 
         th {
             background: #f8fafc;
             color: var(--text-muted);
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
             font-size: 0.75rem;
             font-weight: 800;
             text-transform: uppercase;
@@ -162,7 +188,7 @@
         }
 
         td {
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border);
             font-size: 0.9rem;
             vertical-align: middle;
@@ -177,11 +203,14 @@
         }
 
         .badge {
-            padding: 4px 10px;
+            padding: 6px 14px;
             border-radius: 50px;
             font-size: 0.7rem;
             font-weight: 800;
             text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .status-borrowed {
@@ -200,17 +229,17 @@
         }
 
         .btn-table {
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 8px 14px;
+            border-radius: 10px;
             border: 1px solid var(--border);
-            background: white;
+            background: var(--bg-card);
             color: var(--text-main);
             font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             transition: 0.2s;
         }
 
@@ -218,24 +247,77 @@
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+            transform: translateY(-2px);
         }
 
-        .user-pill {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 5px 15px;
-            background: var(--accent);
-            border-radius: 50px;
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .top-navbar {
+                padding: 0 1rem;
+            }
+
+            .content-area {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .page-title {
+                font-size: 1.1rem !important;
+            }
+
+            .user-pill .name {
+                display: none;
+            }
         }
     </style>
 </head>
 
 <body>
-    <aside class="sidebar">
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-inner">
-            <div class="sidebar-header">
-                <img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
+            <div class="sidebar-header"><img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
                 <h1>DEBRE BERHAN<br>ESS SYSTEM</h1>
             </div>
             <nav>
@@ -250,89 +332,105 @@
 
     <div class="main-wrapper">
         <header class="top-navbar">
-            <div style="font-weight: 800; font-size: 1.25rem;">Staff Directory</div>
-            <div class="user-pill">
-                <div style="font-size: 0.8rem; font-weight: 800;">{{ current_user.username }}</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="mobile-nav-toggle" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+                <div class="page-title" style="font-weight: 800; font-size: 1.25rem;">Staff Directory</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:5px 15px; background:var(--accent); border-radius:50px;"
+                class="user-pill">
+                <div class="name" style="font-size: 0.8rem; font-weight: 800;">{{ current_user.username }}</div>
                 <a href="/logout" style="color: #ef4444;"><i data-lucide="log-out" size="16"></i></a>
             </div>
         </header>
 
         <main class="content-area">
+            <div class="header-msg">
+                <h2>Workforce Registry</h2>
+                <p>Manage all active personnel and track their equipment status.</p>
+            </div>
+
             <div class="table-container">
-                {% if employees %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Member Details</th>
-                            <th>Contact</th>
-                            <th>Role & Project</th>
-                            <th>Status</th>
-                            <th>Active Tools</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for emp in employees %}
-                        <tr>
-                            <td>
-                                <div style="font-weight: 800; font-size: 0.95rem;">{{ emp.name }} {{ emp.father_name }}
-                                </div>
-                                <div style="font-size: 0.7rem; color: var(--text-muted);">{{ emp.grand_father_name }} |
-                                    ID: #{{ emp.id }}</div>
-                            </td>
-                            <td><span style="font-weight: 600;">{{ emp.phone_number }}</span></td>
-                            <td>
-                                <div style="font-weight: 700;">{{ emp.position }}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ emp.project }}</div>
-                            </td>
-                            <td>
-                                <span
-                                    class="badge {{ 'status-borrowed' if emp.status == 'Borrowed' else 'status-available' }}">
-                                    {{ emp.status }}
-                                </span>
-                            </td>
-                            <td>
-                                {% if emp.materials %}
-                                <div style="font-size: 0.75rem; display: flex; flex-direction: column; gap: 3px;">
-                                    {% for material in emp.materials %}
-                                    <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="tool"
-                                            size="10"></i> {{ material }}</span>
-                                    {% endfor %}
-                                </div>
-                                {% else %}<small style="color:#ccc;">None</small>{% endif %}
-                            </td>
-                            <td>
-                                <div class="action-btns">
-                                    <form action="{{ url_for('approve_leave', emp_id=emp.id) }}" method="post">
-                                        <button type="submit" class="btn-table" title="Move to Leave">
-                                            <i data-lucide="log-out" size="14"></i> Leave
-                                        </button>
-                                    </form>
-                                    <form action="{{ url_for('add_to_waiting', emp_id=emp.id) }}" method="post">
-                                        <button type="submit" class="btn-table" title="Queue for Return">
-                                            <i data-lucide="clock" size="14"></i> Queue
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <div style="padding: 5rem; text-align: center; color: var(--text-muted);">
-                    <i data-lucide="users" size="48" style="opacity: 0.2; margin-bottom: 1rem;"></i>
-                    <p>No employee records found in the system.</p>
+                <div class="table-wrapper">
+                    {% if employees %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Member Details</th>
+                                <th>Contact</th>
+                                <th>Role & Project</th>
+                                <th>Status</th>
+                                <th>Active Tools</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emp in employees %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 800; font-size: 0.95rem;">{{ emp.name }} {{ emp.father_name
+                                        }}</div>
+                                    <div style="font-size: 0.7rem; color: var(--text-muted);">{{ emp.grand_father_name
+                                        }} | ID: #{{ emp.id }}</div>
+                                </td>
+                                <td><span style="font-weight: 700;">{{ emp.phone_number }}</span></td>
+                                <td>
+                                    <div style="font-weight: 700;">{{ emp.position }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--primary);">{{ emp.project }}</div>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge {{ 'status-borrowed' if emp.status == 'Borrowed' else 'status-available' }}">
+                                        <i
+                                            data-lucide="{{ 'alert-circle' if emp.status == 'Borrowed' else 'check-circle' }}"></i>
+                                        {{ emp.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if emp.materials %}
+                                    <div style="font-size: 0.75rem; display: flex; flex-direction: column; gap: 4px;">
+                                        {% for material in emp.materials %}
+                                        <span style="display:flex; align-items:center; gap:6px;"><i data-lucide="tool"
+                                                size="12"></i> {{ material }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}<small style="color:#ccc; font-weight:600;">Inventory Clean</small>{%
+                                    endif %}
+                                </td>
+                                <td>
+                                    <div class="action-btns">
+                                        <form action="{{ url_for('approve_leave', emp_id=emp.id) }}" method="post">
+                                            <button type="submit" class="btn-table" title="Move to Leave">
+                                                <i data-lucide="log-out" size="14"></i> Leave
+                                            </button>
+                                        </form>
+                                        <form action="{{ url_for('add_to_waiting', emp_id=emp.id) }}" method="post">
+                                            <button type="submit" class="btn-table" title="Queue for Return">
+                                                <i data-lucide="clock" size="14"></i> Queue
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div style="padding: 6rem; text-align: center; color: var(--text-muted);">
+                        <i data-lucide="users" size="64" style="opacity: 0.1; margin-bottom: 1.5rem;"></i>
+                        <p style="font-weight:700;">No staff members found in the current project.</p>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
         </main>
     </div>
 
     <script>
         lucide.createIcons();
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
         }
     </script>
 </body>

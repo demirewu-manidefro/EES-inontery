@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borrowing Tracking - Debre Berhan ESS</title>
+    <title>Handover Tracking - Debre Berhan ESS</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 
         :root {
             --primary: #3b82f6;
@@ -20,7 +20,6 @@
             --border: #e2e8f0;
             --accent: #eff6ff;
             --sidebar-width: 280px;
-            --transition: 0.3s;
         }
 
         body.dark-mode {
@@ -46,6 +45,7 @@
             height: 100vh;
             overflow: hidden;
             display: flex;
+            transition: 0.3s;
         }
 
         .sidebar {
@@ -54,6 +54,8 @@
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            z-index: 1000;
+            transition: 0.3s;
         }
 
         .sidebar-inner {
@@ -80,6 +82,7 @@
         .nav-link.active {
             background: var(--accent);
             color: var(--primary);
+            transform: translateX(5px);
         }
 
         .main-wrapper {
@@ -87,6 +90,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
 
         .top-navbar {
@@ -107,31 +111,35 @@
 
         .table-container {
             background: var(--bg-card);
-            border-radius: 20px;
+            border-radius: 24px;
             border: 1px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
+            min-width: 1000px;
         }
 
         th {
             background: #f8fafc;
             color: var(--text-muted);
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
             font-size: 0.75rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
             border-bottom: 1px solid var(--border);
         }
 
         td {
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border);
             font-size: 0.9rem;
         }
@@ -144,99 +152,157 @@
             font-family: monospace;
             font-size: 0.75rem;
             background: var(--bg-main);
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
             border: 1px solid var(--border);
+            color: var(--primary-dark);
         }
 
         .active-pill {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
+            gap: 6px;
+            padding: 6px 14px;
             background: #fff7ed;
             color: #c2410c;
             border-radius: 50px;
             font-size: 0.7rem;
             font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .top-navbar {
+                padding: 0 1rem;
+            }
+
+            .content-area {
+                padding: 1.5rem 1rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <aside class="sidebar">
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-inner">
             <div style="display:flex; align-items:center; gap:12px; margin-bottom:2.5rem;"><img
-                    src="{{ url_for('static', filename='employee.png') }}" style="width:40px;">
-                <h1 style="font-size:1rem; font-weight:800;">DEBRE BERHAN</h1>
+                    src="{{ url_for('static', filename='employee.png') }}" style="width:40px; border-radius:10px;">
+                <h1 style="font-size:1rem; font-weight:800; color:var(--primary);">DEBRE BERHAN</h1>
             </div>
-            <nav>
-                <a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
-                <a href="/borrowed-employees" class="nav-link active"><i data-lucide="clock"></i> Borrowing Tracking</a>
-                <a href="/employees" class="nav-link"><i data-lucide="users"></i> Staff Directory</a>
-                <a href="/materials" class="nav-link"><i data-lucide="package"></i> Stock Inventory</a>
-            </nav>
+            <nav><a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a><a
+                    href="/borrowed-employees" class="nav-link active"><i data-lucide="clock"></i> Handover Status</a><a
+                    href="/employees" class="nav-link"><i data-lucide="users"></i> Staff Directory</a><a
+                    href="/materials" class="nav-link"><i data-lucide="package"></i> Stock Inventory</a></nav>
         </div>
     </aside>
 
     <div class="main-wrapper">
         <header class="top-navbar">
-            <div style="font-weight:800; font-size:1.25rem;">Handover Status</div>
+            <div style="display:flex; align-items:center; gap:10px;"><button class="mobile-nav-toggle"
+                    onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+                <div style="font-weight: 800; font-size: 1.25rem;">Handover Status</div>
+            </div>
+            <div
+                style="font-size: 0.85rem; font-weight: 700; padding: 5px 15px; background: var(--accent); border-radius: 50px;">
+                {{ current_user.username }}</div>
         </header>
         <main class="content-area">
             <div style="margin-bottom: 2rem;">
-                <h2 style="font-weight:800; font-size:1.5rem;">Borrowed Material tracking</h2>
-                <p style="color:var(--text-muted); font-size:0.9rem;">Complete overview of system equipment currently in
-                    the field.</p>
+                <h2 style="font-weight:800; font-size:1.5rem;">Deployment tracking</h2>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Overview of all equipment currently in possession
+                    of staff members.</p>
             </div>
-
             <div class="table-container">
-                {% if borrowed_list %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Possessor Name</th>
-                            <th>Job & Project</th>
-                            <th>Contact</th>
-                            <th>Material Details</th>
-                            <th>Serial Number</th>
-                            <th>Stage</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in borrowed_list %}
-                        <tr>
-                            <td>
-                                <div style="font-weight:800;">{{ item.name }} {{ item.father_name }}</div>
-                                <div style="font-size:0.7rem; color:var(--text-muted);">Sex: {{ item.sex }} | ID: #{{
-                                    item.id }}</div>
-                            </td>
-                            <td>
-                                <div style="font-weight:700;">{{ item.position }}</div>
-                                <div style="font-size:0.75rem; color:var(--primary);">{{ item.project }}</div>
-                            </td>
-                            <td><span style="font-weight:600;">{{ item.phone_number }}</span></td>
-                            <td>
-                                <div
-                                    style="display:flex; align-items:center; gap:8px; font-weight:800; color:var(--primary);">
-                                    <i data-lucide="package" size="14"></i> {{ item.material_name }}</div>
-                            </td>
-                            <td><span class="sn-box">{{ item.serial_number }}</span></td>
-                            <td><span class="active-pill">In Field</span></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <div style="padding:6rem; text-align:center; color:var(--text-muted);"><i data-lucide="info" size="48"
-                        style="opacity:0.2; margin-bottom:1rem;"></i>
-                    <p>No materials are currently registered as borrowed.</p>
+                <div class="table-wrapper">
+                    {% if borrowed_list %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Possessor Name</th>
+                                <th>Role & Project</th>
+                                <th>Contact</th>
+                                <th>Material Details</th>
+                                <th>Serial Number</th>
+                                <th>Stage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in borrowed_list %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight:800;">{{ item.name }} {{ item.father_name }}</div>
+                                    <div style="font-size:0.7rem; color:var(--text-muted);">Sex: {{ item.sex }} | ID:
+                                        #{{ item.id }}</div>
+                                </td>
+                                <td>
+                                    <div style="font-weight:700;">{{ item.position }}</div>
+                                    <div style="font-size:0.75rem; color:var(--primary); font-weight:700;">{{
+                                        item.project }}</div>
+                                </td>
+                                <td><span style="font-weight:700;">{{ item.phone_number }}</span></td>
+                                <td>
+                                    <div
+                                        style="display:flex; align-items:center; gap:8px; font-weight:800; color:var(--primary);">
+                                        <i data-lucide="package" size="14"></i> {{ item.material_name }}</div>
+                                </td>
+                                <td><span class="sn-box">{{ item.serial_number }}</span></td>
+                                <td><span class="active-pill"><i data-lucide="activity" size="10"></i> Active Field
+                                        Use</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}<div style="padding:6rem; text-align:center; color:var(--text-muted);"><i
+                            data-lucide="info" size="64" style="opacity:0.1; margin-bottom:1.5rem;"></i>
+                        <p style="font-weight:700;">No items are currently registered as borrowed.</p>
+                    </div>{% endif %}
                 </div>
-                {% endif %}
             </div>
         </main>
     </div>
-    <script>lucide.createIcons(); if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');</script>
+    <script>
+        lucide.createIcons();
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
+    </script>
 </body>
 
 </html>

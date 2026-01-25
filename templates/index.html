@@ -128,6 +128,7 @@
         .nav-link.active {
             background: var(--accent);
             color: var(--primary);
+            transform: translateX(5px);
         }
 
         .nav-link i {
@@ -141,6 +142,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
 
         .top-navbar {
@@ -163,6 +165,11 @@
             background: var(--accent);
             border-radius: 50px;
             border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .user-pill:hover {
+            box-shadow: 0 4px 12px var(--glow);
         }
 
         .user-info .name {
@@ -190,7 +197,7 @@
         }
 
         .logout-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(10deg);
             background: #dc2626;
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
@@ -201,12 +208,13 @@
             padding: 2rem;
             background-image: radial-gradient(var(--border) 0.5px, transparent 0.5px);
             background-size: 24px 24px;
+            transition: padding 0.3s;
         }
 
         /* Stats Strip */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.25rem;
             margin-bottom: 2rem;
         }
@@ -238,6 +246,11 @@
             background: var(--accent);
             color: var(--primary);
             border-radius: 12px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover i {
+            transform: scale(1.1);
         }
 
         .stat-details .value {
@@ -257,7 +270,7 @@
         /* Dashboard Master Grid */
         .master-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -271,6 +284,12 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .feature-box:hover {
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.06);
+            border-color: var(--primary-light);
         }
 
         .feature-box h3 {
@@ -355,6 +374,7 @@
             align-items: center;
             gap: 2rem;
             margin-bottom: 2rem;
+            transition: var(--transition);
         }
 
         .exports-bar h4 {
@@ -371,6 +391,7 @@
         .export-links {
             display: flex;
             gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .export-btn {
@@ -397,40 +418,59 @@
         /* Mobile Interface */
         .mobile-nav-toggle {
             display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.3s;
         }
 
-        @media (max-width: 1200px) {
-            .master-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
+        .mobile-nav-toggle:hover {
+            background: var(--accent);
         }
 
+        /* Responsive Breakpoints */
         @media (max-width: 1024px) {
             .sidebar {
                 position: fixed;
                 left: -100%;
                 top: 0;
                 bottom: 0;
+                box-shadow: 20px 0 50px rgba(0, 0, 0, 0.1);
             }
 
             .sidebar.open {
                 left: 0;
             }
 
-            .mobile-nav-toggle {
-                display: block;
-                background: none;
-                border: none;
-                color: var(--text-main);
-                cursor: pointer;
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(4px);
+                z-index: 999;
             }
 
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .top-navbar {
+                padding: 0 1.5rem;
+            }
+
+            .content-area {
+                padding: 1.5rem;
             }
         }
 
@@ -442,10 +482,11 @@
             .exports-bar {
                 flex-direction: column;
                 text-align: center;
+                padding: 1.5rem;
             }
 
             .export-links {
-                flex-direction: column;
+                justify-content: center;
                 width: 100%;
             }
 
@@ -455,8 +496,39 @@
             }
 
             .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
                 grid-template-columns: 1fr;
             }
+
+            .user-pill .name {
+                display: none;
+            }
+
+            .page-title {
+                font-size: 1.1rem !important;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
         }
 
         /* Flash Logic */
@@ -509,6 +581,8 @@
 </head>
 
 <body>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <!-- Sidebar Navigation -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-inner">
@@ -586,7 +660,7 @@
             {% endwith %}
 
             <!-- Interactive Statistics -->
-            <div class="stats-grid">
+            <div class="stats-grid fade-in">
                 <div class="stat-card">
                     <i data-lucide="users"></i>
                     <div class="stat-details">
@@ -602,21 +676,21 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <i data-lucide="shopping-cart" style="background:#fff7ed; color:#f97316;"></i>
+                    <i data-lucide="shopping-cart" style="background:rgba(249,115,22,0.1); color:#f97316;"></i>
                     <div class="stat-details">
                         <span class="value">{{ stats.borrowed_count }}</span>
                         <span class="label">Borrowed</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <i data-lucide="list-ordered" style="background:#fef2f2; color:#ef4444;"></i>
+                    <i data-lucide="list-ordered" style="background:rgba(239,68,68,0.1); color:#ef4444;"></i>
                     <div class="stat-details">
                         <span class="value">{{ stats.waiting_count }}</span>
                         <span class="label">Waitlist</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <i data-lucide="umbrella" style="background:#f0fdf4; color:#22c55e;"></i>
+                    <i data-lucide="umbrella" style="background:rgba(34,197,94,0.1); color:#22c55e;"></i>
                     <div class="stat-details">
                         <span class="value">{{ stats.leave_count }}</span>
                         <span class="label">On Leave</span>
@@ -625,7 +699,7 @@
             </div>
 
             <!-- Master Dashboard Grid -->
-            <div class="master-grid">
+            <div class="master-grid fade-in" style="animation-delay: 0.1s;">
                 <!-- 1. Workforce Section -->
                 <div class="feature-box">
                     <h3><i data-lucide="user-plus"></i> Workforce Management</h3>
@@ -723,8 +797,9 @@
                         </a>
                         <a href="/return-individual" class="action-item">
                             <div
-                                style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; background: #fff; border: 1px solid var(--border); color: var(--primary); border-radius:12px;">
-                                <i data-lucide="minus-square" style="width:20px;"></i></div>
+                                style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; background: var(--bg-card); border: 1px solid var(--border); color: var(--primary); border-radius:12px;">
+                                <i data-lucide="minus-square" style="width:20px;"></i>
+                            </div>
                             <div class="action-text">
                                 <b>Single Item Return</b>
                                 <p>Select specific items to check back in.</p>
@@ -777,7 +852,7 @@
             </div>
 
             <!-- Exports Panel -->
-            <div class="exports-bar">
+            <div class="exports-bar fade-in" style="animation-delay: 0.2s;">
                 <div class="exports-msg">
                     <h4>Professional Audit Exports</h4>
                     <p>Generate comprehensive Excel workbooks for your next organizational audit.</p>
@@ -827,7 +902,10 @@
 
         // Sidebar Control
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
         }
 
         // Auto-dismiss Flash
