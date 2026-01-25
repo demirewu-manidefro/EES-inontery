@@ -80,13 +80,8 @@ def load_user(user_id):
 # ---------------- LOGIN & REGISTER ----------------
 # ---------------- REGISTER (Manager Only) ----------------
 @app.route("/register", methods=["GET", "POST"])
-@login_required
 def register():
-    # Only admin can access
-    if current_user.role != "admin":
-        flash("Access denied. Only manager can register new users.", "error")
-        return redirect(url_for("home"))
-
+    # Registration is now public to allow self-signup as requested
     if request.method == "POST":
         username = request.form["username"]
         password = generate_password_hash(request.form["password"])
@@ -100,7 +95,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         flash("User registered successfully", "success")
-        return redirect(url_for("home"))
+        return redirect(url_for("root"))
 
     return render_template("register.html", user=current_user)
 
@@ -166,8 +161,7 @@ def change_password():
 # ---------------- HOME / ROOT ----------------
 @app.route("/")
 def root():
-    logout_user()  # log out any user visiting the root
-    return redirect(url_for("login"))
+    return render_template("landing.html", user=current_user)
 # Dashboard (only for logged-in users)
 @app.route("/home")
 @login_required

@@ -1,187 +1,267 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Add Employee</title>
-    <style>
-      :root {
-  --bg-color: #1f242d;
-  --main-color: #7cf03d;
-  --text-color: #f1f1f1;
-  --input-bg: #fff; /* White input background */
-  --input-text-color: #000; /* Black text inside input */
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Employee - Debre Berhan ESS</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary-blue: #2563eb;
+      --secondary-blue: #eff6ff;
+      --text-dark: #1f2937;
+      --text-gray: #6b7280;
+      --bg-light: #f9fafb;
+      --card-bg: #ffffff;
+      --border-color: #d1d5db;
+    }
 
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+    body {
+      font-family: 'Inter', sans-serif;
+      background: url("{{ url_for('static', filename='debre_berhan_workspace.png') }}") no-repeat center center/cover fixed;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+    }
 
-h1 {
-  margin-bottom: 25px;
-  font-weight: 700;
-  font-size: 2rem;
-}
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      z-index: -1;
+    }
 
-form {
-  background-color: #2a2f3a;
-  padding: 25px 30px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-  min-width: 320px;
-  max-width: 400px;
-  width: 100%;
-}
+    .header {
+      background: var(--card-bg);
+      padding: 1rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 
-label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
 
-input[type="text"],
-select {
-  width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 18px;
-  border-radius: 8px;
-  border: 1.8px solid #444c5a;
-  background-color: var(--input-bg);
-  color: var(--input-text-color);
-  font-size: 1rem;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
-}
+    .logo-section h1 {
+      font-size: 1.25rem;
+      color: var(--primary-blue);
+      margin: 0;
+    }
 
-input[type="text"]:focus,
-select:focus {
-  outline: none;
-  border-color: var(--main-color);
-  box-shadow: 0 0 6px var(--main-color);
-}
+    .main-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
 
-button {
-  background-color: var(--main-color);
-  border: none;
-  border-radius: 10px;
-  padding: 12px 25px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: #000;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-}
+    .form-card {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
 
-button:hover {
-  background-color: transparent;
-  color: var(--main-color);
-  border: 2px solid var(--main-color);
-}
+    .form-card h2 {
+      margin-bottom: 24px;
+      font-weight: 800;
+      color: var(--text-dark);
+      text-align: center;
+    }
 
+    .form-group {
+      margin-bottom: 20px;
+    }
 
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-dark);
+    }
 
-/* Flash message styles */
-ul {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 20px;
-}
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: white;
+      box-sizing: border-box;
+    }
 
-ul li {
-  font-weight: 600;
-  font-size: 0.95rem;
-  margin-bottom: 8px;
-}
-a{
-  display: inline-block;
-  background-color: var(--main-color);
-  color: #000;
-  font-weight: 700;
-  padding: 12px 25px;
-  border-radius: 10px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 20px;
-  text-align: center;
-  min-width: 160px;
-}
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
 
-a:hover {
- background-color: transparent;
-  color: var(--main-color);
-  border: 2px solid var(--main-color);
-}
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
 
+    .btn-submit:hover {
+      background: #1d4ed8;
+    }
 
-    </style>
+    .btn-back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      text-decoration: none;
+      color: var(--text-gray);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
 
+    .btn-back:hover {
+      color: var(--primary-blue);
+    }
+
+    .flash-messages {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .flash-messages li {
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      margin-bottom: 8px;
+    }
+  </style>
 </head>
+
 <body>
-<h1>Add Employee</h1>
+  <div class="overlay"></div>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-      {% for category, message in messages %}
-        <li style="color: {% if category == 'error' %}red{% else %}green{% endif %};">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+  <header class="header">
+    <a href="/home" class="logo-section">
+      <img src="{{ url_for('static', filename='employee.png') }}" style="width:40px; height:40px; border-radius:8px;"
+        alt="Logo">
+      <h1>Debre Berhan ESS</h1>
+    </a>
+  </header>
 
-<form action="{{ url_for('add_employee') }}" method="POST">
-    <label>Name:</label><br>
-    <input type="text" name="name" required><br>
+  <main class="main-content">
+    <div class="form-card">
+      <h2>Add New Employee</h2>
 
-    <label>Father Name:</label><br>
-    <input type="text" name="father_name" required><br>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <ul class="flash-messages">
+        {% for category, message in messages %}
+        <li
+          style="background: {% if category == 'error' %}#fee2e2{% else %}#dcfce7{% endif %}; color: {% if category == 'error' %}#991b1b{% else %}#166534{% endif %}; border: 1px solid {% if category == 'error' %}#fecaca{% else %}#bbf7d0{% endif %};">
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
 
-    <label>Grand Father Name:</label><br>
-    <input type="text" name="grand_father_name" required><br>
+      <form action="{{ url_for('add_employee') }}" method="POST">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="name" placeholder="E.g. Abebe" required>
+        </div>
 
-    <label>Sex:</label><br>
-    <select name="sex" required>
-        <option value="">Select sex</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-    </select><br>
+        <div class="form-group">
+          <label>Father's Name</label>
+          <input type="text" name="father_name" placeholder="E.g. Bikila" required>
+        </div>
 
-    <label>Position:</label><br>
-    <select name="position" required>
-        <option value="">Select position</option>
-        <option value="Admin">Admin</option>
-        <option value="Permanent">Statistician</option>
-        <option value="Permanent">Supervisor</option>
-        <option value="Permanent">Data Collector</option>
-    </select><br>
+        <div class="form-group">
+          <label>Grandfather's Name</label>
+          <input type="text" name="grand_father_name" placeholder="E.g. Tadesse" required>
+        </div>
 
-    <label>Employment Status:</label><br>
-    <select name="employment_status" required>
-        <option value="">Select employment status</option>
-        <option value="Contract">Contract</option>
-        <option value="Permanent">Permanent</option>
-    </select><br>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label>Sex</label>
+            <select name="sex" required>
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
 
-    <label>Phone Number:</label><br>
-        <input type="text" name="phone_number"placeholder="Enter phone number" required><br><br>
-    <label>Project:</label><br>
-        <input type="text" name="project" placeholder="add project"><br><br>
+          <div class="form-group">
+            <label>Position</label>
+            <select name="position" required>
+              <option value="">Select</option>
+              <option value="Admin">Admin</option>
+              <option value="Statistician">Statistician</option>
+              <option value="Supervisor">Supervisor</option>
+              <option value="Data Collector">Data Collector</option>
+            </select>
+          </div>
+        </div>
 
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label>Employment Status</label>
+            <select name="employment_status" required>
+              <option value="">Select</option>
+              <option value="Contract">Contract</option>
+              <option value="Permanent">Permanent</option>
+            </select>
+          </div>
 
-    <button type="submit">Add Employee</button>
-</form>
+          <div class="form-group">
+            <label>Project</label>
+            <input type="text" name="project" placeholder="E.g. Project X">
+          </div>
+        </div>
 
-<br>
-<a href="{{ url_for('home') }}" class="back">Back to Dashboard</a>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" name="phone_number" placeholder="+251 ..." required>
+        </div>
 
+        <button type="submit" class="btn-submit">Add Employee</button>
+      </form>
+
+      <a href="/home" class="btn-back">
+        <i data-lucide="arrow-left" size="14"></i> Back to Dashboard
+      </a>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
+
 </html>

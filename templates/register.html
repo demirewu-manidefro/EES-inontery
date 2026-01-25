@@ -1,168 +1,246 @@
-<!-- templates/register.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Register</title>
-        <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Employee Material Management System</title>
+    <style>
         :root {
-    --bg-color: #1f242d;
-    --main-color: #7cf03d;
-    --text-color: #ffffff;
-}
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-overlay: rgba(255, 255, 255, 0.1);
+            --panel-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #d1d5db;
+        }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url("{{ url_for('static', filename='warehouse_soft.png') }}") no-repeat center center/cover;
+            overflow: hidden;
+        }
 
-.container {
-    background-color: #2c303a;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    width: 90%;
-    max-width: 400px;
-}
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(8px);
+            z-index: -1;
+        }
 
-h1, h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: var(--main-color);
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-select{
-  padding:15px;
-  border-radius: 10px;
-}
-input[type="text"],
-input[type="password"] {
-    padding: 10px;
-    margin-bottom: 20px;
-    border: none;
-    border-radius: 10px;
-    outline: none;
-}
-
-button {
-    background-color: var(--main-color);
-    color: black;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s;
-}
-
-button:hover {
-    background-color: transparent;
-    color: var(--main-color);
-    border: 2px solid var(--main-color);
-    transition: all 0.3s ease;
-}
-
-a {
-    color: var(--main-color);
-    text-decoration: none;
-    text-align: center;
-    display: block;
-    margin-top: 15px;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-.flash {
-    text-align: center;
-    margin-top: 20px;
-    color: yellow;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-ul li.error {
-    color: #ff6b6b;
-}
-
-ul li.success {
-    color: #7cf03d;
-}
-.regster{
-   display: block;
-            background-color: var(--main-color);
-            color: black;
-            text-decoration: none;
+        .login-panel {
+            background: var(--panel-bg);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
             text-align: center;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: bold;
-            transition: background 1s ease, transform 0.2s;
-}
-.regster:hover{
-   background-color: transparent;
-    color: var(--main-color);
-    border: 2px solid var(--main-color);
-    transition: all 0.5s ease;
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(223, 22, 152, 0.5);
-} 
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+            z-index: 1;
+        }
 
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 16px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-main);
+            box-sizing: border-box;
+            transition: all 0.2s;
+            background-color: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 20px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .flash-messages li {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 10px;
+        }
+
+        .flash-messages li.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .flash-messages li.success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
     </style>
 </head>
+
 <body>
-  <div class="container">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <div class="flash">
-         <ul>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-      </div>
-     
-    {% endif %}
-  {% endwith %}
-       <h2>Register</h2>
-  <form method="POST" action="{{ url_for('register') }}">
-    <label>Username:</label><br>
-    <input type="text" name="username" required><br>
-    
-    <label>Password:</label><br>
-    <input type="password" name="password" required><br>
-    
-    <label>Role:</label><br>
-    <select name="role" required>
-      <option value="admin">Admin</option>
-      <option value="supervisor">Supervisor</option>
-      <option value="viewer">Viewer</option>
-    </select><br><br>
-    
-    <input class="regster" type="submit" value="Register">
-  </form>
 
-  
-  </div>
+    <div class="login-panel">
+        <div class="header">
+            <img src="{{ url_for('static', filename='employee.png') }}" alt="System Logo">
+            <h1>Create Account</h1>
+            <p>Join the Material Management System</p>
+        </div>
 
- 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-messages">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username" required
+                    autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required
+                    autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select name="role" id="role" required>
+                    <option value="admin">Admin</option>
+                    <option value="supervisor">Supervisor</option>
+                    <option value="viewer">Viewer</option>
+                </select>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="footer-links">
+            Already have an account? <a href="{{ url_for('login') }}">Sign In</a>
+        </div>
+    </div>
+
 </body>
+
 </html>

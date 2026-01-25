@@ -1,157 +1,269 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Employee Material Management System</title>
     <style>
         :root {
-    --bg-color: #1f242d;
-    --main-color: #7cf03d;
-    --text-color: #ffffff;
-}
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-overlay: rgba(255, 255, 255, 0.1);
+            --panel-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #d1d5db;
+        }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url("{{ url_for('static', filename='warehouse_soft.png') }}") no-repeat center center/cover;
+            overflow: hidden;
+        }
 
-.container {
-    background-color: #2c303a;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    width: 90%;
-    max-width: 400px;
-}
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(8px);
+            z-index: -1;
+        }
 
-h1, h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: var(--main-color);
-}
+        .login-panel {
+            background: var(--panel-bg);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+            z-index: 1;
+        }
 
-form {
-    display: flex;
-    flex-direction: column;
-}
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-input[type="text"],
-input[type="password"] {
-    padding: 10px;
-    margin-bottom: 20px;
-    border: none;
-    border-radius: 10px;
-    outline: none;
-}
+        .header {
+            margin-bottom: 32px;
+        }
 
-button {
-    background-color: var(--main-color);
-    color: black;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s;
-}
+        .header img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 16px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-button:hover {
-    background-color: transparent;
-    color: var(--main-color);
-    border: 2px solid var(--main-color);
-    transition: all 0.3s ease;
-}
-.regster{
-    background-color: var(--main-color);
-    color: black;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s;
-}
-.regster:hover{
-    background-color: transparent;
-    color: var(--main-color);
-    border: 2px solid var(--main-color);
-    transition: all 0.3s ease;
-    text-decoration: none;
-}
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
 
-a{
-    color: var(--main-color);
-    text-decoration: none;
-    text-align: center;
-    display: block;
-    margin-top: 15px;
-}
+        .header p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
 
-a:hover {
-    text-decoration: underline;
-}
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
 
-.flash {
-    text-align: center;
-    margin-bottom: 20px;
-    color: yellow;
-}
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-main);
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
 
-ul li.error {
-    color: #ff6b6b;
-}
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
 
-ul li.success {
-    color: #7cf03d;
-}
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 0.875rem;
+        }
 
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 20px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .flash-messages li {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 10px;
+        }
+
+        .flash-messages li.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .flash-messages li.success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        {% if current_user.is_authenticated %}
-        <p>You are logged in as {{ current_user.username }} ({{ current_user.role }}).</p>
-        <a href="{{ url_for('logout') }}"><button type="button">Logout</button></a>
-        {% endif %}
 
-        <h2>Login</h2>
+<body>
+
+    <div class="login-panel">
+        <div class="header">
+            <img src="{{ url_for('static', filename='employee.png') }}" alt="System Logo">
+            <h1>Sign In</h1>
+            <p>Employee Material Management System</p>
+        </div>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <ul>
+        <ul class="flash-messages">
             {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                    {% endfor %}
-            </ul>
-            {% endif %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         {% endwith %}
 
         <form method="POST">
-            <label>Username</label>
-            <input type="text" name="username" required><br>
-            <label>Password</label>
-            <input type="password" name="password" required><br>
-            <button type="submit">Login</button>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required
+                    autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required
+                    autocomplete="current-password">
+            </div>
+
+            <div class="options">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember"> Remember me
+                </label>
+                <a href="{{ url_for('change_password') }}" class="forgot-password">Forgot password?</a>
+            </div>
+
+            <button type="submit">Sign in</button>
         </form>
-        <p> <a href="{{ url_for('register') }}" class="regster">Register</a></p>
-        <a href="{{ url_for('change_password') }}">
-        <button type="button">Change Password</button>
-        </a>
+
+        <div class="footer-links">
+            Need an account? <a href="{{ url_for('register') }}">Contact Administrator</a>
+        </div>
     </div>
 
 </body>
+
 </html>
