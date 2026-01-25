@@ -4,131 +4,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Materials Inventory - Debre Berhan ESS</title>
+    <title>Inventroy - Debre Berhan ESS</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
         :root {
-            --primary-blue: #2563eb;
-            --secondary-blue: #eff6ff;
-            --text-dark: #1f2937;
-            --text-gray: #6b7280;
-            --bg-light: #f9fafb;
-            --card-bg: #ffffff;
-            --border-color: rgba(0, 0, 0, 0.05);
-            --header-bg: #ffffff;
-            --overlay-bg: rgba(255, 255, 255, 0.9);
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #eff6ff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 280px;
         }
 
         body.dark-mode {
-            --primary-blue: #3b82f6;
-            --secondary-blue: rgba(59, 130, 246, 0.15);
-            --text-dark: #f1f5f9;
-            --text-gray: #94a3b8;
-            --bg-light: #0f172a;
-            --card-bg: #1e293b;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --header-bg: #1e293b;
-            --overlay-bg: rgba(15, 23, 42, 0.9);
+            --bg-main: #020617;
+            --bg-card: #0f172a;
+            --bg-sidebar: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: rgba(59, 130, 246, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: url("{{ url_for('static', filename='debre_berhan_workspace.png') }}") no-repeat center center/cover fixed;
-            min-height: 100vh;
-            margin: 0;
-            color: var(--text-dark);
-            transition: color 0.3s ease;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--overlay-bg);
-            backdrop-filter: blur(8px);
-            z-index: -1;
-            transition: background 0.3s ease;
-        }
-
-        .header {
-            background: var(--header-bg);
-            padding: 1rem 5%;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            transition: background 0.3s ease;
         }
 
-        .theme-toggle {
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-            border: none;
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
+            flex-direction: column;
+            z-index: 1000;
         }
 
-        .theme-toggle:hover {
-            transform: rotate(15deg);
-            scale: 1.1;
+        .sidebar-inner {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
         }
 
-        .logo-section {
+        .sidebar-header {
             display: flex;
             align-items: center;
             gap: 12px;
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-header img {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
             text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-bottom: 4px;
         }
 
-        .logo-section h1 {
-            font-size: 1.25rem;
-            color: var(--primary-blue);
-            margin: 0;
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--accent);
+            color: var(--primary);
         }
 
-        .main-content {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .page-header {
+        .top-navbar {
+            height: 72px;
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            padding: 0 2rem;
+            flex-shrink: 0;
         }
 
-        .btn-back {
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 8px;
-            text-decoration: none;
-            color: var(--text-gray);
-            font-weight: 500;
-            transition: color 0.2s;
+            transition: 0.2s;
         }
 
-        .btn-back:hover {
-            color: var(--primary-blue);
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
-        .table-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         table {
@@ -138,135 +171,126 @@
         }
 
         th {
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-            padding: 16px;
-            font-weight: 700;
-            font-size: 0.85rem;
+            background: #f8fafc;
+            color: var(--text-muted);
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
         }
 
         td {
-            padding: 16px;
-            border-bottom: 1px solid #eee;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
             font-size: 0.95rem;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
         tr:hover td {
-            background: var(--bg-light);
+            background: var(--accent);
         }
 
-        .empty-state {
-            padding: 60px;
-            text-align: center;
-            color: var(--text-gray);
+        .sn-code {
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary-dark);
+            border: 1px solid var(--border);
+        }
+
+        body.dark-mode .sn-code {
+            background: #1e293b;
+            color: var(--primary-light);
         }
 
         .badge {
-            background: #dcfce7;
-            color: #15803d;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            background: #f0fdf4;
+            color: #166534;
         }
     </style>
 </head>
 
 <body>
-    <div class="overlay"></div>
-
-    <header class="header">
-        <a href="/home" class="logo-section">
-            <img src="{{ url_for('static', filename='employee.png') }}"
-                style="width:40px; height:40px; border-radius:8px;" alt="Logo">
-            <h1>Debre Berhan ESS</h1>
-        </a>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">
-                <i data-lucide="moon" id="theme-icon"></i>
-            </button>
-            <div style="font-weight: 500; font-size: 0.9rem; color: var(--text-gray);">
-                Materials Inventory
+    <aside class="sidebar">
+        <div class="sidebar-inner">
+            <div class="sidebar-header"><img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
+                <h1>DEBRE BERHAN<br>ESS SYSTEM</h1>
             </div>
+            <nav>
+                <a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="/employees" class="nav-link"><i data-lucide="users"></i> Staff Directory</a>
+                <a href="/materials" class="nav-link active"><i data-lucide="package"></i> Stock Inventory</a>
+                <a href="/borrow" class="nav-link"><i data-lucide="plus-circle"></i> Issue Material</a>
+                <a href="/return" class="nav-link"><i data-lucide="rotate-ccw"></i> Bulk Returns</a>
+            </nav>
         </div>
-    </header>
+    </aside>
 
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-    </script>
-
-    <main class="main-content">
-        <div class="page-header">
-            <a href="/home" class="btn-back">
-                <i data-lucide="arrow-left" size="18"></i> Back to Dashboard
-            </a>
-            <h2 style="font-weight: 800;">Available Materials</h2>
-        </div>
-
-        <div class="table-card">
-            {% if materials %}
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 15%;">ID</th>
-                        <th>Material Name</th>
-                        <th>Serial Number</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for material in materials %}
-                    <tr>
-                        <td style="font-weight: 600; color: var(--text-gray);">#{{ material.id }}</td>
-                        <td style="font-weight: 700;">{{ material.name }}</td>
-                        <td>
-                            <code
-                                style="background: var(--bg-light); padding: 4px 8px; border-radius: 4px; font-family: monospace;">{{ material.serial_number }}</code>
-                        </td>
-                        <td><span class="badge">In Stock</span></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="empty-state">
-                <i data-lucide="package-search" size="48" style="margin-bottom: 16px; opacity: 0.3;"></i>
-                <p>No materials currently available in the inventory.</p>
+    <div class="main-wrapper">
+        <header class="top-navbar">
+            <div style="font-weight: 800; font-size: 1.25rem;">Inventory Control</div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="font-size: 0.85rem; font-weight: 700;">{{ current_user.username }}</div>
+                <a href="/logout" style="color:#ef4444;"><i data-lucide="log-out" size="18"></i></a>
             </div>
-            {% endif %}
-        </div>
-    </main>
+        </header>
+
+        <main class="content-area">
+            <div class="header-box">
+                <div>
+                    <h2 style="font-weight: 800; font-size: 1.5rem;">Available Stock</h2>
+                    <p style="color:var(--text-muted); font-size:0.85rem;">Currently in warehouse and ready for
+                        deployment.</p>
+                </div>
+                <a href="/add-material" class="btn-primary"><i data-lucide="plus"></i> Add NEW Item</a>
+            </div>
+
+            <div class="table-container">
+                {% if materials %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">System ID</th>
+                            <th>Material Name</th>
+                            <th>Serial Number</th>
+                            <th>Current Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for material in materials %}
+                        <tr>
+                            <td style="color: var(--text-muted); font-weight: 600;">#{{ material.id }}</td>
+                            <td style="font-weight: 800;">{{ material.name }}</td>
+                            <td><span class="sn-code">{{ material.serial_number }}</span></td>
+                            <td><span class="badge"><i data-lucide="check" size="10"></i> In Stock</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div style="padding: 6rem; text-align: center; color: var(--text-muted);">
+                    <i data-lucide="package-x" size="64" style="opacity: 0.15; margin-bottom: 1.5rem;"></i>
+                    <p style="font-weight: 600;">No available materials found in inventory.</p>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
 
     <script>
         lucide.createIcons();
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-
-        function updateIcon(theme) {
-            themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        if (localStorage.getItem('theme') === 'dark') {
-            updateIcon('dark');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-            updateIcon(theme);
-        });
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
     </script>
 </body>
-
 
 </html>

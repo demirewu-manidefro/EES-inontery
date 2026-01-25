@@ -4,261 +4,213 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Return All Materials - Debre Berhan ESS</title>
+  <title>Bulk Return - Debre Berhan ESS</title>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
     :root {
-      --primary-blue: #2563eb;
-      --secondary-blue: #eff6ff;
-      --text-dark: #1f2937;
-      --text-gray: #6b7280;
-      --bg-light: #f9fafb;
-      --card-bg: #ffffff;
-      --border-color: #d1d5db;
-      --header-bg: #ffffff;
-      --overlay-bg: rgba(255, 255, 255, 0.9);
-      --input-bg: #ffffff;
+      --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-sidebar: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #eff6ff;
+      --sidebar-width: 280px;
     }
 
     body.dark-mode {
-      --primary-blue: #3b82f6;
-      --secondary-blue: rgba(59, 130, 246, 0.15);
-      --text-dark: #f1f5f9;
-      --text-gray: #94a3b8;
-      --bg-light: #0f172a;
-      --card-bg: #1e293b;
-      --border-color: rgba(255, 255, 255, 0.1);
-      --header-bg: #1e293b;
-      --overlay-bg: rgba(15, 23, 42, 0.9);
-      --input-bg: #1e293b;
+      --bg-main: #020617;
+      --bg-card: #0f172a;
+      --bg-sidebar: #0f172a;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: rgba(59, 130, 246, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: url("{{ url_for('static', filename='debre_berhan_workspace.png') }}") no-repeat center center/cover fixed;
-      min-height: 100vh;
-      margin: 0;
-      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      transition: color 0.3s ease;
     }
 
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--overlay-bg);
-      backdrop-filter: blur(8px);
-      z-index: -1;
-      transition: background 0.3s ease;
+    .sidebar-inner {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
     }
 
-    .header {
-      background: var(--header-bg);
-      padding: 1rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      transition: background 0.3s ease;
-    }
-
-    .logo-section {
+    .nav-link {
       display: flex;
       align-items: center;
       gap: 12px;
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
       text-decoration: none;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: 0.3s;
+      margin-bottom: 4px;
     }
 
-    .logo-section h1 {
-      font-size: 1.1rem;
-      color: var(--primary-blue);
-      margin: 0;
+    .nav-link:hover,
+    .nav-link.active {
+      background: var(--accent);
+      color: var(--primary);
     }
 
-    .main-content {
+    .main-wrapper {
       flex: 1;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .top-navbar {
+      height: 72px;
+      background: var(--bg-sidebar);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      padding: 40px 20px;
+      padding: 0 2rem;
+    }
+
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 3rem 2rem;
+      background-image: radial-gradient(var(--border) 0.5px, transparent 0.5px);
+      background-size: 30px 30px;
     }
 
     .form-card {
-      background: var(--card-bg);
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      padding: 2.5rem;
+      border-radius: 30px;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+    }
+
+    .select-input {
       width: 100%;
-      max-width: 500px;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-      border: 1px solid var(--border-color);
-      transition: background 0.3s ease, border 0.3s ease;
-    }
-
-    .form-card h2 {
-      margin-bottom: 24px;
-      font-weight: 800;
-      color: var(--text-dark);
-      text-align: center;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--text-dark);
-    }
-
-    .form-group select {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: all 0.2s;
-      background: var(--input-bg);
-      color: var(--text-dark);
-      box-sizing: border-box;
+      padding: 0.85rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
     }
 
     .btn-submit {
       width: 100%;
-      padding: 14px;
-      background: var(--primary-blue);
-      color: white;
+      padding: 1rem;
+      border-radius: 14px;
       border: none;
-      border-radius: 8px;
+      background: #ef4444;
+      color: white;
+      font-weight: 800;
       font-size: 1rem;
-      font-weight: 700;
       cursor: pointer;
-      transition: 0.2s;
-      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.3s;
     }
 
     .btn-submit:hover {
-      background: #1d4ed8;
+      background: #dc2626;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
     }
 
-    .btn-back {
-      display: block;
-      text-align: center;
-      margin-top: 24px;
-      text-decoration: none;
-      color: var(--text-gray);
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-
-    .flash-messages {
-      list-style: none;
-      padding: 0;
-      margin-bottom: 20px;
-    }
-
-    .flash-messages li {
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      margin-bottom: 8px;
-    }
-
-    .flash-error {
-      background-color: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
-
-    .flash-success {
-      background-color: #dcfce7;
+    .alert {
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      border-left: 5px solid #22c55e;
+      background: #f0fdf4;
       color: #166534;
-      border: 1px solid #bbf7d0;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
   </style>
 </head>
 
 <body>
-  <div class="overlay"></div>
-  <header class="header">
-    <a href="/home" class="logo-section">
-      <img src="{{ url_for('static', filename='employee.png') }}" style="width:40px; height:40px; border-radius:8px;"
-        alt="Logo">
-      <h1>Debre Berhan ESS</h1>
-    </a>
-    <div style="display:flex; align-items:center; gap:15px;">
-      <button id="theme-toggle"
-        style="background: var(--secondary-blue); color: var(--primary-blue); border: none; padding: 8px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
-        title="Toggle Theme">
-        <i data-lucide="moon" id="theme-icon"></i>
-      </button>
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:2.5rem;"><img
+          src="{{ url_for('static', filename='employee.png') }}" style="width:40px; border-radius:10px;">
+        <h1 style="font-size:1rem; font-weight:800; color:var(--primary);">DEBRE BERHAN</h1>
+      </div>
+      <nav>
+        <a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="/return" class="nav-link active"><i data-lucide="rotate-ccw"></i> Bulk Returns</a>
+        <a href="/return-individual" class="nav-link"><i data-lucide="minus-square"></i> Individual Return</a>
+        <a href="/employees" class="nav-link"><i data-lucide="users"></i> Staff Directory</a>
+      </nav>
     </div>
-  </header>
+  </aside>
 
-  <script>
-    if (localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark-mode');
-    }
-  </script>
-
-  <main class="main-content">
-    <div class="form-card">
-      <h2>Return All Materials</h2>
-      {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      <ul class="flash-messages">
-        {% for category, message in messages %}
-        <li class="flash-{{ 'error' if category == 'error' else 'success' }}">
-          {{ message }}
-        </li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-      {% endwith %}
-
-      <form action="{{ url_for('return_material') }}" method="POST">
-        <div class="form-group">
-          <label>Employee</label>
-          <select name="employee" required>
-            <option value="">-- Select Employee --</option>
-            {% for emp in employees %}
-            <option value="{{ emp.id }}">{{ emp.name }} {{ emp.father_name }} ({{ emp.sex }})</option>
-            {% endfor %}
-          </select>
+  <div class="main-wrapper">
+    <header class="top-navbar">
+      <div style="font-weight:800; font-size:1.25rem;">Bulk Logistics Return</div>
+    </header>
+    <main class="content-area">
+      {% with messages = get_flashed_messages() %}{% if messages %}{% for msg in messages %}<div class="alert"><i
+          data-lucide="check-circle"></i> {{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+      <div class="form-card">
+        <div style="text-align:center; margin-bottom:2rem;"><i data-lucide="package-check" size="48" color="#ef4444"
+            style="margin-bottom:1rem;"></i>
+          <h2 style="font-weight:800;">Batch Material Return</h2>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Check-in all materials for a selected staff member.</p>
         </div>
-        <button type="submit" class="btn-submit">Return All Materials</button>
-      </form>
-      <a href="/home" class="btn-back"><i data-lucide="arrow-left" size="14"></i> Back to Dashboard</a>
-    </div>
-  </main>
-
-  <script>
-    lucide.createIcons();
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-
-    function updateIcon(theme) {
-      themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    if (localStorage.getItem('theme') === 'dark') {
-      updateIcon('dark');
-    }
-
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-      const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-      localStorage.setItem('theme', theme);
-      updateIcon(theme);
-    });
-  </script>
+        <form method="POST">
+          <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:8px;">Select Employee</label>
+          <select name="employee" class="select-input" required>
+            <option value="">-- Choose employee --</option>
+            {% for emp in employees %}<option value="{{ emp.id }}">{{ emp.name }} {{ emp.father_name }}</option>{%
+            endfor %}
+          </select>
+          <button type="submit" class="btn-submit"><i data-lucide="refresh-cw"></i> Process Complete Return</button>
+        </form>
+        <p style="text-align:center; margin-top:1.5rem; font-size:0.8rem; color:var(--text-muted);">Warning: This action
+          will mark ALL borrowed items as returned.</p>
+      </div>
+    </main>
+  </div>
+  <script>lucide.createIcons(); if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');</script>
 </body>
 
 </html>

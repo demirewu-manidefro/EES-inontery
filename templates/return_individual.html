@@ -4,326 +4,264 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Return Individual Materials - Debre Berhan ESS</title>
+  <title>Individual Return - Debre Berhan ESS</title>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
     :root {
-      --primary-blue: #2563eb;
-      --secondary-blue: #eff6ff;
-      --text-dark: #1f2937;
-      --text-gray: #6b7280;
-      --bg-light: #f9fafb;
-      --card-bg: #ffffff;
-      --border-color: #d1d5db;
-      --header-bg: #ffffff;
-      --overlay-bg: rgba(255, 255, 255, 0.9);
-      --input-bg: #ffffff;
+      --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-sidebar: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #eff6ff;
+      --sidebar-width: 280px;
     }
 
     body.dark-mode {
-      --primary-blue: #3b82f6;
-      --secondary-blue: rgba(59, 130, 246, 0.15);
-      --text-dark: #f1f5f9;
-      --text-gray: #94a3b8;
-      --bg-light: #0f172a;
-      --card-bg: #1e293b;
-      --border-color: rgba(255, 255, 255, 0.1);
-      --header-bg: #1e293b;
-      --overlay-bg: rgba(15, 23, 42, 0.9);
-      --input-bg: #1e293b;
+      --bg-main: #020617;
+      --bg-card: #0f172a;
+      --bg-sidebar: #0f172a;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: rgba(59, 130, 246, 0.08);
     }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: url("{{ url_for('static', filename='debre_berhan_workspace.png') }}") no-repeat center center/cover fixed;
-      min-height: 100vh;
+    * {
       margin: 0;
-      color: var(--text-dark);
-      display: flex;
-      flex-direction: column;
-      transition: color 0.3s ease;
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--overlay-bg);
-      backdrop-filter: blur(8px);
-      z-index: -1;
-      transition: background 0.3s ease;
-    }
-
-    .header {
-      background: var(--header-bg);
-      padding: 1rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      transition: background 0.3s ease;
-    }
-
-    .logo-section {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-
-    .logo-section h1 {
-      font-size: 1.1rem;
-      color: var(--primary-blue);
-      margin: 0;
-    }
-
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-    }
-
-    .form-card {
-      background: var(--card-bg);
-      width: 100%;
-      max-width: 550px;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-      border: 1px solid var(--border-color);
-      transition: background 0.3s ease, border 0.3s ease;
-      margin-bottom: 20px;
-    }
-
-    .form-card h2 {
-      margin-bottom: 24px;
-      font-weight: 800;
-      color: var(--text-dark);
-      text-align: center;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--text-dark);
-    }
-
-    .form-group select {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: all 0.2s;
-      background: var(--input-bg);
-      color: var(--text-dark);
+      padding: 0;
       box-sizing: border-box;
     }
 
-    .materials-list {
-      border: 1.5px solid var(--border-color);
-      border-radius: 8px;
-      padding: 10px;
-      background: var(--bg-light);
-      margin-bottom: 20px;
-    }
-
-    .material-item {
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
       display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      border-bottom: 1px solid var(--border-color);
-      cursor: pointer;
-      color: var(--text-dark);
     }
 
-    .material-item:last-child {
-      border-bottom: none;
-    }
-
-    .material-info {
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
     }
 
-    .material-name {
+    .sidebar-inner {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 0.85rem;
       font-weight: 600;
-      font-size: 0.9rem;
+      transition: 0.3s;
+      margin-bottom: 4px;
     }
 
-    .material-purpose {
-      font-size: 0.75rem;
-      color: var(--text-gray);
+    .nav-link:hover,
+    .nav-link.active {
+      background: var(--accent);
+      color: var(--primary);
     }
 
-    .btn-submit {
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .top-navbar {
+      height: 72px;
+      background: var(--bg-sidebar);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+    }
+
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .form-card {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      padding: 2.5rem;
+      border-radius: 30px;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+    }
+
+    .select-input {
       width: 100%;
-      padding: 14px;
-      background: var(--primary-blue);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 700;
+      padding: 0.85rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 1.5rem 0;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 1rem;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    .btn-submit:hover {
-      background: #1d4ed8;
+    .check-item:hover {
+      border-color: var(--primary);
+      background: var(--accent);
     }
 
-    .btn-back {
-      display: block;
-      text-align: center;
-      margin-top: 10px;
-      text-decoration: none;
-      color: var(--text-gray);
-      font-size: 0.875rem;
-      font-weight: 500;
+    .check-item input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
     }
 
-    .flash-messages {
-      list-style: none;
-      padding: 0;
-      margin-bottom: 20px;
+    .check-item label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .btn-submit {
       width: 100%;
-      max-width: 550px;
+      padding: 1rem;
+      border-radius: 14px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.3s;
     }
 
-    .flash-messages li {
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      margin-bottom: 8px;
-    }
-
-    .flash-error {
-      background-color: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
-
-    .flash-success {
-      background-color: #dcfce7;
-      color: #166534;
-      border: 1px solid #bbf7d0;
+    .btn-submit:hover {
+      background: var(--primary-dark);
+      transform: translateY(-3px);
     }
   </style>
 </head>
 
 <body>
-  <div class="overlay"></div>
-  <header class="header">
-    <a href="/home" class="logo-section">
-      <img src="{{ url_for('static', filename='employee.png') }}" style="width:40px; height:40px; border-radius:8px;"
-        alt="Logo">
-      <h1>Debre Berhan ESS</h1>
-    </a>
-    <div style="display:flex; align-items:center; gap:15px;">
-      <button id="theme-toggle"
-        style="background: var(--secondary-blue); color: var(--primary-blue); border: none; padding: 8px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
-        title="Toggle Theme">
-        <i data-lucide="moon" id="theme-icon"></i>
-      </button>
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:2.5rem;"><img
+          src="{{ url_for('static', filename='employee.png') }}" style="width:40px;">
+        <h1 style="font-size:1rem; font-weight:800;">DEBRE BERHAN</h1>
+      </div>
+      <nav>
+        <a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="/return-individual" class="nav-link active"><i data-lucide="minus-square"></i> Individual Return</a>
+        <a href="/return" class="nav-link"><i data-lucide="rotate-ccw"></i> Bulk Return</a>
+        <a href="/borrowed-employees" class="nav-link"><i data-lucide="clock"></i> Borrowing Status</a>
+      </nav>
     </div>
-  </header>
+  </aside>
 
-  <script>
-    if (localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark-mode');
-    }
-  </script>
-
-  <main class="main-content">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <ul class="flash-messages">
-      {% for category, message in messages %}
-      <li class="flash-{{ 'error' if category == 'error' else 'success' }}">
-        {{ message }}
-      </li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-
-    <div class="form-card">
-      <h2>Return One Item</h2>
-      <form method="POST" action="{{ url_for('return_individual_material') }}">
-        <div class="form-group">
-          <label>Select Employee</label>
-          <select name="employee" onchange="this.form.submit()">
-            <option value="">-- Choose Employee --</option>
-            {% for emp in employees %}
-            <option value="{{ emp.id }}" {% if selected_emp and emp.id==selected_emp.id %}selected{% endif %}>
-              {{ emp.name }} {{ emp.father_name }}
-            </option>
-            {% endfor %}
-          </select>
+  <div class="main-wrapper">
+    <header class="top-navbar">
+      <div style="font-weight:800; font-size:1.25rem;">Granular Item Return</div>
+    </header>
+    <main class="content-area">
+      <div class="form-card">
+        <div style="text-align:center; margin-bottom:2rem;">
+          <h2 style="font-weight:800;">Selective Tool Return</h2>
+          <p style="color:var(--text-muted);">Retrieve specific items from an employee's possession.</p>
         </div>
-      </form>
 
-      {% if borrowings %}
-      <form method="POST" action="{{ url_for('return_individual_material') }}">
-        <input type="hidden" name="employee" value="{{ selected_emp.id }}">
-        <div class="form-group">
-          <label>Select Borrows to Return</label>
-          <div class="materials-list">
+        <form method="POST">
+          <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:8px;">Choose Employee</label>
+          <div style="display:flex; gap:10px;">
+            <select name="employee" class="select-input" required>
+              <option value="">-- Select Member --</option>
+              {% for emp in employees %}<option value="{{ emp.id }}" {% if selected_emp and selected_emp.id==emp.id
+                %}selected{% endif %}>{{ emp.name }} {{ emp.father_name }}</option>{% endfor %}
+            </select>
+            <button type="submit"
+              style="padding:0 1.5rem; height:50px; border-radius:12px; border:1px solid var(--primary); background:var(--accent); color:var(--primary); font-weight:800; cursor:pointer;">Load
+              Items</button>
+          </div>
+        </form>
+
+        {% if selected_emp %}
+        <form method="POST" style="margin-top:2rem;">
+          <input type="hidden" name="employee" value="{{ selected_emp.id }}">
+          <input type="hidden" name="return_materials" value="1">
+          <h4 style="font-weight:800; margin-bottom:1rem;">Possessions for {{ selected_emp.name }}:</h4>
+          <div class="item-list">
             {% for b in borrowings %}
-            <label class="material-item">
-              <input type="checkbox" name="materials" value="{{ b.id }}">
-              <div class="material-info">
-                <span class="material-name">{{ b.material.name }} (SN: {{ b.material.serial_number }})</span>
-                <span class="material-purpose">Purpose: {{ b.purpose }}</span>
-              </div>
-            </label>
+            <div class="check-item">
+              <input type="checkbox" name="materials" value="{{ b.id }}" id="item-{{ b.id }}">
+              <label for="item-{{ b.id }}">
+                {{ b.material.name }}
+                <span style="font-family:monospace; color:var(--text-muted); font-size:0.8rem;">[SN: {{
+                  b.material.serial_number }}]</span>
+              </label>
+              <span
+                style="font-size:0.7rem; padding:4px 8px; background:white; border-radius:6px; border:1px solid var(--border);">Borrowed:
+                {{ b.borrow_date.strftime('%Y-%m-%d') if b.borrow_date else 'N/A' }}</span>
+            </div>
             {% endfor %}
           </div>
-        </div>
-        <button type="submit" name="return_materials" class="btn-submit">Return Selected</button>
-      </form>
-      {% elif selected_emp %}
-      <p style="text-align:center; color:var(--text-gray); font-size:0.9rem; margin-top:20px;">No active borrowings
-        found for this employee.</p>
-      {% endif %}
-
-      <a href="/home" class="btn-back"><i data-lucide="arrow-left" size="14"></i> Back to Dashboard</a>
-    </div>
-  </main>
-
-  <script>
-    lucide.createIcons();
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-
-    function updateIcon(theme) {
-      themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    if (localStorage.getItem('theme') === 'dark') {
-      updateIcon('dark');
-    }
-
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-      const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-      localStorage.setItem('theme', theme);
-      updateIcon(theme);
-    });
-  </script>
+          {% if borrowings %}
+          <button type="submit" class="btn-submit"><i data-lucide="corner-down-left"></i> Confirm Selection
+            Return</button>
+          {% else %}
+          <p
+            style="text-align:center; padding:2rem; background:var(--bg-main); border-radius:16px; color:var(--text-muted); font-weight:600;">
+            No items currently borrowed by this employee.</p>
+          {% endif %}
+        </form>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+  <script>lucide.createIcons(); if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');</script>
 </body>
 
 </html>

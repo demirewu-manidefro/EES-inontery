@@ -4,227 +4,234 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload Materials - Debre Berhan ESS</title>
+  <title>Bulk Stock Intake - Debre Berhan ESS</title>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
     :root {
-      --primary-blue: #2563eb;
-      --secondary-blue: #eff6ff;
-      --text-dark: #1f2937;
-      --text-gray: #6b7280;
-      --bg-light: #f9fafb;
-      --card-bg: #ffffff;
-      --border-color: #d1d5db;
-      --header-bg: #ffffff;
-      --overlay-bg: rgba(255, 255, 255, 0.9);
+      --primary: #3b82f6;
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-sidebar: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #eff6ff;
+      --sidebar-width: 280px;
     }
 
     body.dark-mode {
-      --primary-blue: #3b82f6;
-      --secondary-blue: rgba(59, 130, 246, 0.15);
-      --text-dark: #f1f5f9;
-      --text-gray: #94a3b8;
-      --bg-light: #0f172a;
-      --card-bg: #1e293b;
-      --border-color: rgba(255, 255, 255, 0.1);
-      --header-bg: #1e293b;
-      --overlay-bg: rgba(15, 23, 42, 0.9);
+      --bg-main: #020617;
+      --bg-card: #0f172a;
+      --bg-sidebar: #0f172a;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: rgba(59, 130, 246, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: url("{{ url_for('static', filename='debre_berhan_workspace.png') }}") no-repeat center center/cover fixed;
-      min-height: 100vh;
-      margin: 0;
-      color: var(--text-dark);
-      transition: color 0.3s ease;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
     }
 
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--overlay-bg);
-      backdrop-filter: blur(8px);
-      z-index: -1;
-      transition: background 0.3s ease;
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
     }
 
-    .header {
-      background: var(--header-bg);
-      padding: 1rem 5%;
+    .sidebar-inner {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: 0.3s;
+      margin-bottom: 4px;
+    }
+
+    .nav-link:hover {
+      background: var(--accent);
+      color: var(--primary);
+    }
+
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .top-navbar {
+      height: 72px;
+      background: var(--bg-sidebar);
+      border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      transition: background 0.3s ease;
+      padding: 0 2rem;
     }
 
-    .theme-toggle {
-      background: var(--secondary-blue);
-      color: var(--primary-blue);
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4rem 2rem;
+      background-image: radial-gradient(var(--border) 0.5px, transparent 0.5px);
+    }
+
+    .upload-card {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      padding: 3rem;
+      border-radius: 32px;
+      border: 1px solid var(--border);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.04);
+      text-align: center;
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+      transition: 0.3s;
+      cursor: pointer;
+      background: var(--bg-main);
+    }
+
+    .drop-zone:hover {
+      border-color: var(--primary);
+      background: var(--accent);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .btn-upload {
+      width: 100%;
+      padding: 1.1rem;
+      border-radius: 16px;
       border: none;
-      padding: 8px;
-      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-weight: 800;
+      font-size: 1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s;
+      gap: 10px;
+      transition: 0.3s;
     }
 
-    .theme-toggle:hover {
-      transform: rotate(15deg);
-      scale: 1.1;
+    .btn-upload:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
     }
 
-    .main-content {
-      max-width: 600px;
-      margin: 60px auto;
-      padding: 0 20px;
-    }
-
-    .upload-card {
-      background: var(--card-bg);
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-      border: 1px solid var(--border-color);
-      text-align: center;
-      transition: background 0.3s ease, border 0.3s ease;
-    }
-
-    .file-input-wrapper {
-      margin: 30px 0;
-      border: 2px dashed var(--border-color);
-      padding: 40px;
+    .alert {
+      padding: 1rem;
       border-radius: 12px;
-      transition: border-color 0.2s;
-    }
-
-    .file-input-wrapper:hover {
-      border-color: var(--primary-blue);
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary-blue);
-      color: white;
-      border: none;
-      border-radius: 8px;
+      margin-bottom: 2rem;
       font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .template-info {
-      text-align: left;
-      margin-top: 30px;
-      font-size: 0.85rem;
-      color: var(--text-gray);
-      background: var(--bg-light);
-      padding: 15px;
-      border-radius: 8px;
-      transition: background 0.3s ease;
-    }
-
-    .flash-messages div {
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-bottom: 20px;
-    }
-
-    .flash-error {
-      background-color: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
-
-    .flash-success {
-      background-color: #dcfce7;
+    .success {
+      background: #f0fdf4;
       color: #166534;
-      border: 1px solid #bbf7d0;
+      border-left: 5px solid #22c55e;
+    }
+
+    .error {
+      background: #fef2f2;
+      color: #991b1b;
+      border-left: 5px solid #ef4444;
     }
   </style>
-  <script>
-    if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark-mode');
-      window.addEventListener('DOMContentLoaded', () => document.body.classList.add('dark-mode'));
-    }
-  </script>
 </head>
 
 <body>
-  <div class="overlay"></div>
-  <header class="header">
-    <a href="/home" style="text-decoration:none; display:flex; align-items:center; gap:12px;">
-      <img src="{{ url_for('static', filename='employee.png') }}" style="width:40px; height:40px;" alt="Logo">
-      <h1 style="font-size:1.25rem; color:var(--primary-blue);">Debre Berhan ESS</h1>
-    </a>
-    <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">
-      <i data-lucide="moon" id="theme-icon"></i>
-    </button>
-  </header>
-
-  <main class="main-content">
-    <div class="upload-card">
-      <i data-lucide="package-plus" size="48" style="color:var(--primary-blue); margin-bottom:16px;"></i>
-      <h2>Bulk Upload Materials</h2>
-      <p style="color:var(--text-gray);">Upload inventory items using Excel (.xlsx) or CSV format.</p>
-
-      {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      <div class="flash-messages">
-        {% for category, message in messages %}
-        <div class="flash-{{ 'error' if category == 'error' else 'success' }}">
-          {{ message }}
-        </div>
-        {% endfor %}
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:3rem;"><img
+          src="{{ url_for('static', filename='employee.png') }}" style="width:40px;">
+        <h1 style="font-size:1rem; font-weight:800; color:var(--primary);">DEBRE BERHAN</h1>
       </div>
-      {% endif %}
-      {% endwith %}
-
-      <form action="{{ url_for('upload_materials') }}" method="POST" enctype="multipart/form-data">
-        <div class="file-input-wrapper">
-          <input type="file" name="file" accept=".xlsx,.csv" required>
-        </div>
-        <button type="submit" class="btn-submit">Start Upload</button>
-      </form>
-
-      <div class="template-info">
-        <strong>Expected Format:</strong><br>
-        Your file should contain at least two columns:
-        <ul style="margin: 8px 0 0 20px;">
-          <li><code>name</code> (Material Name)</li>
-          <li><code>serial_number</code> (Unique ID)</li>
-        </ul>
-      </div>
-      <a href="/home" style="display:block; margin-top:20px; text-decoration:none; color:var(--text-gray);">Cancel</a>
+      <nav><a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a><a href="/materials"
+          class="nav-link"><i data-lucide="package"></i> Stock Inventory</a></nav>
     </div>
-  </main>
+  </aside>
+
+  <div class="main-wrapper">
+    <header class="top-navbar">
+      <div style="font-weight:800; font-size:1.25rem;">Bulk Inventory Sync</div>
+    </header>
+    <main class="content-area">
+      {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in
+      messages %}<div class="alert {{ category }}"><i data-lucide="info"></i> {{ message }}</div>{% endfor %}{% endif
+      %}{% endwith %}
+      <div class="upload-card">
+        <i data-lucide="package-search" size="56" color="var(--primary)" style="margin-bottom:1.5rem;"></i>
+        <h2 style="font-weight:800; font-size:1.75rem; margin-bottom:0.5rem;">Inventory Import</h2>
+        <p style="color:var(--text-muted); margin-bottom:2.5rem;">Sync multiple warehouse items using an Excel (.xlsx)
+          or CSV worksheet.</p>
+
+        <form method="POST" enctype="multipart/form-data">
+          <label class="drop-zone" id="drop-zone">
+            <i data-lucide="layers" size="32" style="margin-bottom:10px; display:block; margin: 0 auto 10px;"></i>
+            <span id="file-name" style="font-weight:700; font-size:0.9rem; color:var(--text-muted);">Select inventory
+              master list</span>
+            <input type="file" name="file" class="file-input" id="file-input" required accept=".xlsx, .csv">
+          </label>
+          <button type="submit" class="btn-upload"><i data-lucide="upload"></i> Initiate Batch Import</button>
+        </form>
+
+        <div style="margin-top:2.5rem; text-align:left; padding:1.5rem; background:var(--bg-main); border-radius:16px;">
+          <h4
+            style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; margin-bottom:10px;">
+            Sync Mapping:</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.6;">Your file must contain: <b>name</b>
+            (Designation) and <b>serial_number</b> (Unique ID).</p>
+        </div>
+      </div>
+    </main>
+  </div>
   <script>
     lucide.createIcons();
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-
-    function updateIcon(theme) {
-      themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    if (localStorage.getItem('theme') === 'dark') {
-      updateIcon('dark');
-    }
-
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-      const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-      localStorage.setItem('theme', theme);
-      updateIcon(theme);
+    if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+    const fileInput = document.getElementById('file-input');
+    const fileName = document.getElementById('file-name');
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) fileName.textContent = e.target.files[0].name;
     });
   </script>
 </body>

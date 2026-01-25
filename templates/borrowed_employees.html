@@ -4,136 +4,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borrowed Materials - Debre Berhan ESS</title>
+    <title>Borrowing Tracking - Debre Berhan ESS</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
         :root {
-            --primary-blue: #2563eb;
-            --secondary-blue: #eff6ff;
-            --text-dark: #1f2937;
-            --text-gray: #6b7280;
-            --bg-light: #f9fafb;
-            --card-bg: #ffffff;
-            --accent-red: #ef4444;
-            --border-color: rgba(0, 0, 0, 0.05);
-            --header-bg: #ffffff;
-            --overlay-bg: rgba(255, 255, 255, 0.9);
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #eff6ff;
+            --sidebar-width: 280px;
+            --transition: 0.3s;
         }
 
         body.dark-mode {
-            --primary-blue: #3b82f6;
-            --secondary-blue: rgba(59, 130, 246, 0.15);
-            --text-dark: #f1f5f9;
-            --text-gray: #94a3b8;
-            --bg-light: #0f172a;
-            --card-bg: #1e293b;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --header-bg: #1e293b;
-            --overlay-bg: rgba(15, 23, 42, 0.9);
+            --bg-main: #020617;
+            --bg-card: #0f172a;
+            --bg-sidebar: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: rgba(59, 130, 246, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: url("{{ url_for('static', filename='debre_berhan_workspace.png') }}") no-repeat center center/cover fixed;
-            min-height: 100vh;
-            margin: 0;
-            color: var(--text-dark);
-            transition: color 0.3s ease;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--overlay-bg);
-            backdrop-filter: blur(8px);
-            z-index: -1;
-            transition: background 0.3s ease;
-        }
-
-        .header {
-            background: var(--header-bg);
-            padding: 1rem 5%;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            transition: background 0.3s ease;
         }
 
-        .theme-toggle {
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-            border: none;
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
+            flex-direction: column;
         }
 
-        .theme-toggle:hover {
-            transform: rotate(15deg);
-            scale: 1.1;
+        .sidebar-inner {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
         }
 
-        .logo-section {
+        .nav-link {
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
             text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.3s;
+            margin-bottom: 4px;
         }
 
-        .logo-section h1 {
-            font-size: 1.25rem;
-            color: var(--primary-blue);
-            margin: 0;
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--accent);
+            color: var(--primary);
         }
 
-        .main-content {
-            max-width: 1300px;
-            margin: 40px auto;
-            padding: 0 20px;
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .page-header {
+        .top-navbar {
+            height: 72px;
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            padding: 0 2rem;
         }
 
-        .btn-back {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            color: var(--text-gray);
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .btn-back:hover {
-            color: var(--primary-blue);
-        }
-
-        .table-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
         }
 
         .table-container {
-            overflow-x: auto;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
         }
 
         table {
@@ -143,159 +120,123 @@
         }
 
         th {
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-            padding: 16px;
-            font-weight: 700;
-            font-size: 0.85rem;
+            background: #f8fafc;
+            color: var(--text-muted);
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
         }
 
         td {
-            padding: 16px;
-            border-bottom: 1px solid #eee;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
             font-size: 0.9rem;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
         tr:hover td {
-            background: var(--bg-light);
+            background: var(--accent);
         }
 
-        .empty-state {
-            padding: 60px;
-            text-align: center;
-            color: var(--text-gray);
-        }
-
-        .badge-info {
-            background: #dbeafe;
-            color: #1e40af;
-            padding: 2px 8px;
-            border-radius: 12px;
+        .sn-box {
+            font-family: monospace;
             font-size: 0.75rem;
-            font-weight: 600;
+            background: var(--bg-main);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .active-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            background: #fff7ed;
+            color: #c2410c;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 800;
         }
     </style>
 </head>
 
 <body>
-    <div class="overlay"></div>
-
-    <header class="header">
-        <a href="/home" class="logo-section">
-            <img src="{{ url_for('static', filename='employee.png') }}"
-                style="width:40px; height:40px; border-radius:8px;" alt="Logo">
-            <h1>Debre Berhan ESS</h1>
-        </a>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">
-                <i data-lucide="moon" id="theme-icon"></i>
-            </button>
-            <div style="font-weight: 500; font-size: 0.9rem; color: var(--text-gray);">
-                Borrowed Materials Tracking
+    <aside class="sidebar">
+        <div class="sidebar-inner">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:2.5rem;"><img
+                    src="{{ url_for('static', filename='employee.png') }}" style="width:40px;">
+                <h1 style="font-size:1rem; font-weight:800;">DEBRE BERHAN</h1>
             </div>
+            <nav>
+                <a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="/borrowed-employees" class="nav-link active"><i data-lucide="clock"></i> Borrowing Tracking</a>
+                <a href="/employees" class="nav-link"><i data-lucide="users"></i> Staff Directory</a>
+                <a href="/materials" class="nav-link"><i data-lucide="package"></i> Stock Inventory</a>
+            </nav>
         </div>
-    </header>
+    </aside>
 
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-    </script>
+    <div class="main-wrapper">
+        <header class="top-navbar">
+            <div style="font-weight:800; font-size:1.25rem;">Handover Status</div>
+        </header>
+        <main class="content-area">
+            <div style="margin-bottom: 2rem;">
+                <h2 style="font-weight:800; font-size:1.5rem;">Borrowed Material tracking</h2>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Complete overview of system equipment currently in
+                    the field.</p>
+            </div>
 
-    <main class="main-content">
-        <div class="page-header">
-            <a href="/home" class="btn-back">
-                <i data-lucide="arrow-left" size="18"></i> Back to Dashboard
-            </a>
-            <h2 style="font-weight: 800;">Employees with Borrowed Items</h2>
-        </div>
-
-        <div class="table-card">
-            {% if borrowed_list %}
             <div class="table-container">
+                {% if borrowed_list %}
                 <table>
                     <thead>
                         <tr>
-                            <th>Employee Details</th>
-                            <th>Contact Info</th>
+                            <th>Possessor Name</th>
                             <th>Job & Project</th>
-                            <th>Borrowed Material</th>
+                            <th>Contact</th>
+                            <th>Material Details</th>
                             <th>Serial Number</th>
+                            <th>Stage</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in borrowed_list %}
                         <tr>
                             <td>
-                                <div style="font-weight: 700;">{{ item.name }} {{ item.father_name }}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-gray);">ID: #{{ item.id }} | {{
-                                    item.sex }}</div>
+                                <div style="font-weight:800;">{{ item.name }} {{ item.father_name }}</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">Sex: {{ item.sex }} | ID: #{{
+                                    item.id }}</div>
                             </td>
                             <td>
-                                <div style="display:flex; align-items:center; gap:6px;">
-                                    <i data-lucide="phone" size="14" style="color:var(--text-gray);"></i>
-                                    {{ item.phone_number }}
-                                </div>
+                                <div style="font-weight:700;">{{ item.position }}</div>
+                                <div style="font-size:0.75rem; color:var(--primary);">{{ item.project }}</div>
                             </td>
-                            <td>
-                                <div style="font-weight: 600;">{{ item.position }}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-gray);">{{ item.project }}</div>
-                                <div style="margin-top:4px;"><span class="badge-info">{{ item.employment_status
-                                        }}</span></div>
-                            </td>
+                            <td><span style="font-weight:600;">{{ item.phone_number }}</span></td>
                             <td>
                                 <div
-                                    style="display:flex; align-items:center; gap:8px; font-weight:700; color:var(--primary-blue);">
-                                    <i data-lucide="package" size="16"></i>
-                                    {{ item.material_name }}
-                                </div>
+                                    style="display:flex; align-items:center; gap:8px; font-weight:800; color:var(--primary);">
+                                    <i data-lucide="package" size="14"></i> {{ item.material_name }}</div>
                             </td>
-                            <td>
-                                <code
-                                    style="background: var(--bg-light); padding: 4px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid #eee;">{{ item.serial_number }}</code>
-                            </td>
+                            <td><span class="sn-box">{{ item.serial_number }}</span></td>
+                            <td><span class="active-pill">In Field</span></td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                {% else %}
+                <div style="padding:6rem; text-align:center; color:var(--text-muted);"><i data-lucide="info" size="48"
+                        style="opacity:0.2; margin-bottom:1rem;"></i>
+                    <p>No materials are currently registered as borrowed.</p>
+                </div>
+                {% endif %}
             </div>
-            {% else %}
-            <div class="empty-state">
-                <i data-lucide="clock" size="48" style="margin-bottom: 16px; opacity: 0.3;"></i>
-                <p>No currently borrowed materials found.</p>
-            </div>
-            {% endif %}
-        </div>
-    </main>
-
-    <script>
-        lucide.createIcons();
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-
-        function updateIcon(theme) {
-            themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        if (localStorage.getItem('theme') === 'dark') {
-            updateIcon('dark');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-            updateIcon(theme);
-        });
-    </script>
+        </main>
+    </div>
+    <script>lucide.createIcons(); if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');</script>
 </body>
-
 
 </html>

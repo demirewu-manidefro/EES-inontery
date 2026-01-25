@@ -4,111 +4,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Employees - Debre Berhan ESS</title>
+    <title>Staff Directory - Debre Berhan ESS</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
         :root {
-            --primary-blue: #2563eb;
-            --secondary-blue: #eff6ff;
-            --text-dark: #1f2937;
-            --text-gray: #6b7280;
-            --bg-light: #f9fafb;
-            --card-bg: #ffffff;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --border-color: rgba(0, 0, 0, 0.05);
-            --header-bg: #ffffff;
-            --overlay-bg: rgba(255, 255, 255, 0.9);
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #eff6ff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 280px;
         }
 
         body.dark-mode {
-            --primary-blue: #3b82f6;
-            --secondary-blue: rgba(59, 130, 246, 0.15);
-            --text-dark: #f1f5f9;
-            --text-gray: #94a3b8;
-            --bg-light: #0f172a;
-            --card-bg: #1e293b;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --header-bg: #1e293b;
-            --overlay-bg: rgba(15, 23, 42, 0.9);
+            --bg-main: #020617;
+            --bg-card: #0f172a;
+            --bg-sidebar: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: rgba(59, 130, 246, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: url("{{ url_for('static', filename='debre_berhan_workspace.png') }}") no-repeat center center/cover fixed;
-            min-height: 100vh;
-            margin: 0;
-            color: var(--text-dark);
-            transition: color 0.3s ease;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--overlay-bg);
-            backdrop-filter: blur(8px);
-            z-index: -1;
-            transition: background 0.3s ease;
-        }
-
-        .header {
-            background: var(--header-bg);
-            padding: 0.5rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            transition: background 0.3s ease;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .logo-section h1 {
-            font-size: 1.1rem;
-            color: var(--primary-blue);
-            margin: 0;
-        }
-
-        .main-content {
-            max-width: 1400px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .btn-back {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            color: var(--text-gray);
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-
-        .table-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
             overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+        }
+
+        /* --- Sidebar & Layout (Same as Dashboard) --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .sidebar-inner {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-header img {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-bottom: 4px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .nav-link i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-navbar {
+            height: 72px;
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            flex-shrink: 0;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* --- Table Styling --- */
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
         }
 
         table {
@@ -118,240 +151,190 @@
         }
 
         th {
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-            padding: 12px 16px;
-            font-weight: 700;
+            background: #f8fafc;
+            color: var(--text-muted);
+            padding: 1rem 1.5rem;
             font-size: 0.75rem;
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
         }
 
         td {
-            padding: 8px 16px;
-            border-bottom: 1px solid #f3f4f6;
-            font-size: 0.85rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
             vertical-align: middle;
         }
 
-        tr:hover td {
-            background: var(--bg-light);
+        tr:last-child td {
+            border-bottom: none;
         }
 
-        .status-badge {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.65rem;
-            font-weight: 700;
+        tr:hover td {
+            background: var(--accent);
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 800;
             text-transform: uppercase;
         }
 
         .status-borrowed {
-            background: #fee2e2;
-            color: #b91c1c;
+            background: #fef2f2;
+            color: #ef4444;
         }
 
         .status-available {
-            background: #dcfce7;
-            color: #15803d;
+            background: #f0fdf4;
+            color: #22c55e;
         }
 
         .action-btns {
             display: flex;
-            gap: 6px;
+            gap: 8px;
         }
 
-        .btn-action {
-            padding: 6px 10px;
-            border-radius: 4px;
-            border: none;
+        .btn-table {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text-main);
+            font-size: 0.75rem;
+            font-weight: 700;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.7rem;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             transition: 0.2s;
         }
 
-        .btn-approve {
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-        }
-
-        .btn-wait {
-            background: #fef3c7;
-            color: #b45309;
-        }
-
-        .btn-approve:hover {
-            background: var(--primary-blue);
+        .btn-table:hover {
+            background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
 
-        .btn-wait:hover {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .borrowed-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 0.75rem;
-        }
-
-        .borrowed-list li {
-            color: var(--text-gray);
+        .user-pill {
             display: flex;
             align-items: center;
-            gap: 4px;
-        }
-
-        .flash-error {
-            background-color: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        .flash-success {
-            background-color: #dcfce7;
-            color: #166534;
-            border: 1px solid #bbf7d0;
+            gap: 10px;
+            padding: 5px 15px;
+            background: var(--accent);
+            border-radius: 50px;
         }
     </style>
 </head>
 
 <body>
-    <div class="overlay"></div>
-    <header class="header">
-        <a href="/home" class="logo-section">
-            <img src="{{ url_for('static', filename='employee.png') }}" style="width:32px; height:32px;" alt="Logo">
-            <h1>Debre Berhan ESS</h1>
-        </a>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <button id="theme-toggle"
-                style="background: var(--secondary-blue); color: var(--primary-blue); border: none; padding: 8px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
-                title="Toggle Theme">
-                <i data-lucide="moon" id="theme-icon"></i>
-            </button>
+    <aside class="sidebar">
+        <div class="sidebar-inner">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
+                <h1>DEBRE BERHAN<br>ESS SYSTEM</h1>
+            </div>
+            <nav>
+                <a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="/employees" class="nav-link active"><i data-lucide="users"></i> Staff Directory</a>
+                <a href="/materials" class="nav-link"><i data-lucide="package"></i> Stock Inventory</a>
+                <a href="/borrow" class="nav-link"><i data-lucide="plus-circle"></i> Issue Material</a>
+                <a href="/return" class="nav-link"><i data-lucide="rotate-ccw"></i> Bulk Returns</a>
+            </nav>
         </div>
-    </header>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="top-navbar">
+            <div style="font-weight: 800; font-size: 1.25rem;">Staff Directory</div>
+            <div class="user-pill">
+                <div style="font-size: 0.8rem; font-weight: 800;">{{ current_user.username }}</div>
+                <a href="/logout" style="color: #ef4444;"><i data-lucide="log-out" size="16"></i></a>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="table-container">
+                {% if employees %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Member Details</th>
+                            <th>Contact</th>
+                            <th>Role & Project</th>
+                            <th>Status</th>
+                            <th>Active Tools</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for emp in employees %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 800; font-size: 0.95rem;">{{ emp.name }} {{ emp.father_name }}
+                                </div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">{{ emp.grand_father_name }} |
+                                    ID: #{{ emp.id }}</div>
+                            </td>
+                            <td><span style="font-weight: 600;">{{ emp.phone_number }}</span></td>
+                            <td>
+                                <div style="font-weight: 700;">{{ emp.position }}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ emp.project }}</div>
+                            </td>
+                            <td>
+                                <span
+                                    class="badge {{ 'status-borrowed' if emp.status == 'Borrowed' else 'status-available' }}">
+                                    {{ emp.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if emp.materials %}
+                                <div style="font-size: 0.75rem; display: flex; flex-direction: column; gap: 3px;">
+                                    {% for material in emp.materials %}
+                                    <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="tool"
+                                            size="10"></i> {{ material }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}<small style="color:#ccc;">None</small>{% endif %}
+                            </td>
+                            <td>
+                                <div class="action-btns">
+                                    <form action="{{ url_for('approve_leave', emp_id=emp.id) }}" method="post">
+                                        <button type="submit" class="btn-table" title="Move to Leave">
+                                            <i data-lucide="log-out" size="14"></i> Leave
+                                        </button>
+                                    </form>
+                                    <form action="{{ url_for('add_to_waiting', emp_id=emp.id) }}" method="post">
+                                        <button type="submit" class="btn-table" title="Queue for Return">
+                                            <i data-lucide="clock" size="14"></i> Queue
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div style="padding: 5rem; text-align: center; color: var(--text-muted);">
+                    <i data-lucide="users" size="48" style="opacity: 0.2; margin-bottom: 1rem;"></i>
+                    <p>No employee records found in the system.</p>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
 
     <script>
-        // Apply theme immediately to prevent flash
+        lucide.createIcons();
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
         }
     </script>
-
-    <main class="main-content">
-        <div class="page-header">
-            <a href="/home" class="btn-back"><i data-lucide="arrow-left" size="14"></i> Dashboard</a>
-            <h2 style="font-size: 1.25rem; font-weight: 800;">Staff Records</h2>
-        </div>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="flash-msg flash-{{ 'error' if category == 'error' else 'success' }}"
-            style="margin-bottom: 15px; padding: 10px; border-radius: 6px; font-size: 0.8rem;">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
-
-        <div class="table-card">
-            {% if employees %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Employee Details</th>
-                        <th>Contact</th>
-                        <th>Role & Position</th>
-                        <th>Inventory Status</th>
-                        <th>Active Tools</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for emp in employees %}
-                    <tr>
-                        <td>
-                            <div style="font-weight: 700;">{{ emp.name }} {{ emp.father_name }}</div>
-                            <div style="font-size: 0.7rem; color: var(--text-gray);">{{ emp.grand_father_name }} | ID:
-                                #{{ emp.id }}</div>
-                        </td>
-                        <td>{{ emp.phone_number }}</td>
-                        <td>
-                            <div style="font-weight: 600;">{{ emp.position }}</div>
-                            <div style="font-size: 0.7rem; color: var(--text-gray);">{{ emp.employment_status }}</div>
-                        </td>
-                        <td>
-                            <span
-                                class="status-badge {{ 'status-borrowed' if emp.status == 'Borrowed' else 'status-available' }}">
-                                {{ emp.status }}
-                            </span>
-                        </td>
-                        <td>
-                            {% if emp.materials %}
-                            <ul class="borrowed-list">
-                                {% for material in emp.materials %}
-                                <li><i data-lucide="package" size="10"></i> {{ material }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% else %}<span style="color:#ccc;">-</span>{% endif %}
-                        </td>
-                        <td>
-                            <div class="action-btns">
-                                <form action="{{ url_for('approve_leave', emp_id=emp.id) }}" method="post">
-                                    <button type="submit" class="btn-action btn-approve" title="Mark as Left">
-                                        <i data-lucide="log-out" size="12"></i> Leave
-                                    </button>
-                                </form>
-                                <form action="{{ url_for('add_to_waiting', emp_id=emp.id) }}" method="post">
-                                    <button type="submit" class="btn-action btn-wait" title="Add to Waitlist">
-                                        <i data-lucide="clock" size="12"></i> Wait
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div style="padding:40px; text-align:center; color:var(--text-gray);">
-                <i data-lucide="users" size="48" style="opacity:0.2;"></i>
-                <p>No employees found.</p>
-            </div>
-            {% endif %}
-        </div>
-    </main>
-    <script>
-        lucide.createIcons();
-
-        // Theme Toggle Logic
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-
-        function updateIcon(theme) {
-            themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
-            if (window.lucide) lucide.createIcons();
-        }
-
-        if (localStorage.getItem('theme') === 'dark') {
-            updateIcon('dark');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-            updateIcon(theme);
-        });
-    </script>
-
 </body>
 
 </html>

@@ -7,27 +7,28 @@
     <title>Master Dashboard - Debre Berhan ESS</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
         :root {
             --primary: #3b82f6;
+            --primary-light: #60a5fa;
             --primary-dark: #1d4ed8;
             --secondary: #64748b;
             --bg-main: #f8fafc;
-            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card: rgba(255, 255, 255, 0.95);
             --bg-sidebar: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
             --accent: #eff6ff;
-            --glow: rgba(59, 130, 246, 0.4);
+            --glow: rgba(59, 130, 246, 0.3);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --sidebar-width: 280px;
         }
 
         body.dark-mode {
             --bg-main: #020617;
-            --bg-card: rgba(15, 23, 42, 0.8);
+            --bg-card: rgba(15, 23, 42, 0.9);
             --bg-sidebar: #0f172a;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -39,6 +40,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
         }
 
         body {
@@ -51,16 +54,21 @@
             transition: background-color 0.3s;
         }
 
-        /* --- Sidebar --- */
+        /* --- Sidebar (Scrollable) --- */
         .sidebar {
             width: var(--sidebar-width);
             background: var(--bg-sidebar);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding: 1.5rem;
-            z-index: 100;
+            z-index: 1000;
             transition: var(--transition);
+        }
+
+        .sidebar-inner {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
         }
 
         .sidebar-header {
@@ -72,16 +80,17 @@
         }
 
         .sidebar-header img {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .sidebar-header h1 {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 800;
-            background: linear-gradient(to right, var(--primary), #6366f1);
+            line-height: 1.2;
+            background: linear-gradient(135deg, var(--primary), #6366f1);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -105,11 +114,11 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 0.8rem 1rem;
+            padding: 0.75rem 1rem;
             color: var(--text-muted);
             text-decoration: none;
             border-radius: 12px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             transition: var(--transition);
             margin-bottom: 4px;
@@ -122,8 +131,8 @@
         }
 
         .nav-link i {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
         }
 
         /* --- Main Content --- */
@@ -132,7 +141,6 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            position: relative;
         }
 
         .top-navbar {
@@ -143,38 +151,34 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 2rem;
-            z-index: 90;
+            flex-shrink: 0;
+            z-index: 900;
         }
 
         .user-pill {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 6px 6px 6px 16px;
+            padding: 5px 5px 5px 15px;
             background: var(--accent);
             border-radius: 50px;
             border: 1px solid var(--border);
         }
 
-        .user-info {
-            text-align: right;
-        }
-
         .user-info .name {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-main);
+            font-size: 0.8rem;
+            font-weight: 800;
         }
 
         .user-info .role {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             font-weight: 600;
         }
 
-        .logout-circle {
-            width: 32px;
-            height: 32px;
+        .logout-btn {
+            width: 34px;
+            height: 34px;
             background: #ef4444;
             color: white;
             border-radius: 50%;
@@ -185,20 +189,22 @@
             transition: var(--transition);
         }
 
-        .logout-circle:hover {
+        .logout-btn:hover {
             transform: scale(1.1);
             background: #dc2626;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
         .content-area {
             flex: 1;
             overflow-y: auto;
             padding: 2rem;
-            position: relative;
+            background-image: radial-gradient(var(--border) 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
         }
 
         /* Stats Strip */
-        .stats-strip {
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 1.25rem;
@@ -207,124 +213,139 @@
 
         .stat-card {
             background: var(--bg-card);
-            backdrop-filter: blur(10px);
             padding: 1.25rem;
             border-radius: 20px;
             border: 1px solid var(--border);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             transition: var(--transition);
         }
 
         .stat-card:hover {
             transform: translateY(-4px);
             border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
-        .stat-icon {
-            width: 44px;
-            height: 44px;
+        .stat-card i {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: var(--accent);
             color: var(--primary);
             border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .stat-details .value {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 800;
             display: block;
-            line-height: 1.1;
         }
 
         .stat-details .label {
-            font-size: 0.7rem;
-            font-weight: 700;
+            font-size: 0.65rem;
             color: var(--text-muted);
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* Dashboard Grid */
-        .dashboard-grid {
+        /* Dashboard Master Grid */
+        .master-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .feature-card {
+        .feature-box {
             background: var(--bg-card);
             border-radius: 24px;
-            padding: 2rem;
+            padding: 1.75rem;
             border: 1px solid var(--border);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
             display: flex;
             flex-direction: column;
+            gap: 1.5rem;
         }
 
-        .feature-card h3 {
-            font-size: 1.25rem;
+        .feature-box h3 {
+            font-size: 1.15rem;
             font-weight: 800;
-            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 10px;
+            color: var(--text-main);
         }
 
-        .feature-card h3 i {
+        .feature-box h3 i {
             color: var(--primary);
         }
 
-        .btn-grid {
+        .action-group {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
         }
 
-        .action-button {
+        .action-item {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 1.25rem;
-            background: var(--accent);
-            border: 1px solid transparent;
-            border-radius: 18px;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             text-decoration: none;
             color: var(--text-main);
             transition: var(--transition);
         }
 
-        .action-button:hover {
-            background: var(--bg-sidebar);
+        .action-item:hover {
+            background: var(--accent);
             border-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.08);
+            transform: scale(1.02);
+            padding-left: 1.25rem;
         }
 
-        .action-button i {
+        .action-item i {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border);
             color: var(--primary);
-            width: 24px;
-            height: 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
         }
 
-        .action-button span {
-            font-weight: 700;
+        .action-item:hover i {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .action-text b {
             font-size: 0.9rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 2px;
         }
 
-        .action-button p {
+        .action-text p {
             font-size: 0.75rem;
             color: var(--text-muted);
             font-weight: 500;
         }
 
-        /* Exports Bar */
-        .exports-section {
+        /* Exports Row */
+        .exports-bar {
             background: linear-gradient(135deg, #1e293b, #0f172a);
             border-radius: 24px;
             padding: 2rem;
@@ -333,32 +354,31 @@
             justify-content: space-between;
             align-items: center;
             gap: 2rem;
-            margin-bottom: 4rem;
-            /* Buffer for mobile menu space */
+            margin-bottom: 2rem;
         }
 
-        .exports-info h4 {
+        .exports-bar h4 {
             font-size: 1.25rem;
             font-weight: 800;
-            margin-bottom: 0.25rem;
+            margin-bottom: 4px;
         }
 
-        .exports-info p {
+        .exports-bar p {
             font-size: 0.85rem;
             color: #94a3b8;
         }
 
-        .export-btns {
+        .export-links {
             display: flex;
             gap: 1rem;
         }
 
-        .export-pill {
+        .export-btn {
             display: flex;
             align-items: center;
             gap: 8px;
             padding: 0.75rem 1.25rem;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             color: white;
@@ -368,39 +388,23 @@
             transition: var(--transition);
         }
 
-        .export-pill:hover {
+        .export-btn:hover {
             background: var(--primary);
-            transform: scale(1.05);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
-        /* Floating Theme Toggle */
-        .theme-btn {
-            background: var(--bg-sidebar);
-            color: var(--primary);
-            border: 1px solid var(--border);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: var(--transition);
-        }
-
-        .theme-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Mobile Menu Toggle */
-        .mobile-toggle {
+        /* Mobile Interface */
+        .mobile-nav-toggle {
             display: none;
         }
 
-        /* Responsiveness */
-        @media (max-width: 1300px) {
-            .stats-strip {
+        @media (max-width: 1200px) {
+            .master-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
@@ -411,14 +415,13 @@
                 left: -100%;
                 top: 0;
                 bottom: 0;
-                width: 280px;
             }
 
             .sidebar.open {
                 left: 0;
             }
 
-            .mobile-toggle {
+            .mobile-nav-toggle {
                 display: block;
                 background: none;
                 border: none;
@@ -426,68 +429,48 @@
                 cursor: pointer;
             }
 
-            .stats-strip {
+            .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .exports-section {
-                flex-direction: column;
-                text-align: center;
             }
         }
 
-        @media (max-width: 640px) {
-            .stats-strip {
+        @media (max-width: 768px) {
+            .master-grid {
                 grid-template-columns: 1fr;
             }
 
-            .export-btns {
+            .exports-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .export-links {
                 flex-direction: column;
                 width: 100%;
             }
 
-            .export-pill {
+            .export-btn {
                 width: 100%;
                 justify-content: center;
             }
 
-            .btn-grid {
+            .stats-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* Animations */
-        .fade-in {
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .flash-container {
+        /* Flash Logic */
+        .flash-holder {
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 2000;
+            z-index: 3000;
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        .flash-msg {
+        .alert {
             padding: 1rem 1.5rem;
             border-radius: 16px;
             background: var(--bg-sidebar);
@@ -498,12 +481,12 @@
             gap: 12px;
             font-weight: 700;
             font-size: 0.9rem;
-            animation: slideIn 0.4s ease-out forwards;
+            animation: alertIn 0.4s ease-out;
         }
 
-        @keyframes slideIn {
+        @keyframes alertIn {
             from {
-                transform: translateX(100%);
+                transform: translateX(50px);
                 opacity: 0;
             }
 
@@ -513,12 +496,12 @@
             }
         }
 
-        .flash-success {
+        .alert-success {
             border-left: 6px solid #22c55e;
             color: #15803d;
         }
 
-        .flash-error {
+        .alert-error {
             border-left: 6px solid #ef4444;
             color: #b91c1c;
         }
@@ -528,56 +511,61 @@
 <body>
     <!-- Sidebar Navigation -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
-            <h1>ESS DEBRE BERHAN</h1>
+        <div class="sidebar-inner">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
+                <h1>DEBRE BERHAN<br>ESS SYSTEM</h1>
+            </div>
+
+            <nav class="nav-group">
+                <div class="nav-label">Core Operations</div>
+                <a href="/employees" class="nav-link"><i data-lucide="users"></i> Staff Directory</a>
+                <a href="/materials" class="nav-link"><i data-lucide="package"></i> Stock Inventory</a>
+                <a href="/borrow" class="nav-link"><i data-lucide="plus-circle"></i> Issue Material</a>
+                <a href="/return" class="nav-link"><i data-lucide="rotate-ccw"></i> Bulk Returns</a>
+            </nav>
+
+            <nav class="nav-group">
+                <div class="nav-label">Logistics Tracking</div>
+                <a href="/borrowed-employees" class="nav-link"><i data-lucide="clock"></i> Borrowing Tracking</a>
+                <a href="/waiting-return" class="nav-link"><i data-lucide="align-left"></i> Return Waitlist</a>
+                <a href="/leave-out" class="nav-link"><i data-lucide="history"></i> Leave History</a>
+            </nav>
+
+            <nav class="nav-group">
+                <div class="nav-label">Management</div>
+                <a href="/admin/approve-users" class="nav-link"><i data-lucide="user-check"></i> Account Approvals</a>
+                <a href="/admin/upload-users" class="nav-link"><i data-lucide="key"></i> Import Accounts</a>
+                <a href="{{ url_for('change_password') }}" class="nav-link"><i data-lucide="settings"></i> Security
+                    Settings</a>
+            </nav>
         </div>
 
-        <nav class="nav-group">
-            <div class="nav-label">Core Operations</div>
-            <a href="/employees" class="nav-link"><i data-lucide="users"></i> Staff Directory</a>
-            <a href="/materials" class="nav-link"><i data-lucide="package"></i> Stock Inventory</a>
-            <a href="/borrow" class="nav-link"><i data-lucide="plus-circle"></i> Issue Material</a>
-            <a href="/return" class="nav-link"><i data-lucide="rotate-ccw"></i> Bulk Returns</a>
-        </nav>
-
-        <nav class="nav-group">
-            <div class="nav-label">Logistics Tracking</div>
-            <a href="/borrowed-employees" class="nav-link"><i data-lucide="clock"></i> Borrowing Status</a>
-            <a href="/waiting-return" class="nav-link"><i data-lucide="align-left"></i> Return Waitlist</a>
-            <a href="/leave-out" class="nav-link"><i data-lucide="history"></i> Leave History</a>
-        </nav>
-
-        <nav class="nav-group">
-            <div class="nav-label">System Admin</div>
-            <a href="/admin/approve-users" class="nav-link"><i data-lucide="user-check"></i> Pending Approvals</a>
-            <a href="/admin/upload-users" class="nav-link"><i data-lucide="key"></i> Import Accounts</a>
-            <a href="{{ url_for('change_password') }}" class="nav-link"><i data-lucide="settings"></i> Security
-                Settings</a>
-        </nav>
-
-        <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+        <div style="padding: 1.5rem; border-top: 1px solid var(--border);">
             <button id="theme-toggle" class="nav-link"
                 style="width: 100%; border: none; background: none; cursor: pointer;">
                 <i data-lucide="moon" id="theme-icon"></i>
-                <span>Switch Theme</span>
+                <span>Switch Appearance</span>
             </button>
         </div>
     </aside>
 
     <div class="main-wrapper">
         <header class="top-navbar">
-            <button class="mobile-toggle" onclick="toggleSidebar()">
-                <i data-lucide="menu" size="24"></i>
-            </button>
-            <div class="page-title" style="font-weight: 800; font-size: 1.25rem;">Overview</div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <button class="mobile-nav-toggle" onclick="toggleSidebar()">
+                    <i data-lucide="menu" size="24"></i>
+                </button>
+                <div class="page-title" style="font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px;">Master
+                    Control</div>
+            </div>
 
             <div class="user-pill">
                 <div class="user-info">
                     <div class="name">{{ current_user.username }}</div>
                     <div class="role">{{ current_user.role|capitalize }}</div>
                 </div>
-                <a href="{{ url_for('logout') }}" class="logout-circle" title="Exit System">
+                <a href="{{ url_for('logout') }}" class="logout-btn" title="Sign Out">
                     <i data-lucide="log-out" size="16"></i>
                 </a>
             </div>
@@ -586,9 +574,9 @@
         <main class="content-area">
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-            <div class="flash-container">
+            <div class="flash-holder">
                 {% for category, message in messages %}
-                <div class="flash-msg flash-{{ 'error' if category == 'error' else 'success' }}">
+                <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">
                     <i data-lucide="{{ 'check-circle' if category == 'success' else 'alert-circle' }}"></i>
                     {{ message }}
                 </div>
@@ -597,41 +585,38 @@
             {% endif %}
             {% endwith %}
 
-            <!-- Statistics Grid -->
-            <div class="stats-strip fade-in">
+            <!-- Interactive Statistics -->
+            <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon"><i data-lucide="users"></i></div>
+                    <i data-lucide="users"></i>
                     <div class="stat-details">
                         <span class="value">{{ stats.total_employees }}</span>
                         <span class="label">Total Staff</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon"><i data-lucide="package"></i></div>
+                    <i data-lucide="box"></i>
                     <div class="stat-details">
                         <span class="value">{{ stats.total_materials }}</span>
                         <span class="label">Total Items</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="color: #f59e0b; background: rgba(245,158,11,0.1);"><i
-                            data-lucide="clock"></i></div>
+                    <i data-lucide="shopping-cart" style="background:#fff7ed; color:#f97316;"></i>
                     <div class="stat-details">
                         <span class="value">{{ stats.borrowed_count }}</span>
                         <span class="label">Borrowed</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="color: #ef4444; background: rgba(239,68,68,0.1);"><i
-                            data-lucide="align-right"></i></div>
+                    <i data-lucide="list-ordered" style="background:#fef2f2; color:#ef4444;"></i>
                     <div class="stat-details">
                         <span class="value">{{ stats.waiting_count }}</span>
                         <span class="label">Waitlist</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="color: #10b981; background: rgba(16,185,129,0.1);"><i
-                            data-lucide="history"></i></div>
+                    <i data-lucide="umbrella" style="background:#f0fdf4; color:#22c55e;"></i>
                     <div class="stat-details">
                         <span class="value">{{ stats.leave_count }}</span>
                         <span class="label">On Leave</span>
@@ -639,94 +624,175 @@
                 </div>
             </div>
 
-            <!-- Detailed Actions Grid -->
-            <div class="dashboard-grid fade-in" style="animation-delay: 0.1s;">
-                <!-- Section 1 -->
-                <div class="feature-card">
-                    <h3><i data-lucide="zap"></i> Workforce Multiplier</h3>
-                    <div class="btn-grid">
-                        <a href="/add_employee" class="action-button">
-                            <i data-lucide="user-plus"></i>
-                            <span>Add Employee</span>
-                            <p>Manually create a new profile.</p>
+            <!-- Master Dashboard Grid -->
+            <div class="master-grid">
+                <!-- 1. Workforce Section -->
+                <div class="feature-box">
+                    <h3><i data-lucide="user-plus"></i> Workforce Management</h3>
+                    <div class="action-group">
+                        <a href="/add_employee" class="action-item">
+                            <i data-lucide="user-check"></i>
+                            <div class="action-text">
+                                <b>Add New Staff</b>
+                                <p>Register a single employee profile.</p>
+                            </div>
                         </a>
-                        <a href="/upload-employees" class="action-button">
-                            <i data-lucide="file-up"></i>
-                            <span>Bulk Import</span>
-                            <p>Upload staff from Excel / CSV.</p>
+                        <a href="/upload-employees" class="action-item">
+                            <i data-lucide="file-spreadsheet"></i>
+                            <div class="action-text">
+                                <b>Bulk Import</b>
+                                <p>Upload staff from Excel or CSV files.</p>
+                            </div>
+                        </a>
+                        <a href="/employees" class="action-item">
+                            <i data-lucide="list"></i>
+                            <div class="action-text">
+                                <b>Staff Directory</b>
+                                <p>View and manage all active personnel.</p>
+                            </div>
                         </a>
                     </div>
                 </div>
 
-                <!-- Section 2 -->
-                <div class="feature-card">
-                    <h3><i data-lucide="box"></i> Inventory Control</h3>
-                    <div class="btn-grid">
-                        <a href="/add-material" class="action-button">
+                <!-- 2. Inventory Section -->
+                <div class="feature-box">
+                    <h3><i data-lucide="archive"></i> Inventory Tracking</h3>
+                    <div class="action-group">
+                        <a href="/add-material" class="action-item">
                             <i data-lucide="plus-square"></i>
-                            <span>Add Material</span>
-                            <p>Register new warehouse item.</p>
+                            <div class="action-text">
+                                <b>Add Material</b>
+                                <p>New item registration with Serial No.</p>
+                            </div>
                         </a>
-                        <a href="/upload-materials" class="action-button">
+                        <a href="/upload-materials" class="action-item">
                             <i data-lucide="layers"></i>
-                            <span>Bulk Upload</span>
-                            <p>Import material lists in batches.</p>
+                            <div class="action-text">
+                                <b>Batch Upload</b>
+                                <p>Import multiple materials at once.</p>
+                            </div>
+                        </a>
+                        <a href="/materials" class="action-item">
+                            <i data-lucide="package-search"></i>
+                            <div class="action-text">
+                                <b>Stock Control</b>
+                                <p>Real-time list of available warehouse items.</p>
+                            </div>
                         </a>
                     </div>
                 </div>
 
-                <!-- Section 3 -->
-                <div class="feature-card">
-                    <h3><i data-lucide="repeat"></i> Return Logistics</h3>
-                    <div class="btn-grid">
-                        <a href="/return" class="action-button">
+                <!-- 3. Deployment Section -->
+                <div class="feature-box" style="border-top: 4px solid var(--primary);">
+                    <h3><i data-lucide="send"></i> Material Deployment</h3>
+                    <div class="action-group">
+                        <a href="/borrow" class="action-item" style="background: var(--accent);">
+                            <i data-lucide="shopping-bag" style="background: var(--primary); color: white;"></i>
+                            <div class="action-text">
+                                <b>Issue Material</b>
+                                <p>Deploy equipment to an employee.</p>
+                            </div>
+                        </a>
+                        <a href="/borrowed-employees" class="action-item">
+                            <i data-lucide="eye"></i>
+                            <div class="action-text">
+                                <b>Currently Borrowed</b>
+                                <p>Track items out in the field.</p>
+                            </div>
+                        </a>
+                        <a href="/waiting-return" class="action-item">
+                            <i data-lucide="hourglass"></i>
+                            <div class="action-text">
+                                <b>Return Queue</b>
+                                <p>Manage staff waiting to return items.</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 4. Logistics Section -->
+                <div class="feature-box">
+                    <h3><i data-lucide="refresh-cw"></i> Return Logistics</h3>
+                    <div class="action-group">
+                        <a href="/return" class="action-item">
                             <i data-lucide="package-check"></i>
-                            <span>Full Return</span>
-                            <p>Return all items for an employee.</p>
+                            <div class="action-text">
+                                <b>Process Bulk Return</b>
+                                <p>Return all items for an individual.</p>
+                            </div>
                         </a>
-                        <a href="/return-individual" class="action-button">
-                            <i data-lucide="minus-square"></i>
-                            <span>Single Item</span>
-                            <p>Return specific items individually.</p>
+                        <a href="/return-individual" class="action-item">
+                            <div
+                                style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; background: #fff; border: 1px solid var(--border); color: var(--primary); border-radius:12px;">
+                                <i data-lucide="minus-square" style="width:20px;"></i></div>
+                            <div class="action-text">
+                                <b>Single Item Return</b>
+                                <p>Select specific items to check back in.</p>
+                            </div>
                         </a>
                     </div>
                 </div>
 
-                <!-- Section 4 -->
-                <div class="feature-card">
-                    <h3><i data-lucide="shield-check"></i> Admin Tools</h3>
-                    <div class="btn-grid">
-                        <a href="/admin/approve-users" class="action-button">
-                            <i data-lucide="check-circle"></i>
-                            <span>Verify Users</span>
-                            <p>Approve pending account requests.</p>
+                <!-- 5. Leave & Records -->
+                <div class="feature-box">
+                    <h3><i data-lucide="calendar"></i> Leave & Archiving</h3>
+                    <div class="action-group">
+                        <a href="/leave-out" class="action-item">
+                            <i data-lucide="history"></i>
+                            <div class="action-text">
+                                <b>Leave History</b>
+                                <p>View employees currently on leave-out.</p>
+                            </div>
                         </a>
-                        <a href="/admin/upload-users" class="action-button">
+                    </div>
+                </div>
+
+                <!-- 6. System Governance -->
+                <div class="feature-box">
+                    <h3><i data-lucide="shield-check"></i> System Governance</h3>
+                    <div class="action-group">
+                        <a href="/admin/approve-users" class="action-item">
+                            <i data-lucide="user-x"></i>
+                            <div class="action-text">
+                                <b>Account Approvals</b>
+                                <p>Approve or deny new user signups.</p>
+                            </div>
+                        </a>
+                        <a href="/admin/upload-users" class="action-item">
                             <i data-lucide="database"></i>
-                            <span>Data Sync</span>
-                            <p>Upload system user accounts.</p>
+                            <div class="action-text">
+                                <b>System Data Sync</b>
+                                <p>Upload high-privileged user accounts.</p>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('change_password') }}" class="action-item">
+                            <i data-lucide="lock"></i>
+                            <div class="action-text">
+                                <b>Security Center</b>
+                                <p>Update your system access password.</p>
+                            </div>
                         </a>
                     </div>
                 </div>
             </div>
 
             <!-- Exports Panel -->
-            <div class="exports-section fade-in" style="animation-delay: 0.2s;">
-                <div class="exports-info">
-                    <h4>Global Reports Export</h4>
-                    <p>Generate professional Excel workbooks for auditing and data analysis.</p>
+            <div class="exports-bar">
+                <div class="exports-msg">
+                    <h4>Professional Audit Exports</h4>
+                    <p>Generate comprehensive Excel workbooks for your next organizational audit.</p>
                 </div>
-                <div class="export-btns">
-                    <a href="{{ url_for('export_excel') }}" class="export-pill">
-                        <i data-lucide="file-text"></i> Staff Data
+                <div class="export-links">
+                    <a href="{{ url_for('export_excel') }}" class="export-btn">
+                        <i data-lucide="file-spreadsheet"></i> Staff
                     </a>
-                    <a href="{{ url_for('export_available_materials') }}" class="export-pill">
-                        <i data-lucide="box"></i> Inventory
+                    <a href="{{ url_for('export_available_materials') }}" class="export-btn">
+                        <i data-lucide="box"></i> Stock
                     </a>
-                    <a href="{{ url_for('export_borrowed_and_available') }}" class="export-pill">
+                    <a href="{{ url_for('export_borrowed_and_available') }}" class="export-btn">
                         <i data-lucide="clipboard-list"></i> Full Audit
                     </a>
-                    <a href="{{ url_for('export_waiting_return') }}" class="export-pill">
+                    <a href="{{ url_for('export_waiting_return') }}" class="export-btn">
                         <i data-lucide="clock"></i> Waitlist
                     </a>
                 </div>
@@ -737,42 +803,42 @@
     <script>
         lucide.createIcons();
 
-        // Theme Toggle
+        // Theme Persistence & Logic
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         const body = document.body;
 
-        function updateIcon(isDark) {
+        function updateUI(isDark) {
             themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
             if (window.lucide) lucide.createIcons();
         }
 
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark-mode');
-            updateIcon(true);
+            updateUI(true);
         }
 
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
             const isDark = body.classList.contains('dark-mode');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateIcon(isDark);
+            updateUI(isDark);
         });
 
-        // Sidebar Toggle for Mobile
+        // Sidebar Control
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
         }
 
-        // Auto-dismiss Flash Messages
+        // Auto-dismiss Flash
         setTimeout(() => {
-            document.querySelectorAll('.flash-msg').forEach(msg => {
-                msg.style.transition = 'all 0.5s ease';
-                msg.style.opacity = '0';
-                msg.style.transform = 'translateX(20px)';
-                setTimeout(() => msg.remove(), 500);
+            document.querySelectorAll('.alert').forEach(a => {
+                a.style.transition = 'all 0.5s ease';
+                a.style.opacity = '0';
+                a.style.transform = 'translateY(-20px)';
+                setTimeout(() => a.remove(), 500);
             });
-        }, 5000);
+        }, 6000);
     </script>
 </body>
 
