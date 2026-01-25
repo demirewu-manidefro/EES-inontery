@@ -404,17 +404,28 @@ def borrow_material():
 def return_material():
     employees = Employee.query.filter_by(status='active').all()
     if request.method == 'POST':
-        emp_id = int(request.form.get('employee'))
-        borrowings = BorrowedMaterial.query.filter_by(employee_id=emp_id, is_returned=False).all()
-        for b in borrowings:
-            b.is_returned = True
-            material = Material.query.get(b.material_id)
-            if material:
-                material.status = 'available'
+        emp_id_raw = request.form.get('employee')
+        if not emp_id_raw:
+            flash("No employee selected for return.", "error")
+            return redirect(url_for('return_material'))
+            
+        try:
+            emp_id = int(emp_id_raw)
+            borrowings = BorrowedMaterial.query.filter_by(employee_id=emp_id, is_returned=False).all()
+            for b in borrowings:
+                b.is_returned = True
+                material = Material.query.get(b.material_id)
+                if material:
+                    material.status = 'available'
 
-        db.session.commit()  # Commit returning materials status changes
-
-        flash(f"All materials returned for employee.", "success")
+            db.session.commit()
+            flash(f"All materials returned successfully.", "success")
+        except (ValueError, TypeError):
+            flash("Invalid employee selection.", "error")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An unexpected error occurred: {str(e)}", "error")
+            
         return redirect(url_for('return_material'))
     return render_template("return_material.html", employees=employees)
 
@@ -427,27 +438,36 @@ def return_individual_material():
     borrowings = []
 
     if request.method == 'POST':
-        emp_id = request.form.get('employee')
-        if emp_id:
-            selected_emp = Employee.query.get(int(emp_id))
-            borrowings = BorrowedMaterial.query.filter_by(employee_id=emp_id, is_returned=False).all()
+        emp_id_raw = request.form.get('employee')
+        if emp_id_raw:
+            try:
+                emp_id = int(emp_id_raw)
+                selected_emp = Employee.query.get(emp_id)
+                if not selected_emp:
+                    flash("Employee not found.", "error")
+                    return redirect(url_for('return_individual_material'))
+                    
+                borrowings = BorrowedMaterial.query.filter_by(employee_id=emp_id, is_returned=False).all()
 
-            if 'return_materials' in request.form:
-                returned_ids = request.form.getlist('materials')
-                for borrow in borrowings:
-                    if str(borrow.id) in returned_ids:
-                        borrow.is_returned = True
-                        if borrow.material:
-                            borrow.material.status = 'available'
-                db.session.commit()
-
-                remaining = BorrowedMaterial.query.filter_by(employee_id=emp_id, is_returned=False).count()
-                if remaining == 0:
-                    # Do NOT mark employee as left or add to LeaveOutMember automatically
-                    flash("All materials returned. You may now approve leave manually.", "success")
-                else:
-                    flash("Selected materials returned.", "success")
-                return redirect(url_for('return_individual_material'))
+                if 'return_materials' in request.form:
+                    returned_ids = request.form.getlist('materials')
+                    if not returned_ids:
+                        flash("No items selected for return.", "error")
+                    else:
+                        for borrow in borrowings:
+                            if str(borrow.id) in returned_ids:
+                                borrow.is_returned = True
+                                if borrow.material:
+                                    borrow.material.status = 'available'
+                        db.session.commit()
+                        remaining = BorrowedMaterial.query.filter_by(employee_id=emp_id, is_returned=False).count()
+                        if remaining == 0:
+                            flash("All materials returned. Clearance complete.", "success")
+                        else:
+                            flash(f"Successfully returned {len(returned_ids)} items.", "success")
+                        return redirect(url_for('return_individual_material'))
+            except (ValueError, TypeError):
+                flash("Invalid operation selected.", "error")
 
     return render_template("return_individual.html", employees=employees, selected_emp=selected_emp, borrowings=borrowings)
 

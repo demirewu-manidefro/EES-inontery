@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Import System accounts - Debre Berhan ESS Admin</title>
+    <title>Import Accounts - Debre Berhan ESS Admin</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
         :root {
             --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
             --bg-main: #f8fafc;
             --bg-card: #ffffff;
             --bg-sidebar: #ffffff;
@@ -19,6 +20,7 @@
             --border: #e2e8f0;
             --accent: #eff6ff;
             --sidebar-width: 280px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body.dark-mode {
@@ -41,9 +43,9 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
             display: flex;
+            transition: background-color 0.3s;
         }
 
         .sidebar {
@@ -52,12 +54,35 @@
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            z-index: 1000;
+            transition: var(--transition);
         }
 
         .sidebar-inner {
             flex: 1;
             overflow-y: auto;
             padding: 1.5rem;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            border-radius: 10px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .nav-link {
@@ -70,20 +95,28 @@
             border-radius: 12px;
             font-size: 0.85rem;
             font-weight: 600;
-            transition: 0.3s;
+            transition: var(--transition);
             margin-bottom: 4px;
         }
 
-        .nav-link:hover {
+        .nav-link:hover,
+        .nav-link.active {
             background: var(--accent);
             color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            width: 18px;
+            height: 18px;
         }
 
         .main-wrapper {
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden;
+            position: relative;
         }
 
         .top-navbar {
@@ -94,12 +127,39 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 2rem;
+            flex-shrink: 0;
+        }
+
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
         }
 
         .content-area {
             flex: 1;
             overflow-y: auto;
-            padding: 4rem 2rem;
+            padding: 3rem 2rem;
             background-image: radial-gradient(var(--border) 0.5px, transparent 0.5px);
         }
 
@@ -117,11 +177,12 @@
         .drop-zone {
             border: 2px dashed var(--border);
             border-radius: 20px;
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             margin-bottom: 2rem;
             transition: 0.3s;
             cursor: pointer;
             background: var(--bg-main);
+            display: block;
         }
 
         .drop-zone:hover {
@@ -163,63 +224,127 @@
             color: #166534;
             border-left: 5px solid #22c55e;
         }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .top-navbar {
+                padding: 0 1rem;
+            }
+
+            .content-area {
+                padding: 2rem 1rem;
+            }
+
+            .upload-card {
+                padding: 2rem 1.5rem;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <aside class="sidebar">
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-inner">
-            <div style="display:flex; align-items:center; gap:12px; margin-bottom:2.5rem;"><img
-                    src="{{ url_for('static', filename='employee.png') }}" style="width:40px;">
-                <h1 style="font-size:1rem; font-weight:800; color:var(--primary);">DEBRE BERHAN</h1>
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
+                <h1>DEBRE BERHAN<br>ESS SYSTEM</h1>
             </div>
-            <nav><a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a><a
-                    href="/admin/upload-users" class="nav-link active"><i data-lucide="key"></i> Import Accounts</a>
+            <nav>
+                <a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="/admin/upload-users" class="nav-link active"><i data-lucide="key"></i> Import Accounts</a>
+                <a href="/admin/approve-users" class="nav-link"><i data-lucide="user-check"></i> Approvals</a>
             </nav>
         </div>
     </aside>
 
     <div class="main-wrapper">
         <header class="top-navbar">
-            <div style="font-weight:800; font-size:1.25rem;">Credential Synchronization</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="mobile-nav-toggle" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+                <div style="font-weight: 800; font-size: 1.25rem;">Credential Synchronization</div>
+            </div>
+            <div
+                style="display:flex; align-items:center; gap:10px; padding:5px 15px; background:var(--accent); border-radius:50px;">
+                <div style="font-size:0.8rem; font-weight:800;">Admin Mode</div>
+                <i data-lucide="unlock" size="14"></i>
+            </div>
         </header>
+
         <main class="content-area">
-            {% with messages = get_flashed_messages() %}{% if messages %}{% for msg in messages %}<div class="alert"><i
-                    data-lucide="check-circle"></i> {{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for msg in messages %}
+            <div class="alert"><i data-lucide="check-circle"></i> {{ msg }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
             <div class="upload-card">
-                <i data-lucide="user-cog" size="56" color="#6366f1" style="margin-bottom:1.5rem;"></i>
-                <h2 style="font-weight:800; font-size:1.75rem; margin-bottom:0.5rem;">User Account Import</h2>
-                <p style="color:var(--text-muted); margin-bottom:2.5rem;">Batch register administrative and staff
-                    accounts via secure data upload.</p>
+                <div
+                    style="width: 64px; height: 64px; background: rgba(99, 102, 241, 0.1); color: #6366f1; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i data-lucide="user-cog" size="32"></i>
+                </div>
+                <h2 style="font-weight:800; font-size:1.75rem; margin-bottom:0.5rem;">User Batch Import</h2>
+                <p style="color:var(--text-muted); margin-bottom:2.5rem; font-size: 0.95rem;">Rapidly register multiple
+                    administrative and staff accounts via secure data upload.</p>
+
                 <form method="POST" enctype="multipart/form-data">
                     <label class="drop-zone" id="drop-zone">
-                        <i data-lucide="key" size="32"
-                            style="margin-bottom:10px; display:block; margin: 0 auto 10px;"></i>
-                        <span id="file-name" style="font-weight:700; font-size:0.9rem; color:var(--text-muted);">Load
-                            user database file</span>
+                        <i data-lucide="upload-cloud" size="36"
+                            style="margin-bottom:1rem; color: var(--text-muted);"></i>
+                        <span id="file-name"
+                            style="font-weight:800; font-size:0.9rem; color:var(--text-muted); display: block;">Select
+                            user database (.xlsx, .csv)</span>
                         <input type="file" name="file" style="display:none;" id="file-input" required
                             accept=".xlsx, .csv">
                     </label>
-                    <button type="submit" class="btn-sync"><i data-lucide="zap"></i> Force Account Sync</button>
+                    <button type="submit" class="btn-sync">
+                        <i data-lucide="zap"></i>
+                        Initiate Secure Sync
+                    </button>
+
                     <div
-                        style="margin-top:2.5rem; text-align:left; padding:1.5rem; background:var(--bg-main); border-radius:16px;">
+                        style="margin-top:2.5rem; text-align:left; padding:1.5rem; background:var(--bg-main); border-radius:18px; border: 1px solid var(--border);">
                         <h4
-                            style="font-size:0.75rem; font-weight:800; color:#6366f1; text-transform:uppercase; margin-bottom:10px;">
-                            Security Standard:</h4>
-                        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.6;">File should contain:
-                            <b>username</b>, <b>password</b>, and <b>role</b>. Imported accounts are automatically
-                            marked as approved.</p>
+                            style="font-size:0.7rem; font-weight:800; color:#6366f1; text-transform:uppercase; margin-bottom:10px; letter-spacing: 0.5px;">
+                            Schema Requirements:</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.6;">Columns must include:
+                            <b>username</b>, <b>password</b>, and <b>role</b>. These accounts Bypass the queue.</p>
                     </div>
                 </form>
             </div>
         </main>
     </div>
+
     <script>
         lucide.createIcons();
         if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+
         const fileInput = document.getElementById('file-input');
         const fileName = document.getElementById('file-name');
-        fileInput.addEventListener('change', (e) => { if (e.target.files.length > 0) fileName.textContent = e.target.files[0].name; });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) fileName.textContent = e.target.files[0].name;
+        });
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
     </script>
 </body>
 

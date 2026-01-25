@@ -11,6 +11,7 @@
 
         :root {
             --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
             --bg-main: #f8fafc;
             --bg-card: #ffffff;
             --bg-sidebar: #ffffff;
@@ -19,6 +20,7 @@
             --border: #e2e8f0;
             --accent: #eff6ff;
             --sidebar-width: 280px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body.dark-mode {
@@ -44,6 +46,7 @@
             height: 100vh;
             overflow: hidden;
             display: flex;
+            transition: background-color 0.3s;
         }
 
         .sidebar {
@@ -52,12 +55,35 @@
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            z-index: 1000;
+            transition: var(--transition);
         }
 
         .sidebar-inner {
             flex: 1;
             overflow-y: auto;
             padding: 1.5rem;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            border-radius: 10px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #6366f1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .nav-link {
@@ -70,7 +96,7 @@
             border-radius: 12px;
             font-size: 0.85rem;
             font-weight: 600;
-            transition: 0.3s;
+            transition: var(--transition);
             margin-bottom: 4px;
         }
 
@@ -78,6 +104,12 @@
         .nav-link.active {
             background: var(--accent);
             color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            width: 18px;
+            height: 18px;
         }
 
         .main-wrapper {
@@ -85,6 +117,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
 
         .top-navbar {
@@ -95,6 +128,33 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 2rem;
+            flex-shrink: 0;
+        }
+
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
         }
 
         .content-area {
@@ -105,22 +165,29 @@
 
         .table-container {
             background: var(--bg-card);
-            border-radius: 20px;
+            border-radius: 24px;
             border: 1px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
+            min-width: 900px;
         }
 
         th {
             background: #f8fafc;
             color: var(--text-muted);
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
             font-size: 0.75rem;
             font-weight: 800;
             text-transform: uppercase;
@@ -128,10 +195,14 @@
         }
 
         td {
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border);
             font-size: 0.9rem;
             vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
         }
 
         tr:hover td {
@@ -179,91 +250,151 @@
         }
 
         .role-badge {
-            padding: 4px 10px;
+            padding: 4px 12px;
             background: var(--accent);
             color: var(--primary);
             border-radius: 50px;
             font-size: 0.7rem;
             font-weight: 800;
             text-transform: uppercase;
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .top-navbar {
+                padding: 0 1rem;
+            }
+
+            .content-area {
+                padding: 1.5rem 1rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <aside class="sidebar">
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-inner">
-            <div style="display:flex; align-items:center; gap:12px; margin-bottom:2.5rem;"><img
-                    src="{{ url_for('static', filename='employee.png') }}" style="width:40px;">
-                <h1 style="font-size:1rem; font-weight:800; color:var(--primary);">DEBRE BERHAN</h1>
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
+                <h1>DEBRE BERHAN<br>ESS SYSTEM</h1>
             </div>
-            <nav><a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a><a
-                    href="/admin/approve-users" class="nav-link active"><i data-lucide="user-check"></i> Account
-                    Approvals</a></nav>
+            <nav>
+                <a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="/admin/approve-users" class="nav-link active"><i data-lucide="user-check"></i> Approvals</a>
+                <a href="/admin/upload-users" class="nav-link"><i data-lucide="key"></i> Import Accounts</a>
+            </nav>
         </div>
     </aside>
 
     <div class="main-wrapper">
         <header class="top-navbar">
-            <div style="font-weight:800; font-size:1.25rem;">Governance & Access</div>
-        </header>
-        <main class="content-area">
-            {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in
-            messages %}<div
-                style="padding:1rem; border-radius:12px; margin-bottom:1.5rem; background:{{ '#f0fdf4' if category=='success' else '#fef2f2' }}; color:{{ '#166534' if category=='success' else '#ef4444' }}; border:1px solid {{ '#bbf7d0' if category=='success' else '#fecaca' }}; font-weight:700;">
-                {{ message }}</div>{% endfor %}{% endif %}{% endwith %}
-            <div style="margin-bottom:2rem;">
-                <h2 style="font-weight:800; font-size:1.5rem;">Access Requests</h2>
-                <p style="color:var(--text-muted); font-size:0.9rem;">Review and approve new system users seeking
-                    administrative or managerial access.</p>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="mobile-nav-toggle" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+                <div style="font-weight: 800; font-size: 1.25rem;">Governance & Access</div>
             </div>
+            <div
+                style="display:flex; align-items:center; gap:10px; padding:5px 15px; background:var(--accent); border-radius:50px;">
+                <div style="font-size:0.8rem; font-weight:800;">Admin View</div>
+                <i data-lucide="shield-check" size="14"></i>
+            </div>
+        </header>
+
+        <main class="content-area">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div
+                style="padding:1rem; border-radius:12px; margin-bottom:1.5rem; background:{{ '#f0fdf4' if category=='success' else '#fef2f2' }}; color:{{ '#166534' if category=='success' else '#ef4444' }}; border:1px solid {{ '#bbf7d0' if category=='success' else '#fecaca' }}; font-weight:700;">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <div style="margin-bottom: 2rem;">
+                <h2 style="font-weight: 800; font-size: 1.5rem;">Access Requests</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Review pending registration requests for system
+                    administrative or managerial roles.</p>
+            </div>
+
             <div class="table-container">
-                {% if users %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Requested Username</th>
-                            <th>Assigned Role</th>
-                            <th>Status</th>
-                            <th>Security Check</th>
-                            <th>Governance Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for u in users %}
-                        <tr>
-                            <td style="font-weight:800;">{{ u.username }}</td>
-                            <td><span class="role-badge">{{ u.role }}</span></td>
-                            <td><span style="font-size:0.75rem; font-weight:700; color:#f59e0b;">PENDING</span></td>
-                            <td>
-                                <div
-                                    style="display:flex; align-items:center; gap:6px; font-size:0.75rem; color:var(--text-muted);">
-                                    <i data-lucide="shield" size="14"></i> Verified Signup</div>
-                            </td>
-                            <td>
-                                <div style="display:flex; gap:10px;">
-                                    <form action="{{ url_for('approve_user', user_id=u.id) }}" method="post"><button
-                                            type="submit" class="btn-approve"><i data-lucide="check" size="14"></i>
-                                            Grant Access</button></form>
-                                    <form action="{{ url_for('reject_user', user_id=u.id) }}" method="post"><button
-                                            type="submit" class="btn-reject"><i data-lucide="x" size="14"></i>
-                                            Deny</button></form>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <div style="padding:6rem; text-align:center; color:var(--text-muted);"><i data-lucide="user-check"
-                        size="64" style="opacity:0.1; margin-bottom:1.5rem;"></i>
-                    <p style="font-weight:600;">No pending access requests at the moment.</p>
+                <div class="table-wrapper">
+                    {% if users %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Requested Identity</th>
+                                <th>Assigned Authority</th>
+                                <th>Current State</th>
+                                <th>Security Log</th>
+                                <th>Governance Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in users %}
+                            <tr>
+                                <td style="font-weight: 800; color: var(--primary);">{{ u.username }}</td>
+                                <td><span class="role-badge">{{ u.role }}</span></td>
+                                <td><span
+                                        style="font-size:0.75rem; font-weight:800; color:#f59e0b; display:flex; align-items:center; gap:5px;"><i
+                                            data-lucide="clock" size="12"></i> PENDING</span></td>
+                                <td>
+                                    <div
+                                        style="display:flex; align-items:center; gap:6px; font-size:0.75rem; color:var(--text-muted); font-weight:600;">
+                                        <i data-lucide="shield" size="14"></i> Verified Origin</div>
+                                </td>
+                                <td>
+                                    <div style="display:flex; gap:10px;">
+                                        <form action="{{ url_for('approve_user', user_id=u.id) }}" method="post">
+                                            <button type="submit" class="btn-approve"><i data-lucide="check"
+                                                    size="14"></i> Grant</button>
+                                        </form>
+                                        <form action="{{ url_for('reject_user', user_id=u.id) }}" method="post">
+                                            <button type="submit" class="btn-reject"><i data-lucide="x" size="14"></i>
+                                                Refuse</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div style="padding: 6rem; text-align: center; color: var(--text-muted);">
+                        <i data-lucide="user-check" size="64" style="opacity: 0.1; margin-bottom: 1.5rem;"></i>
+                        <p style="font-weight: 700;">No pending access requests at this time.</p>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
         </main>
     </div>
-    <script>lucide.createIcons(); if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');</script>
+
+    <script>
+        lucide.createIcons();
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+    </script>
 </body>
 
 </html>

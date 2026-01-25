@@ -11,6 +11,7 @@
 
     :root {
       --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
       --bg-main: #f8fafc;
       --bg-card: #ffffff;
       --bg-sidebar: #ffffff;
@@ -19,6 +20,7 @@
       --border: #e2e8f0;
       --accent: #eff6ff;
       --sidebar-width: 280px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     body.dark-mode {
@@ -44,6 +46,7 @@
       height: 100vh;
       overflow: hidden;
       display: flex;
+      transition: background-color 0.3s;
     }
 
     .sidebar {
@@ -52,12 +55,35 @@
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
+      z-index: 1000;
+      transition: var(--transition);
     }
 
     .sidebar-inner {
       flex: 1;
       overflow-y: auto;
       padding: 1.5rem;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+
+    .sidebar-header img {
+      width: 40px;
+      border-radius: 10px;
+    }
+
+    .sidebar-header h1 {
+      font-size: 1rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .nav-link {
@@ -70,13 +96,20 @@
       border-radius: 12px;
       font-size: 0.85rem;
       font-weight: 600;
-      transition: 0.3s;
+      transition: var(--transition);
       margin-bottom: 4px;
     }
 
-    .nav-link:hover {
+    .nav-link:hover,
+    .nav-link.active {
       background: var(--accent);
       color: var(--primary);
+      transform: translateX(5px);
+    }
+
+    .nav-link i {
+      width: 18px;
+      height: 18px;
     }
 
     .main-wrapper {
@@ -84,6 +117,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
 
     .top-navbar {
@@ -94,17 +128,44 @@
       justify-content: space-between;
       align-items: center;
       padding: 0 2rem;
+      flex-shrink: 0;
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
     }
 
     .content-area {
       flex: 1;
       overflow-y: auto;
-      padding: 4rem 2rem;
+      padding: 3rem 2rem;
       background-image: radial-gradient(var(--border) 0.5px, transparent 0.5px);
     }
 
     .upload-card {
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto;
       background: var(--bg-card);
       padding: 3rem;
@@ -117,20 +178,17 @@
     .drop-zone {
       border: 2px dashed var(--border);
       border-radius: 20px;
-      padding: 3rem 2rem;
+      padding: 4rem 2rem;
       margin-bottom: 2rem;
       transition: 0.3s;
       cursor: pointer;
       background: var(--bg-main);
+      display: block;
     }
 
     .drop-zone:hover {
       border-color: var(--primary);
       background: var(--accent);
-    }
-
-    .file-input {
-      display: none;
     }
 
     .btn-upload {
@@ -165,63 +223,105 @@
       gap: 10px;
     }
 
-    .success {
+    .alert.success {
       background: #f0fdf4;
       color: #166534;
       border-left: 5px solid #22c55e;
     }
 
-    .error {
+    .alert.error {
       background: #fef2f2;
       color: #991b1b;
       border-left: 5px solid #ef4444;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        bottom: 0;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .mobile-nav-toggle {
+        display: block;
+      }
+
+      .top-navbar {
+        padding: 0 1rem;
+      }
+
+      .content-area {
+        padding: 2rem 1rem;
+      }
+
+      .upload-card {
+        padding: 2rem 1.5rem;
+      }
     }
   </style>
 </head>
 
 <body>
-  <aside class="sidebar">
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
-      <div style="display:flex; align-items:center; gap:12px; margin-bottom:3rem;"><img
-          src="{{ url_for('static', filename='employee.png') }}" style="width:40px;">
-        <h1 style="font-size:1rem; font-weight:800; color:var(--primary);">DEBRE BERHAN</h1>
+      <div class="sidebar-header"><img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
+        <h1>DEBRE BERHAN<br>ESS SYSTEM</h1>
       </div>
       <nav><a href="/home" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a><a href="/materials"
-          class="nav-link"><i data-lucide="package"></i> Stock Inventory</a></nav>
+          class="nav-link"><i data-lucide="package"></i> Stock Inventory</a><a href="/upload-materials"
+          class="nav-link active"><i data-lucide="layers"></i> Bulk Upload</a></nav>
     </div>
   </aside>
 
   <div class="main-wrapper">
     <header class="top-navbar">
-      <div style="font-weight:800; font-size:1.25rem;">Bulk Inventory Sync</div>
+      <div style="display:flex; align-items:center; gap:10px;"><button class="mobile-nav-toggle"
+          onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+        <div style="font-weight:800; font-size:1.25rem;">Bulk Asset Sync</div>
+      </div>
+      <div
+        style="display:flex; align-items:center; gap:10px; padding:5px 15px; background:var(--accent); border-radius:50px;">
+        <div style="font-size:0.8rem; font-weight:800;">Logistics Admin</div><i data-lucide="truck" size="14"></i>
+      </div>
     </header>
+
     <main class="content-area">
       {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in
       messages %}<div class="alert {{ category }}"><i data-lucide="info"></i> {{ message }}</div>{% endfor %}{% endif
       %}{% endwith %}
       <div class="upload-card">
-        <i data-lucide="package-search" size="56" color="var(--primary)" style="margin-bottom:1.5rem;"></i>
-        <h2 style="font-weight:800; font-size:1.75rem; margin-bottom:0.5rem;">Inventory Import</h2>
-        <p style="color:var(--text-muted); margin-bottom:2.5rem;">Sync multiple warehouse items using an Excel (.xlsx)
-          or CSV worksheet.</p>
+        <div
+          style="width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); color: var(--primary); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+          <i data-lucide="package-search" size="32"></i></div>
+        <h2 style="font-weight:800; font-size:1.75rem; margin-bottom:0.5rem;">Inventory Bulk Sync</h2>
+        <p style="color:var(--text-muted); margin-bottom:2.5rem; font-size: 0.95rem;">Automate warehouse population
+          using structured Excel (.xlsx) or CSV data worksheets.</p>
 
         <form method="POST" enctype="multipart/form-data">
           <label class="drop-zone" id="drop-zone">
-            <i data-lucide="layers" size="32" style="margin-bottom:10px; display:block; margin: 0 auto 10px;"></i>
-            <span id="file-name" style="font-weight:700; font-size:0.9rem; color:var(--text-muted);">Select inventory
+            <i data-lucide="upload-cloud" size="36" style="margin-bottom:1rem; color: var(--text-muted);"></i>
+            <span id="file-name"
+              style="font-weight:800; font-size:0.9rem; color:var(--text-muted); display: block;">Select inventory
               master list</span>
-            <input type="file" name="file" class="file-input" id="file-input" required accept=".xlsx, .csv">
+            <input type="file" name="file" style="display:none;" id="file-input" required accept=".xlsx, .csv">
           </label>
           <button type="submit" class="btn-upload"><i data-lucide="upload"></i> Initiate Batch Import</button>
-        </form>
 
-        <div style="margin-top:2.5rem; text-align:left; padding:1.5rem; background:var(--bg-main); border-radius:16px;">
-          <h4
-            style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; margin-bottom:10px;">
-            Sync Mapping:</h4>
-          <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.6;">Your file must contain: <b>name</b>
-            (Designation) and <b>serial_number</b> (Unique ID).</p>
-        </div>
+          <div
+            style="margin-top:2.5rem; text-align:left; padding:1.5rem; background:var(--bg-main); border-radius:18px; border: 1px solid var(--border);">
+            <h4
+              style="font-size:0.7rem; font-weight:800; color:var(--primary); text-transform:uppercase; margin-bottom:10px; letter-spacing: 0.5px;">
+              Mapping Requirements:</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.6;">Mandatory columns: <b>name</b> (Item
+              Designation) and <b>serial_number</b> (Hardware ID).</p>
+          </div>
+        </form>
       </div>
     </main>
   </div>
@@ -230,9 +330,8 @@
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
     const fileInput = document.getElementById('file-input');
     const fileName = document.getElementById('file-name');
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) fileName.textContent = e.target.files[0].name;
-    });
+    fileInput.addEventListener('change', (e) => { if (e.target.files.length > 0) fileName.textContent = e.target.files[0].name; });
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
   </script>
 </body>
 
