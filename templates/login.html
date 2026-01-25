@@ -198,10 +198,40 @@
         }
 
         @media (max-width: 480px) {
-            .login-card {
-                padding: 2.5rem 1.5rem;
-                border-radius: 24px;
+            body {
+                padding: 1rem;
             }
+
+            .login-card {
+                padding: 3rem 1.5rem;
+                border-radius: 28px;
+            }
+
+            .logo-section h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 14px;
+            margin-bottom: 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: left;
+            border: 1px solid transparent;
+        }
+
+        .alert.error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .alert.success {
+            background: #f0fdf4;
+            color: #166534;
+            border-color: #bbf7d0;
         }
     </style>
 </head>
@@ -219,8 +249,7 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div
-            style="padding: 1rem; border-radius: 14px; margin-bottom: 1.5rem; background: {{ '#fef2f2' if category == 'error' else '#f0fdf4' }}; color: {{ '#b91c1c' if category == 'error' else '#166534' }}; font-size: 0.8rem; font-weight: 700; text-align: left; border: 1px solid {{ '#fecaca' if category == 'error' else '#bbf7d0' }};">
+        <div class="alert {{ 'error' if category == 'error' else 'success' }}">
             {{ message }}
         </div>
         {% endfor %}

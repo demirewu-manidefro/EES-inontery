@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Materials List</title>
-     <style>
+    <style>
         body {
             background: linear-gradient(to right, black, green);
             font-family: Arial, sans-serif;
@@ -36,7 +37,8 @@
             color: black;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px 20px;
             border-bottom: 1px solid #ddd;
             text-align: center;
@@ -91,29 +93,31 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
-    a{
-  display: inline-block;
-  background-color: white;
-  color: black;
-  font-weight: 700;
-  padding: 12px 25px;
-  border-radius: 10px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 20px;
-  text-align: center;
-  min-width: 160px;
-}
 
-a:hover {
- background-color: transparent;
-  color: var(--main-color);
-  border: 2px solid white;
-}
+        a {
+            display: inline-block;
+            background-color: white;
+            color: black;
+            font-weight: 700;
+            padding: 12px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-align: center;
+            min-width: 160px;
+        }
+
+        a:hover {
+            background-color: transparent;
+            color: var(--main-color);
+            border: 2px solid white;
+        }
     </style>
 
 </head>
+
 <body>
     <h1>All Materials</h1>
 
@@ -141,4 +145,5 @@ a:hover {
     <br>
     <a href="{{ url_for('home') }}">Back to Dashboard</a>
 </body>
+
 </html>
