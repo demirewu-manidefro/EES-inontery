@@ -91,10 +91,10 @@ def register():
             flash("Username already exists", "error")
             return redirect(url_for("register"))
 
-        new_user = User(username=username, password=password, role=role)
+        new_user = User(username=username, password=password, role=role, is_approved=False)
         db.session.add(new_user)
         db.session.commit()
-        flash("User registered successfully", "success")
+        flash("Registration successful! Please wait for administrative approval before you can log in.", "success")
         return redirect(url_for("root"))
 
     return render_template("register.html", user=current_user)
@@ -111,10 +111,13 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user and check_password_hash(user.password, password):
+            if not user.is_approved and user.username != 'admin':
+                flash("Your account is pending approval. Please contact the administrator.", "error")
+                return redirect(url_for("login"))
+            
             login_user(user)
-            flash("Logged in successfully!", "success")
-            next_page = request.args.get("next")
-            return redirect(next_page or url_for("home"))
+            flash(f"Welcome back, {user.username}!", "success")
+            return redirect(url_for("home"))
 
         flash("Invalid credentials", "error")
 
@@ -125,7 +128,7 @@ def login():
 def logout():
     logout_user()
     flash("Logged out successfully", "success")
-    return redirect(url_for("login"))
+    return redirect(url_for("root"))
 
 
 
@@ -211,8 +214,131 @@ def add_employee():
 
 
 
+# ---------------- USER APPROVAL ----------------
+@app.route('/admin/approve-users')
+@login_required
+def manage_approvals():
+    if current_user.role != 'admin':
+        flash("Unauthorized access.", "error")
+        return redirect(url_for('home'))
+    
+    pending_users = User.query.filter_by(is_approved=False).all()
+    return render_template('approve_users.html', users=pending_users)
+
+@app.route('/admin/approve-user/<int:user_id>', methods=['POST'])
+@login_required
+def approve_user(user_id):
+    if current_user.role != 'admin':
+        return "Unauthorized", 403
+    
+    user = User.query.get_or_404(user_id)
+    user.is_approved = True
+    db.session.commit()
+    flash(f"User {user.username} has been approved.", "success")
+    return redirect(url_for('manage_approvals'))
+
+@app.route('/admin/reject-user/<int:user_id>', methods=['POST'])
+@login_required
+def reject_user(user_id):
+    if current_user.role != 'admin':
+        return "Unauthorized", 403
+    
+    user = User.query.get_or_404(user_id)
+    username = user.username
+    db.session.delete(user)
+    db.session.commit()
+    flash(f"User {username} has been rejected and removed.", "success")
+    return redirect(url_for('manage_approvals'))
+
+# ---------------- BULK UPLOAD USERS ----------------
+@app.route('/admin/upload-users', methods=['GET', 'POST'])
+@login_required
+def upload_users():
+    if current_user.role != 'admin':
+        flash("Unauthorized access.", "error")
+        return redirect(url_for('home'))
+
+    if request.method == 'POST':
+        file = request.files.get('file')
+        if not file:
+            flash("No file selected!", "error")
+            return redirect(request.url)
+
+        filename = secure_filename(file.filename)
+        try:
+            df = pd.read_excel(file) if filename.endswith('.xlsx') else pd.read_csv(file)
+            df.columns = [str(c).strip().lower().replace(" ", "_") for c in df.columns]
+            
+            added = 0
+            for _, row in df.iterrows():
+                u = str(row.get('username', '')).strip()
+                p = str(row.get('password', '')).strip()
+                r = str(row.get('role', 'employee')).strip()
+                
+                if u and p:
+                    if not User.query.filter_by(username=u).first():
+                        hashed_pw = generate_password_hash(p)
+                        new_user = User(username=u, password=hashed_pw, role=r, is_approved=True)
+                        db.session.add(new_user)
+                        added += 1
+            
+            db.session.commit()
+            flash(f"Successfully uploaded {added} users.", "success")
+            return redirect(url_for('home'))
+        except Exception as e:
+            flash(f"Error: {e}", "error")
+            
+    return render_template("upload_users.html")
+
+
+# ---------------- BULK UPLOAD MATERIALS ----------------
+@app.route('/upload-materials', methods=['GET', 'POST'])
+@login_required
+def upload_materials():
+    if current_user.role != 'admin':
+        flash("Unauthorized access.", "error")
+        return redirect(url_for('home'))
+
+    if request.method == 'POST':
+        file = request.files.get('file')
+        if not file:
+            flash("No file selected!", "error")
+            return redirect(request.url)
+
+        filename = secure_filename(file.filename)
+        if not (filename.endswith('.xlsx') or filename.endswith('.csv')):
+            flash("Unsupported format!", "error")
+            return redirect(request.url)
+
+        try:
+            df = pd.read_excel(file) if filename.endswith('.xlsx') else pd.read_csv(file)
+            df.columns = [str(c).strip().lower().replace(" ", "_") for c in df.columns]
+            
+            added = 0
+            for _, row in df.iterrows():
+                name = str(row.get('name', '')).strip()
+                sn = str(row.get('serial_number', '')).strip()
+                
+                if name and sn:
+                    exists = Material.query.filter_by(serial_number=sn).first()
+                    if not exists:
+                        new_mat = Material(name=name, serial_number=sn, status='available')
+                        db.session.add(new_mat)
+                        added += 1
+            
+            db.session.commit()
+            flash(f"Successfully uploaded {added} materials.", "success")
+            return redirect(url_for('materials'))
+        except Exception as e:
+            app.logger.exception("Error uploading materials")
+            flash(f"Error uploading materials: {e}", "error")
+            return redirect(url_for('upload_materials'))
+
+    return render_template("upload_materials.html")
+
 # Add Material with serial number
 @app.route('/add-material', methods=['GET', 'POST'])
+@login_required
 def add_material():
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
@@ -222,9 +348,9 @@ def add_material():
             flash("Both Material Name and Serial Number are required.", "error")
             return redirect(url_for('add_material'))
 
-        exists = Material.query.filter_by(name=name, serial_number=serial_number).first()
+        exists = Material.query.filter_by(serial_number=serial_number).first()
         if exists:
-            flash(f"Material '{name}' with Serial Number '{serial_number}' already exists.", "error")
+            flash(f"Material with Serial Number '{serial_number}' already exists.", "error")
         else:
             new_material = Material(name=name, serial_number=serial_number, status='available')
             db.session.add(new_material)
@@ -233,83 +359,7 @@ def add_material():
         return redirect(url_for('add_material'))
 
     return render_template("add_material.html")
-@app.route('/upload-materials', methods=['GET', 'POST'])
-def upload_materials():
-    if request.method == 'POST':
-        file = request.files.get('excel_file')
-        if not file or file.filename == '':
-            flash("No file uploaded.", "error")
-            return redirect(url_for('upload_materials'))
 
-        filename = secure_filename(file.filename)
-        fname = filename.lower()
-        if not (fname.endswith('.xlsx') or fname.endswith('.csv')):
-            flash("Please upload a .xlsx or .csv file.", "error")
-            return redirect(url_for('upload_materials'))
-
-        try:
-            # Read file into pandas DataFrame (force strings)
-            if fname.endswith('.csv'):
-                df = pd.read_csv(file, dtype=str)
-            else:
-                # use openpyxl for .xlsx (make sure openpyxl is installed)
-                df = pd.read_excel(file, engine='openpyxl', dtype=str)
-
-            # Normalize column names to help users who use "Name", "Material Name", "serial no", etc.
-            original_cols = list(df.columns)
-            norm_map = {col: str(col).strip() for col in original_cols}
-            df.rename(columns=norm_map, inplace=True)
-
-            # create lower->orig mapping for lookup
-            lower_map = {str(col).strip().lower().replace(" ", "_"): col for col in df.columns}
-
-            # try to find name and serial columns by common variants
-            name_candidates = ['name', 'material_name', 'material', 'item_name', 'title']
-            serial_candidates = ['serial_number', 'serial', 'serial_no', 'sn', 'serialnumber']
-
-            name_col = next((lower_map[c] for c in name_candidates if c in lower_map), None)
-            serial_col = next((lower_map[c] for c in serial_candidates if c in lower_map), None)
-
-            if not name_col or not serial_col:
-                flash(
-                    "Couldn't find required columns. Expected something like 'name' and 'serial_number' in the file. "
-                    f"Found columns: {', '.join(original_cols)}",
-                    "error"
-                )
-                return redirect(url_for('upload_materials'))
-
-            added = 0
-            skipped = 0
-            bad_rows = 0
-
-            for _, row in df.iterrows():
-                name = str(row.get(name_col, '')).strip() if pd.notna(row.get(name_col, '')) else ''
-                serial = str(row.get(serial_col, '')).strip() if pd.notna(row.get(serial_col, '')) else ''
-
-                if not name or not serial:
-                    bad_rows += 1
-                    continue
-
-                # check duplicates by name + serial_number
-                exists = Material.query.filter_by(name=name, serial_number=serial).first()
-                if exists:
-                    skipped += 1
-                else:
-                    new_material = Material(name=name, serial_number=serial, status='available')
-                    db.session.add(new_material)
-                    added += 1
-
-            db.session.commit()
-            flash(f"Upload complete — Added: {added}, Skipped (duplicates): {skipped}, Bad/Skipped rows (missing fields): {bad_rows}", "success")
-            return redirect(url_for('materials'))  # show materials after upload
-
-        except Exception as e:
-            # log full traceback to your console and return friendly message to user
-            app.logger.exception("Error uploading materials")
-            flash(f"Error uploading materials: {e}", "error")
-            return redirect(url_for('upload_materials'))
-
-    return render_template("upload_materials.html")
 
 # Borrow Material (only materials available)
 @app.route('/borrow', methods=['GET', 'POST'])
@@ -653,6 +703,21 @@ def approve_leave(emp_id):
     db.session.commit()
     flash("Employee approved for leave-out and status updated.", "success")
     return redirect(url_for('list_employees'))
+
+@app.route('/return-from-leave/<int:emp_id>', methods=['POST'])
+def return_from_leave(emp_id):
+    employee = Employee.query.get_or_404(emp_id)
+    leave_out = LeaveOutMember.query.filter_by(employee_id=emp_id).first()
+    
+    if leave_out:
+        db.session.delete(leave_out)
+        employee.status = 'active'
+        db.session.commit()
+        flash(f"Employee {employee.name} has returned from leave and is now active.", "success")
+    else:
+        flash("Employee was not on leave-out.", "error")
+        
+    return redirect(url_for('leave_out'))
 @app.route('/export-borrowed-and-available')
 def export_borrowed_and_available():
     # Borrowed employees data

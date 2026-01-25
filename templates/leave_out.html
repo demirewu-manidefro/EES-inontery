@@ -180,6 +180,7 @@
                             <th>Contact</th>
                             <th>Leave Date</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -203,6 +204,15 @@
                                 </div>
                             </td>
                             <td><span class="leave-badge">Approved Leave</span></td>
+                            <td>
+                                <form action="{{ url_for('return_from_leave', emp_id=member.id) }}" method="POST"
+                                    style="margin: 0;">
+                                    <button type="submit" class="btn-back"
+                                        style="background: var(--secondary-blue); color: var(--primary-blue); border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 4px;">
+                                        <i data-lucide="rotate-ccw" size="14"></i> Return
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

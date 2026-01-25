@@ -39,7 +39,7 @@
 
         .header {
             background: var(--card-bg);
-            padding: 1rem 5%;
+            padding: 0.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -52,19 +52,19 @@
         .logo-section {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             text-decoration: none;
         }
 
         .logo-section h1 {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             color: var(--primary-blue);
             margin: 0;
         }
 
         .main-content {
-            max-width: 1300px;
-            margin: 40px auto;
+            max-width: 1400px;
+            margin: 20px auto;
             padding: 0 20px;
         }
 
@@ -72,33 +72,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .btn-back {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             text-decoration: none;
             color: var(--text-gray);
             font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .btn-back:hover {
-            color: var(--primary-blue);
+            font-size: 0.85rem;
         }
 
         .table-card {
             background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .table-container {
-            overflow-x: auto;
         }
 
         table {
@@ -110,21 +102,17 @@
         th {
             background: var(--secondary-blue);
             color: var(--primary-blue);
-            padding: 16px;
+            padding: 12px 16px;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
         td {
-            padding: 16px;
-            border-bottom: 1px solid #eee;
-            font-size: 0.95rem;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
+            padding: 8px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.85rem;
+            vertical-align: middle;
         }
 
         tr:hover td {
@@ -132,9 +120,9 @@
         }
 
         .status-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.65rem;
             font-weight: 700;
             text-transform: uppercase;
         }
@@ -151,20 +139,20 @@
 
         .action-btns {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-action {
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 6px 10px;
+            border-radius: 4px;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.8rem;
-            transition: all 0.2s;
+            font-size: 0.7rem;
             display: flex;
             align-items: center;
             gap: 4px;
+            transition: 0.2s;
         }
 
         .btn-approve {
@@ -172,14 +160,14 @@
             color: var(--primary-blue);
         }
 
-        .btn-approve:hover {
-            background: var(--primary-blue);
-            color: white;
-        }
-
         .btn-wait {
             background: #fef3c7;
             color: #b45309;
+        }
+
+        .btn-approve:hover {
+            background: var(--primary-blue);
+            color: white;
         }
 
         .btn-wait:hover {
@@ -187,53 +175,42 @@
             color: white;
         }
 
-        .empty-state {
-            padding: 40px;
-            text-align: center;
-            color: var(--text-gray);
-        }
-
         .borrowed-list {
             list-style: none;
             padding: 0;
             margin: 0;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
         }
 
         .borrowed-list li {
             color: var(--text-gray);
-            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
     </style>
 </head>
 
 <body>
     <div class="overlay"></div>
-
     <header class="header">
         <a href="/home" class="logo-section">
-            <img src="{{ url_for('static', filename='employee.png') }}"
-                style="width:40px; height:40px; border-radius:8px;" alt="Logo">
+            <img src="{{ url_for('static', filename='employee.png') }}" style="width:32px; height:32px;" alt="Logo">
             <h1>Debre Berhan ESS</h1>
         </a>
-        <div style="font-weight: 500; font-size: 0.9rem; color: var(--text-gray);">
-            Employee Directory
-        </div>
     </header>
 
     <main class="main-content">
         <div class="page-header">
-            <a href="/home" class="btn-back">
-                <i data-lucide="arrow-left" size="18"></i> Back to Dashboard
-            </a>
-            <h2 style="font-weight: 800;">All Employees</h2>
+            <a href="/home" class="btn-back"><i data-lucide="arrow-left" size="14"></i> Dashboard</a>
+            <h2 style="font-size: 1.25rem; font-weight: 800;">Staff Records</h2>
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
         <div
-            style="margin-bottom: 20px; padding: 12px; border-radius: 8px; background: {% if category == 'error' %}#fee2e2{% else %}#dcfce7{% endif %}; color: {% if category == 'error' %}#991b1b{% else %}#166534{% endif %}; font-size: 0.9rem;">
+            style="margin-bottom: 15px; padding: 10px; border-radius: 6px; background: {{ '#fee2e2' if category == 'error' else '#dcfce7' }}; color: {{ '#991b1b' if category == 'error' else '#166534' }}; font-size: 0.8rem;">
             {{ message }}
         </div>
         {% endfor %}
@@ -242,90 +219,72 @@
 
         <div class="table-card">
             {% if employees %}
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Contact</th>
-                            <th>Position & Status</th>
-                            <th>Project</th>
-                            <th>Materials</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for emp in employees %}
-                        <tr>
-                            <td>
-                                <div style="font-weight: 700;">{{ emp.name }} {{ emp.father_name }}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-gray);">{{ emp.grand_father_name }}
-                                </div>
-                                <div style="font-size: 0.75rem; color: var(--text-gray);">ID: #{{ emp.id }} | {{ emp.sex
-                                    }}</div>
-                            </td>
-                            <td>
-                                <div style="display:flex; align-items:center; gap:6px;">
-                                    <i data-lucide="phone" size="14" style="color:var(--text-gray);"></i>
-                                    {{ emp.phone_number }}
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-weight: 600;">{{ emp.position }}</div>
-                                <div style="font-size: 0.8rem; color: var(--text-gray);">{{ emp.employment_status }}
-                                </div>
-                                <div style="margin-top:6px;">
-                                    <span
-                                        class="status-badge {% if emp.status == 'Borrowed' %}status-borrowed{% else %}status-available{% endif %}">
-                                        {{ emp.status }}
-                                    </span>
-                                </div>
-                            </td>
-                            <td>{{ emp.project }}</td>
-                            <td>
-                                {% if emp.materials %}
-                                <ul class="borrowed-list">
-                                    {% for material in emp.materials %}
-                                    <li><i data-lucide="package" size="12"></i> {{ material }}</li>
-                                    {% endfor %}
-                                </ul>
-                                {% else %}
-                                <span style="color: #ccc;">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="action-btns">
-                                    <form action="{{ url_for('approve_leave', emp_id=emp.id) }}" method="post"
-                                        style="margin: 0;">
-                                        <button type="submit" class="btn-action btn-approve" title="Approve Leave">
-                                            <i data-lucide="log-out" size="14"></i> Leave
-                                        </button>
-                                    </form>
-                                    <form action="{{ url_for('add_to_waiting', emp_id=emp.id) }}" method="post"
-                                        style="margin: 0;">
-                                        <button type="submit" class="btn-action btn-wait" title="Add to Waitlist">
-                                            <i data-lucide="clock" size="14"></i> Wait
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee Details</th>
+                        <th>Contact</th>
+                        <th>Role & Position</th>
+                        <th>Inventory Status</th>
+                        <th>Active Tools</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in employees %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 700;">{{ emp.name }} {{ emp.father_name }}</div>
+                            <div style="font-size: 0.7rem; color: var(--text-gray);">{{ emp.grand_father_name }} | ID:
+                                #{{ emp.id }}</div>
+                        </td>
+                        <td>{{ emp.phone_number }}</td>
+                        <td>
+                            <div style="font-weight: 600;">{{ emp.position }}</div>
+                            <div style="font-size: 0.7rem; color: var(--text-gray);">{{ emp.employment_status }}</div>
+                        </td>
+                        <td>
+                            <span
+                                class="status-badge {{ 'status-borrowed' if emp.status == 'Borrowed' else 'status-available' }}">
+                                {{ emp.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if emp.materials %}
+                            <ul class="borrowed-list">
+                                {% for material in emp.materials %}
+                                <li><i data-lucide="package" size="10"></i> {{ material }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}<span style="color:#ccc;">-</span>{% endif %}
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <form action="{{ url_for('approve_leave', emp_id=emp.id) }}" method="post">
+                                    <button type="submit" class="btn-action btn-approve" title="Mark as Left">
+                                        <i data-lucide="log-out" size="12"></i> Leave
+                                    </button>
+                                </form>
+                                <form action="{{ url_for('add_to_waiting', emp_id=emp.id) }}" method="post">
+                                    <button type="submit" class="btn-action btn-wait" title="Add to Waitlist">
+                                        <i data-lucide="clock" size="12"></i> Wait
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             {% else %}
-            <div class="empty-state">
-                <i data-lucide="users" size="48" style="margin-bottom: 16px; opacity: 0.3;"></i>
-                <p>No employees found in the directory.</p>
+            <div style="padding:40px; text-align:center; color:var(--text-gray);">
+                <i data-lucide="users" size="48" style="opacity:0.2;"></i>
+                <p>No employees found.</p>
             </div>
             {% endif %}
         </div>
     </main>
-
-    <script>
-        lucide.createIcons();
-    </script>
+    <script>lucide.createIcons();</script>
 </body>
 
 </html>

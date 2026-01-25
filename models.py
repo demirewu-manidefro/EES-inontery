@@ -62,3 +62,4 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), default="admin") 
+    is_approved = db.Column(db.Boolean, default=False)

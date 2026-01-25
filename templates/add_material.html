@@ -163,7 +163,6 @@
 
 <body>
   <div class="overlay"></div>
-
   <header class="header">
     <a href="/home" class="logo-section">
       <img src="{{ url_for('static', filename='employee.png') }}" style="width:40px; height:40px; border-radius:8px;"
@@ -171,47 +170,36 @@
       <h1>Debre Berhan ESS</h1>
     </a>
   </header>
-
   <main class="main-content">
     <div class="form-card">
       <h2>Add New Material</h2>
-
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       <ul class="flash-messages">
         {% for category, message in messages %}
         <li
-          style="background: {% if category == 'error' %}#fee2e2{% else %}#dcfce7{% endif %}; color: {% if category == 'error' %}#991b1b{% else %}#166534{% endif %}; border: 1px solid {% if category == 'error' %}#fecaca{% else %}#bbf7d0{% endif %};">
+          style="background: {{ '#fee2e2' if category == 'error' else '#dcfce7' }}; color: {{ '#991b1b' if category == 'error' else '#166534' }}; border: 1px solid {{ '#fecaca' if category == 'error' else '#bbf7d0' }};">
           {{ message }}
         </li>
         {% endfor %}
       </ul>
       {% endif %}
       {% endwith %}
-
       <form action="{{ url_for('add_material') }}" method="POST">
         <div class="form-group">
           <label>Material Name</label>
           <input type="text" name="name" placeholder="E.g. Laptop, Tablet, Tool" required>
         </div>
-
         <div class="form-group">
           <label>Serial Number</label>
           <input type="text" name="serial_number" placeholder="Unique Serial ID" required>
         </div>
-
         <button type="submit" class="btn-submit">Add to Inventory</button>
       </form>
-
-      <a href="/home" class="btn-back">
-        <i data-lucide="arrow-left" size="14"></i> Back to Dashboard
-      </a>
+      <a href="/home" class="btn-back"><i data-lucide="arrow-left" size="14"></i> Back to Dashboard</a>
     </div>
   </main>
-
-  <script>
-    lucide.createIcons();
-  </script>
+  <script>lucide.createIcons();</script>
 </body>
 
 </html>

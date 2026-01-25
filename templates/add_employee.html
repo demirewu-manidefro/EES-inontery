@@ -148,17 +148,24 @@
       color: var(--primary-blue);
     }
 
-    .flash-messages {
-      list-style: none;
-      padding: 0;
-      margin-bottom: 20px;
+    .flash-messages li {
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-bottom: 12px;
+      border: 1px solid transparent;
     }
 
-    .flash-messages li {
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      margin-bottom: 8px;
+    .flash-error {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+
+    .flash-success {
+      background-color: #dcfce7;
+      color: #166534;
+      border-color: #bbf7d0;
     }
   </style>
 </head>
@@ -182,8 +189,7 @@
       {% if messages %}
       <ul class="flash-messages">
         {% for category, message in messages %}
-        <li
-          style="background: {% if category == 'error' %}#fee2e2{% else %}#dcfce7{% endif %}; color: {% if category == 'error' %}#991b1b{% else %}#166534{% endif %}; border: 1px solid {% if category == 'error' %}#fecaca{% else %}#bbf7d0{% endif %};">
+        <li class="flash-{{ 'error' if category == 'error' else 'success' }}">
           {{ message }}
         </li>
         {% endfor %}
@@ -241,7 +247,7 @@
 
           <div class="form-group">
             <label>Project</label>
-            <input type="text" name="project" placeholder="E.g. Project X">
+            <input type="text" name="project" placeholder="Optional">
           </div>
         </div>
 
