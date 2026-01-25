@@ -4,33 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Debre Berhan ESS</title>
+    <title>Master Dashboard - Debre Berhan ESS</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
         :root {
-            --primary-blue: #3b82f6;
-            --primary-dark: #1e40af;
-            --secondary-blue: #eff6ff;
-            --accent-glow: rgba(59, 130, 246, 0.4);
-            --text-dark: #1e293b;
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg-main: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-sidebar: #ffffff;
+            --text-main: #0f172a;
             --text-muted: #64748b;
-            --bg-body: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --card-border: rgba(255, 255, 255, 0.3);
-            --header-bg: rgba(255, 255, 255, 0.8);
-            --sidebar-bg: #ffffff;
+            --border: #e2e8f0;
+            --accent: #eff6ff;
+            --glow: rgba(59, 130, 246, 0.4);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 280px;
         }
 
         body.dark-mode {
-            --text-dark: #f8fafc;
+            --bg-main: #020617;
+            --bg-card: rgba(15, 23, 42, 0.8);
+            --bg-sidebar: #0f172a;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --bg-body: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --card-border: rgba(255, 255, 255, 0.05);
-            --header-bg: rgba(15, 23, 42, 0.8);
-            --sidebar-bg: #1e293b;
-            --secondary-blue: rgba(59, 130, 246, 0.1);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: rgba(59, 130, 246, 0.08);
         }
 
         * {
@@ -40,639 +42,737 @@
         }
 
         body {
-            font-family: 'Outfit', 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg-body), var(--secondary-blue));
-            min-height: 100vh;
-            color: var(--text-dark);
-            transition: var(--transition);
-            overflow-x: hidden;
-        }
-
-        .bg-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: radial-gradient(var(--accent-glow) 0.5px, transparent 0.5px);
-            background-size: 24px 24px;
-            opacity: 0.1;
-            z-index: -1;
-        }
-
-        .header {
-            background: var(--header-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 0.75rem 5%;
+            font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--card-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+            transition: background-color 0.3s;
         }
 
-        .logo-section {
+        /* --- Sidebar --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .sidebar-header {
             display: flex;
             align-items: center;
             gap: 12px;
+            margin-bottom: 2.5rem;
+            padding-left: 0.5rem;
         }
 
-        .logo-section img {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .logo-section h1 {
-            font-size: 1.25rem;
+        .sidebar-header h1 {
+            font-size: 1.15rem;
             font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(to right, var(--primary-blue), var(--primary-dark));
+            background: linear-gradient(to right, var(--primary), #6366f1);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .main-container {
-            padding: 2rem 5%;
-            max-width: 1400px;
-            margin: 0 auto;
+        .nav-group {
+            margin-bottom: 2rem;
         }
 
-        .welcome-header {
-            margin-bottom: 2.5rem;
-            animation: fadeInDown 0.6s ease-out;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .welcome-header h2 {
-            font-size: 2.25rem;
+        .nav-label {
+            font-size: 0.65rem;
             font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .welcome-header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 20px;
-            padding: 1.75rem;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.08);
-            border-color: var(--accent-glow);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 1.5rem;
-            z-index: 1;
-        }
-
-        .icon-box {
-            width: 44px;
-            height: 44px;
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: var(--transition);
-        }
-
-        .card:hover .icon-box {
-            background: var(--primary-blue);
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .card h3 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-item {
-            background: rgba(128, 128, 128, 0.05);
-            padding: 1rem;
-            border-radius: 15px;
-            transition: var(--transition);
-        }
-
-        .stat-item:hover {
-            background: rgba(128, 128, 128, 0.08);
-        }
-
-        .stat-value {
-            display: block;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary-blue);
-            margin-bottom: 2px;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.75rem;
+            padding-left: 1rem;
         }
 
-        .action-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .action-link {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.85rem 1.25rem;
-            background: rgba(128, 128, 128, 0.03);
-            border: 1px solid transparent;
-            border-radius: 12px;
-            color: var(--text-dark);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .action-link:hover {
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-            border-color: var(--accent-glow);
-            padding-left: 1.5rem;
-        }
-
-        .action-link i {
-            width: 18px;
-            height: 18px;
-            opacity: 0.7;
-        }
-
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-        }
-
-        .small-btn {
-            padding: 0.75rem;
-            font-size: 0.8rem;
-            text-align: center;
-            border-radius: 10px;
-            background: rgba(128, 128, 128, 0.05);
-            color: var(--text-dark);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .small-btn:hover {
-            background: var(--primary-blue);
-            color: white;
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-
-        .export-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 0.85rem;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            margin-bottom: 0.5rem;
-        }
-
-        .export-excel {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .export-excel:hover {
-            background: #16a34a;
-            color: white;
-            transform: scale(1.02);
-        }
-
-        .export-pdf {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .export-pdf:hover {
-            background: #ef4444;
-            color: white;
-            transform: scale(1.02);
-        }
-
-        .export-items {
-            background: #e0f2fe;
-            color: #075985;
-        }
-
-        .export-items:hover {
-            background: #0ea5e9;
-            color: white;
-            transform: scale(1.02);
-        }
-
-        .export-waitlist {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .export-waitlist:hover {
-            background: #f59e0b;
-            color: white;
-            transform: scale(1.02);
-        }
-
-        .theme-toggle {
-            background: var(--secondary-blue);
-            color: var(--primary-blue);
-            border: none;
-            padding: 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .theme-toggle:hover {
-            transform: rotate(20deg) scale(1.1);
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .logout-btn {
-            background: #ef4444;
-            color: white;
-            padding: 0.6rem 1.25rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 700;
-            transition: var(--transition);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-        }
-
-        .logout-btn:hover {
-            background: #dc2626;
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
-        }
-
-        .flash-msg {
-            padding: 1rem 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
+        .nav-link {
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 0.8rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
             font-weight: 600;
-            backdrop-filter: blur(10px);
-            animation: slideInRight 0.5s ease-out;
+            transition: var(--transition);
+            margin-bottom: 4px;
         }
 
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--accent);
+            color: var(--primary);
         }
 
-        .flash-success {
-            background: rgba(34, 197, 94, 0.15);
-            color: #15803d;
-            border-left: 5px solid #22c55e;
+        .nav-link i {
+            width: 20px;
+            height: 20px;
         }
 
-        .flash-error {
-            background: rgba(239, 68, 68, 0.15);
-            color: #b91c1c;
-            border-left: 5px solid #ef4444;
+        /* --- Main Content --- */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
 
-        .fab {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: var(--primary-blue);
+        .top-navbar {
+            height: 72px;
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 90;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 6px 6px 16px;
+            background: var(--accent);
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info .name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .user-info .role {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .logout-circle {
+            width: 32px;
+            height: 32px;
+            background: #ef4444;
             color: white;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 10px 25px var(--accent-glow);
-            cursor: pointer;
-            transition: var(--transition);
-            z-index: 1001;
             text-decoration: none;
+            transition: var(--transition);
         }
 
-        .fab:hover {
-            transform: scale(1.1) rotate(90deg);
-            background: var(--primary-dark);
+        .logout-circle:hover {
+            transform: scale(1.1);
+            background: #dc2626;
         }
 
-        @media (max-width: 768px) {
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Stats Strip */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--accent);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stat-details .value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: block;
+            line-height: 1.1;
+        }
+
+        .stat-details .label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card h3 i {
+            color: var(--primary);
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 1.25rem;
+            background: var(--accent);
+            border: 1px solid transparent;
+            border-radius: 18px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .action-button:hover {
+            background: var(--bg-sidebar);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.08);
+        }
+
+        .action-button i {
+            color: var(--primary);
+            width: 24px;
+            height: 24px;
+        }
+
+        .action-button span {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .action-button p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Exports Bar */
+        .exports-section {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 24px;
+            padding: 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            /* Buffer for mobile menu space */
+        }
+
+        .exports-info h4 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .exports-info p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .export-btns {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .export-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .export-pill:hover {
+            background: var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* Floating Theme Toggle */
+        .theme-btn {
+            background: var(--bg-sidebar);
+            color: var(--primary);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .theme-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 1300px) {
+            .stats-strip {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+                width: 280px;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+                background: none;
+                border: none;
+                color: var(--text-main);
+                cursor: pointer;
+            }
+
+            .stats-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
 
-            .header {
-                padding: 0.75rem 4%;
+            .exports-section {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-strip {
+                grid-template-columns: 1fr;
             }
 
-            .welcome-header h2 {
-                font-size: 1.75rem;
+            .export-btns {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .export-pill {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn-grid {
+                grid-template-columns: 1fr;
             }
         }
-    </style>
-    <script>
-        // Apply theme immediately to prevent flash
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark-mode');
-            window.addEventListener('DOMContentLoaded', () => document.body.classList.add('dark-mode'));
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
         }
-    </script>
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .flash-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .flash-msg {
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            animation: slideIn 0.4s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .flash-success {
+            border-left: 6px solid #22c55e;
+            color: #15803d;
+        }
+
+        .flash-error {
+            border-left: 6px solid #ef4444;
+            color: #b91c1c;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="bg-pattern"></div>
-
-    <header class="header">
-        <div class="logo-section">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
             <img src="{{ url_for('static', filename='employee.png') }}" alt="Logo">
-            <h1>Debre Berhan ESS</h1>
+            <h1>ESS DEBRE BERHAN</h1>
         </div>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+
+        <nav class="nav-group">
+            <div class="nav-label">Core Operations</div>
+            <a href="/employees" class="nav-link"><i data-lucide="users"></i> Staff Directory</a>
+            <a href="/materials" class="nav-link"><i data-lucide="package"></i> Stock Inventory</a>
+            <a href="/borrow" class="nav-link"><i data-lucide="plus-circle"></i> Issue Material</a>
+            <a href="/return" class="nav-link"><i data-lucide="rotate-ccw"></i> Bulk Returns</a>
+        </nav>
+
+        <nav class="nav-group">
+            <div class="nav-label">Logistics Tracking</div>
+            <a href="/borrowed-employees" class="nav-link"><i data-lucide="clock"></i> Borrowing Status</a>
+            <a href="/waiting-return" class="nav-link"><i data-lucide="align-left"></i> Return Waitlist</a>
+            <a href="/leave-out" class="nav-link"><i data-lucide="history"></i> Leave History</a>
+        </nav>
+
+        <nav class="nav-group">
+            <div class="nav-label">System Admin</div>
+            <a href="/admin/approve-users" class="nav-link"><i data-lucide="user-check"></i> Pending Approvals</a>
+            <a href="/admin/upload-users" class="nav-link"><i data-lucide="key"></i> Import Accounts</a>
+            <a href="{{ url_for('change_password') }}" class="nav-link"><i data-lucide="settings"></i> Security
+                Settings</a>
+        </nav>
+
+        <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+            <button id="theme-toggle" class="nav-link"
+                style="width: 100%; border: none; background: none; cursor: pointer;">
                 <i data-lucide="moon" id="theme-icon"></i>
+                <span>Switch Theme</span>
             </button>
-            <div style="text-align: right; margin-right: 10px;">
-                <div style="font-size:0.85rem; font-weight:800;">{{ current_user.username }}</div>
-                <div style="font-size:0.7rem; color:var(--text-muted);">{{ current_user.role|capitalize }}</div>
-            </div>
-            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
         </div>
-    </header>
+    </aside>
 
-    <main class="main-container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div id="flash-container">
-            {% for category, message in messages %}
-            <div class="flash-msg flash-{{ 'error' if category == 'error' else 'success' }}">
-                <i data-lucide="{{ 'alert-circle' if category == 'error' else 'check-circle' }}" size="20"></i>
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-        {% endwith %}
+    <div class="main-wrapper">
+        <header class="top-navbar">
+            <button class="mobile-toggle" onclick="toggleSidebar()">
+                <i data-lucide="menu" size="24"></i>
+            </button>
+            <div class="page-title" style="font-weight: 800; font-size: 1.25rem;">Overview</div>
 
-        <div class="welcome-header">
-            <h2>System Dashboard</h2>
-            <p>Pulse overview of material management & workforce activity.</p>
-        </div>
-
-        <div class="dashboard-grid">
-            <!-- 1. Employee Intelligence -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="icon-box"><i data-lucide="users"></i></div>
-                    <h3>Workforce Data</h3>
+            <div class="user-pill">
+                <div class="user-info">
+                    <div class="name">{{ current_user.username }}</div>
+                    <div class="role">{{ current_user.role|capitalize }}</div>
                 </div>
-                <div class="stat-grid">
-                    <div class="stat-item">
-                        <span class="stat-value">{{ stats.total_employees }}</span>
-                        <span class="stat-label">Total Staff</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">{{ stats.leave_count }}</span>
-                        <span class="stat-label">On Leave</span>
-                    </div>
-                </div>
-                <a href="/employees" class="action-link">
-                    Staff Directory <i data-lucide="chevron-right"></i>
-                </a>
-                <div class="btn-group" style="margin-top: 10px;">
-                    <a href="/add_employee" class="small-btn">+ New Staff</a>
-                    <a href="/upload-employees" class="small-btn">Bulk Import</a>
-                </div>
-            </div>
-
-            <!-- 2. Inventory Management -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="icon-box"><i data-lucide="package"></i></div>
-                    <h3>Inventory & Stock</h3>
-                </div>
-                <div class="stat-grid">
-                    <div class="stat-item">
-                        <span class="stat-value">{{ stats.total_materials }}</span>
-                        <span class="stat-label">Total Items</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">{{ stats.borrowed_count }}</span>
-                        <span class="stat-label">Borrowed</span>
-                    </div>
-                </div>
-                <ul class="action-list">
-                    <li><a href="/materials" class="action-link">View Stock List <i data-lucide="list"></i></a></li>
-                    <li><a href="/borrow" class="action-link">Issue Material <i data-lucide="plus-circle"></i></a></li>
-                    <li><a href="/borrowed-employees" class="action-link">Track Borrowed <i data-lucide="clock"></i></a>
-                    </li>
-                </ul>
-                <div class="btn-group" style="margin-top: 10px;">
-                    <a href="/add-material" class="small-btn">+ New Item</a>
-                    <a href="/upload-materials" class="small-btn">Bulk Upload</a>
-                </div>
-            </div>
-
-            <!-- 3. Returns & Logistics -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="icon-box"><i data-lucide="rotate-ccw"></i></div>
-                    <h3>Returns & Queue</h3>
-                </div>
-                <div class="stat-grid" style="margin-bottom: 2rem;">
-                    <div class="stat-item" style="width: 100%; grid-column: span 2;">
-                        <span class="stat-value">{{ stats.waiting_count }}</span>
-                        <span class="stat-label">Employees in Return Queue</span>
-                    </div>
-                </div>
-                <ul class="action-list">
-                    <li><a href="/return" class="action-link">Bulk Return Process <i data-lucide="layers"></i></a></li>
-                    <li><a href="/return-individual" class="action-link">Return Single Item <i
-                                data-lucide="minus-square"></i></a></li>
-                    <li><a href="/waiting-return" class="action-link">Manage Return Queue <i
-                                data-lucide="align-left"></i></a></li>
-                </ul>
-            </div>
-
-            <!-- 4. Managerial Controls -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="icon-box"><i data-lucide="shield-check"></i></div>
-                    <h3>Administration</h3>
-                </div>
-                <ul class="action-list" style="margin-bottom: 1.5rem;">
-                    <li><a href="/admin/approve-users" class="action-link">User Approvals <i
-                                data-lucide="user-check"></i></a></li>
-                    <li><a href="/admin/upload-users" class="action-link">Import System Accounts <i
-                                data-lucide="key"></i></a></li>
-                    <li><a href="/leave-out" class="action-link">Leave History <i data-lucide="history"></i></a></li>
-                </ul>
-                <a href="{{ url_for('change_password') }}" class="action-link"
-                    style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
-                    Security Settings <i data-lucide="settings"></i>
+                <a href="{{ url_for('logout') }}" class="logout-circle" title="Exit System">
+                    <i data-lucide="log-out" size="16"></i>
                 </a>
             </div>
+        </header>
 
-            <!-- 5. Exports & Intelligence -->
-            <div class="card" style="grid-column: span min(2, 100%);">
-                <div class="card-header">
-                    <div class="icon-box"><i data-lucide="download"></i></div>
-                    <h3>Exports & Reports</h3>
+        <main class="content-area">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                <div class="flash-msg flash-{{ 'error' if category == 'error' else 'success' }}">
+                    <i data-lucide="{{ 'check-circle' if category == 'success' else 'alert-circle' }}"></i>
+                    {{ message }}
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                    <a href="{{ url_for('export_excel') }}" class="export-btn export-excel">
-                        <i data-lucide="file-spreadsheet"></i> Full Staff Report
-                    </a>
-                    <a href="{{ url_for('export_available_materials') }}" class="export-btn export-items">
-                        <i data-lucide="box"></i> Stock Availability
-                    </a>
-                    <a href="{{ url_for('export_borrowed_and_available') }}" class="export-btn export-waitlist">
-                        <i data-lucide="clipboard-list"></i> Combined Status
-                    </a>
-                    <a href="{{ url_for('export_waiting_return') }}" class="export-btn export-pdf">
-                        <i data-lucide="download-cloud"></i> Return Waitlist
-                    </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <!-- Statistics Grid -->
+            <div class="stats-strip fade-in">
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="users"></i></div>
+                    <div class="stat-details">
+                        <span class="value">{{ stats.total_employees }}</span>
+                        <span class="label">Total Staff</span>
+                    </div>
                 </div>
-                <div style="margin-top: 15px; font-size: 0.75rem; color: var(--text-muted); text-align: center;">
-                    Reports are generated in Excel (.xlsx) format for professional data analysis.
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="package"></i></div>
+                    <div class="stat-details">
+                        <span class="value">{{ stats.total_materials }}</span>
+                        <span class="label">Total Items</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #f59e0b; background: rgba(245,158,11,0.1);"><i
+                            data-lucide="clock"></i></div>
+                    <div class="stat-details">
+                        <span class="value">{{ stats.borrowed_count }}</span>
+                        <span class="label">Borrowed</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #ef4444; background: rgba(239,68,68,0.1);"><i
+                            data-lucide="align-right"></i></div>
+                    <div class="stat-details">
+                        <span class="value">{{ stats.waiting_count }}</span>
+                        <span class="label">Waitlist</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #10b981; background: rgba(16,185,129,0.1);"><i
+                            data-lucide="history"></i></div>
+                    <div class="stat-details">
+                        <span class="value">{{ stats.leave_count }}</span>
+                        <span class="label">On Leave</span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
 
-    <a href="/borrow" class="fab" title="Quick Issue">
-        <i data-lucide="plus" size="28"></i>
-    </a>
+            <!-- Detailed Actions Grid -->
+            <div class="dashboard-grid fade-in" style="animation-delay: 0.1s;">
+                <!-- Section 1 -->
+                <div class="feature-card">
+                    <h3><i data-lucide="zap"></i> Workforce Multiplier</h3>
+                    <div class="btn-grid">
+                        <a href="/add_employee" class="action-button">
+                            <i data-lucide="user-plus"></i>
+                            <span>Add Employee</span>
+                            <p>Manually create a new profile.</p>
+                        </a>
+                        <a href="/upload-employees" class="action-button">
+                            <i data-lucide="file-up"></i>
+                            <span>Bulk Import</span>
+                            <p>Upload staff from Excel / CSV.</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 2 -->
+                <div class="feature-card">
+                    <h3><i data-lucide="box"></i> Inventory Control</h3>
+                    <div class="btn-grid">
+                        <a href="/add-material" class="action-button">
+                            <i data-lucide="plus-square"></i>
+                            <span>Add Material</span>
+                            <p>Register new warehouse item.</p>
+                        </a>
+                        <a href="/upload-materials" class="action-button">
+                            <i data-lucide="layers"></i>
+                            <span>Bulk Upload</span>
+                            <p>Import material lists in batches.</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 3 -->
+                <div class="feature-card">
+                    <h3><i data-lucide="repeat"></i> Return Logistics</h3>
+                    <div class="btn-grid">
+                        <a href="/return" class="action-button">
+                            <i data-lucide="package-check"></i>
+                            <span>Full Return</span>
+                            <p>Return all items for an employee.</p>
+                        </a>
+                        <a href="/return-individual" class="action-button">
+                            <i data-lucide="minus-square"></i>
+                            <span>Single Item</span>
+                            <p>Return specific items individually.</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 4 -->
+                <div class="feature-card">
+                    <h3><i data-lucide="shield-check"></i> Admin Tools</h3>
+                    <div class="btn-grid">
+                        <a href="/admin/approve-users" class="action-button">
+                            <i data-lucide="check-circle"></i>
+                            <span>Verify Users</span>
+                            <p>Approve pending account requests.</p>
+                        </a>
+                        <a href="/admin/upload-users" class="action-button">
+                            <i data-lucide="database"></i>
+                            <span>Data Sync</span>
+                            <p>Upload system user accounts.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exports Panel -->
+            <div class="exports-section fade-in" style="animation-delay: 0.2s;">
+                <div class="exports-info">
+                    <h4>Global Reports Export</h4>
+                    <p>Generate professional Excel workbooks for auditing and data analysis.</p>
+                </div>
+                <div class="export-btns">
+                    <a href="{{ url_for('export_excel') }}" class="export-pill">
+                        <i data-lucide="file-text"></i> Staff Data
+                    </a>
+                    <a href="{{ url_for('export_available_materials') }}" class="export-pill">
+                        <i data-lucide="box"></i> Inventory
+                    </a>
+                    <a href="{{ url_for('export_borrowed_and_available') }}" class="export-pill">
+                        <i data-lucide="clipboard-list"></i> Full Audit
+                    </a>
+                    <a href="{{ url_for('export_waiting_return') }}" class="export-pill">
+                        <i data-lucide="clock"></i> Waitlist
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script>
         lucide.createIcons();
 
-        // Theme Toggle Logic
+        // Theme Toggle
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
 
-        function updateIcon(theme) {
-            themeIcon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+        function updateIcon(isDark) {
+            themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
             if (window.lucide) lucide.createIcons();
         }
 
         if (localStorage.getItem('theme') === 'dark') {
-            updateIcon('dark');
+            body.classList.add('dark-mode');
+            updateIcon(true);
         }
 
         themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-            updateIcon(theme);
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateIcon(isDark);
         });
 
-        // Flash message auto-dismiss with fade out
+        // Sidebar Toggle for Mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Auto-dismiss Flash Messages
         setTimeout(() => {
-            const container = document.getElementById('flash-container');
-            if (container) {
-                container.style.transition = 'all 0.8s ease';
-                container.style.opacity = '0';
-                container.style.transform = 'translateX(50px)';
-                setTimeout(() => container.remove(), 800);
-            }
-        }, 4000);
+            document.querySelectorAll('.flash-msg').forEach(msg => {
+                msg.style.transition = 'all 0.5s ease';
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateX(20px)';
+                setTimeout(() => msg.remove(), 500);
+            });
+        }, 5000);
     </script>
 </body>
 
