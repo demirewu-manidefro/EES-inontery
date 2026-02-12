@@ -17,6 +17,7 @@ const Materials = () => {
     });
 
     const [editingMat, setEditingMat] = useState(null);
+    const [activeTab, setActiveTab] = useState('all'); // 'all', 'available', or 'borrowed'
 
     useEffect(() => {
         fetchMaterials();
@@ -83,11 +84,17 @@ const Materials = () => {
 
     const handleExport = async () => {
         try {
-            const response = await api.get('/materials/export', { responseType: 'blob' });
+            // Pass the current tab filter to backend
+            const response = await api.get(`/materials/export?status=${activeTab}`, { responseType: 'blob' });
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'inventory_list.xlsx');
+
+            // Set filename based on filter
+            const filename = activeTab === 'available' ? 'available_materials.xlsx' :
+                activeTab === 'borrowed' ? 'borrowed_materials.xlsx' :
+                    'inventory_list.xlsx';
+            link.setAttribute('download', filename);
             document.body.appendChild(link);
             link.click();
             link.remove();
@@ -97,10 +104,18 @@ const Materials = () => {
         }
     };
 
-    const filteredMaterials = materials.filter(mat =>
-        mat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        mat.serial_number.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredMaterials = materials.filter(mat => {
+        const matchesSearch = mat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            mat.serial_number.toLowerCase().includes(searchTerm.toLowerCase());
+
+        if (activeTab === 'available') {
+            return matchesSearch && mat.status === 'available';
+        }
+        if (activeTab === 'borrowed') {
+            return matchesSearch && mat.status === 'borrowed';
+        }
+        return matchesSearch;
+    });
 
     return (
         <div className="space-y-6">
@@ -141,15 +156,38 @@ const Materials = () => {
                 </div>
             </div>
 
-            <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                    type="text"
-                    placeholder="Search by name or serial number..."
-                    className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-2xl focus:ring-2 focus:ring-primary-500 outline-none transition-all text-white"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 bg-slate-900/60 backdrop-blur-xl p-3 sm:p-4 rounded-xl border border-cyan-500/20">
+                <div className="flex items-center space-x-2 overflow-x-auto">
+                    <button
+                        onClick={() => setActiveTab('all')}
+                        className={`px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'all' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shadow-lg shadow-cyan-500/10' : 'text-slate-400 hover:text-cyan-300 hover:bg-slate-800/50'}`}
+                    >
+                        All Materials
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('available')}
+                        className={`px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'available' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-lg shadow-emerald-500/10' : 'text-slate-400 hover:text-emerald-300 hover:bg-slate-800/50'}`}
+                    >
+                        Available Only
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('borrowed')}
+                        className={`px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'borrowed' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-lg shadow-amber-500/10' : 'text-slate-400 hover:text-amber-300 hover:bg-slate-800/50'}`}
+                    >
+                        Borrowed Only
+                    </button>
+                </div>
+
+                <div className="relative flex-1 sm:max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-400/50" size={18} />
+                    <input
+                        type="text"
+                        placeholder="Search by name or serial number..."
+                        className="w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-cyan-500/20 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-white placeholder-slate-500 text-sm"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
             </div>
 
             {loading ? (
