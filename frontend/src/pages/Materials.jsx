@@ -112,7 +112,7 @@ const Materials = () => {
                 <div className="flex items-center space-x-3">
                     <button
                         onClick={() => setShowAddModal(true)}
-                        className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors shadow-lg shadow-primary-500/20"
+                        className="flex items-center space-x-2 px-3 sm:px-4 py-2 btn-touch bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors shadow-lg shadow-primary-500/20"
                     >
                         <Plus size={20} />
                         <span className="font-bold">Add Material</span>
@@ -126,14 +126,14 @@ const Materials = () => {
                     />
                     <button
                         onClick={() => fileInputRef.current.click()}
-                        className="flex items-center space-x-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors border border-slate-700"
+                        className="flex items-center space-x-2 px-3 sm:px-4 py-2 btn-touch bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors border border-slate-700"
                     >
                         <Upload size={20} />
                         <span className="font-bold">Import</span>
                     </button>
                     <button
                         onClick={handleExport}
-                        className="flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
+                        className="flex items-center space-x-2 px-3 sm:px-4 py-2 btn-touch bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
                     >
                         <FileSpreadsheet size={20} />
                         <span className="font-bold">Export</span>
@@ -158,14 +158,14 @@ const Materials = () => {
                 </div>
             ) : (
                 <div className="bg-slate-900/50 rounded-3xl shadow-sm border border-slate-800 overflow-hidden overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
                             <tr className="bg-slate-900">
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">Material Name</th>
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 font-mono">Serial Number</th>
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">Status</th>
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">Added Date</th>
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 text-right">Actions</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">Material Name</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 font-mono">Serial Number</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">Status</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">Added Date</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800">
@@ -176,7 +176,7 @@ const Materials = () => {
                             ) : (
                                 filteredMaterials.map((mat) => (
                                     <tr key={mat.id} className="hover:bg-slate-800/30 transition-colors group">
-                                        <td className="p-4">
+                                        <td className="p-3 sm:p-4">
                                             <div className="flex items-center space-x-3">
                                                 <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-primary-400 flex items-center justify-center">
                                                     <Package size={20} />
@@ -184,10 +184,10 @@ const Materials = () => {
                                                 <span className="font-bold text-slate-100">{mat.name}</span>
                                             </div>
                                         </td>
-                                        <td className="p-4 text-sm font-mono text-slate-400">
+                                        <td className="p-3 sm:p-4 text-sm font-mono text-slate-400">
                                             {mat.serial_number}
                                         </td>
-                                        <td className="p-4">
+                                        <td className="p-3 sm:p-4">
                                             <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest ${mat.status === 'available' ? 'bg-emerald-900/30 text-emerald-400' :
                                                 mat.status === 'borrowed' ? 'bg-amber-900/30 text-amber-500' :
                                                     'bg-slate-800 text-slate-400'
@@ -195,13 +195,13 @@ const Materials = () => {
                                                 {mat.status}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-sm text-slate-400">
+                                        <td className="p-3 sm:p-4 text-sm text-slate-400">
                                             {new Date(mat.createdAt).toLocaleDateString()}
                                         </td>
-                                        <td className="p-4 text-right">
+                                        <td className="p-3 sm:p-4 text-right">
                                             <button
                                                 onClick={() => setEditingMat(mat)}
-                                                className="text-xs font-bold text-primary-400 hover:text-primary-300 transition-colors"
+                                                className="px-3 py-2 btn-touch flex items-center justify-center bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400 rounded-lg text-xs font-bold hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-colors"
                                             >
                                                 Edit Details
                                             </button>
