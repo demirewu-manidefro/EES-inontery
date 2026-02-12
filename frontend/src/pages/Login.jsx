@@ -27,23 +27,32 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-950 p-6 relative overflow-hidden">
-            {/* Background Image with Overlay */}
-            <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{
-                    backgroundImage: 'url(/assets/background.png)',
-                }}
-            >
-                <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
-            </div>
+            {/* Futuristic Background - CSS Fallback */}
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950"></div>
+
+            {/* Radial Gradient Overlay */}
+            <div className="absolute inset-0" style={{
+                background: 'radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)'
+            }}></div>
 
             {/* Animated Grid Background */}
-            <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0 opacity-30">
                 <div className="absolute inset-0" style={{
-                    backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px)',
+                    backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.15) 1px, transparent 1px)',
                     backgroundSize: '50px 50px'
                 }}></div>
             </div>
+
+            {/* Diagonal Lines Pattern */}
+            <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(6, 182, 212, 0.3) 10px, rgba(6, 182, 212, 0.3) 11px)',
+                }}></div>
+            </div>
+
+            {/* Glowing Orbs */}
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
 
             {/* Content */}
             <div className="w-full max-w-md relative z-10">
