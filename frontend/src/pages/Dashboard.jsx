@@ -4,11 +4,14 @@ import api from '../api/axios';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-const StatCard = ({ title, value, icon: Icon, color }) => (
+const StatCard = ({ title, value, icon: Icon, color, onClick }) => (
     <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-slate-900/80 backdrop-blur-xl p-4 sm:p-6 rounded-2xl shadow-xl border border-cyan-500/20 flex items-center space-x-3 sm:space-x-4"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={onClick}
+        className="bg-slate-900/80 backdrop-blur-xl p-4 sm:p-6 rounded-2xl shadow-xl border border-cyan-500/20 flex items-center space-x-3 sm:space-x-4 cursor-pointer hover:shadow-2xl hover:shadow-cyan-500/10 transition-all"
     >
         <div className={`p-3 sm:p-4 rounded-xl ${color} flex-shrink-0`}>
             <Icon size={20} className="text-white sm:w-6 sm:h-6" />
@@ -111,10 +114,34 @@ const Dashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                <StatCard title="Total Employees" value={stats.totalEmployees} icon={Users} color="bg-gradient-to-br from-blue-500 to-blue-600" />
-                <StatCard title="Available Materials" value={stats.totalMaterials} icon={Package} color="bg-gradient-to-br from-emerald-500 to-emerald-600" />
-                <StatCard title="Active Borrowings" value={stats.borrowedCount} icon={ClipboardCheck} color="bg-gradient-to-br from-amber-500 to-amber-600" />
-                <StatCard title="Waiting Returns" value={stats.waitingCount} icon={Clock} color="bg-gradient-to-br from-purple-500 to-purple-600" />
+                <StatCard
+                    title="Total Employees"
+                    value={stats.totalEmployees}
+                    icon={Users}
+                    color="bg-gradient-to-br from-blue-500 to-blue-600"
+                    onClick={() => navigate('/employees')}
+                />
+                <StatCard
+                    title="Available Materials"
+                    value={stats.totalMaterials}
+                    icon={Package}
+                    color="bg-gradient-to-br from-emerald-500 to-emerald-600"
+                    onClick={() => navigate('/materials')}
+                />
+                <StatCard
+                    title="Active Borrowings"
+                    value={stats.borrowedCount}
+                    icon={ClipboardCheck}
+                    color="bg-gradient-to-br from-amber-500 to-amber-600"
+                    onClick={() => navigate('/borrow')}
+                />
+                <StatCard
+                    title="Waiting Returns"
+                    value={stats.waitingCount}
+                    icon={Clock}
+                    color="bg-gradient-to-br from-purple-500 to-purple-600"
+                    onClick={() => navigate('/return')} // Or /waiting if that's more appropriate, but waiting returns usually implies returning. Actually /return page handles returns.
+                />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
