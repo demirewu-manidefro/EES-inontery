@@ -1,0 +1,1 @@
+﻿IMPORTANT: Please save your background image as 'background.png' in this location: frontend\public\assets\background.png

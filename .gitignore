@@ -54,3 +54,7 @@ backend/uploads/*
 test_export.xlsx
 token.txt
 final_test.xlsx
+
+# Allow background image
+!frontend/public/assets/background.png
+!frontend/public/assets/*.png
