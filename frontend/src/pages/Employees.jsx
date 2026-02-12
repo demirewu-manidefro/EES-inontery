@@ -268,11 +268,19 @@ const Employees = () => {
                                                 </span>
                                             </td>
                                             <td className="p-4">
-                                                <div className="flex items-center space-x-1.5">
-                                                    <span className={`font-bold text-sm ${emp.BorrowedMaterials?.length > 0 ? 'text-amber-600' : 'text-slate-400'}`}>
-                                                        {emp.BorrowedMaterials?.length || 0}
-                                                    </span>
-                                                    <Package size={14} className={emp.BorrowedMaterials?.length > 0 ? 'text-amber-500' : 'text-slate-300'} />
+                                                <div className={`text-xs font-medium ${emp.BorrowedMaterials?.length > 0 ? 'text-amber-600' : 'text-slate-400'}`}>
+                                                    {emp.BorrowedMaterials?.length > 0 ? (
+                                                        <div className="flex flex-col gap-1">
+                                                            {emp.BorrowedMaterials.map((bm, idx) => (
+                                                                <span key={idx} className="flex items-center gap-1">
+                                                                    <Package size={12} className="text-amber-500" />
+                                                                    {bm.Material?.name || 'Unknown Item'}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <span>-</span>
+                                                    )}
                                                 </div>
                                             </td>
                                             <td className="p-4">
