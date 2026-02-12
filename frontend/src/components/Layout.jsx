@@ -134,10 +134,7 @@ const Layout = ({ children }) => {
                         <Menu size={24} />
                     </button>
                     <div className="flex items-center space-x-4 ml-auto">
-                        <button className="p-2 rounded-full hover:bg-slate-800/50 relative text-cyan-400">
-                            <div className="absolute top-2 right-2 w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
-                            <Settings size={20} />
-                        </button>
+                        {/* Placeholder for future header items if needed */}
                     </div>
                 </header>
 
