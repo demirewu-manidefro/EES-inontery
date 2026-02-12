@@ -8,14 +8,14 @@ const StatCard = ({ title, value, icon: Icon, color }) => (
     <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center space-x-4"
+        className="bg-slate-900/80 backdrop-blur-xl p-4 sm:p-6 rounded-2xl shadow-xl border border-cyan-500/20 flex items-center space-x-3 sm:space-x-4"
     >
-        <div className={`p-4 rounded-xl ${color}`}>
-            <Icon size={24} className="text-white" />
+        <div className={`p-3 sm:p-4 rounded-xl ${color} flex-shrink-0`}>
+            <Icon size={20} className="text-white sm:w-6 sm:h-6" />
         </div>
-        <div>
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{title}</p>
-            <p className="text-2xl font-bold dark:text-white">{value}</p>
+        <div className="min-w-0 flex-1">
+            <p className="text-xs sm:text-sm font-medium text-cyan-300 truncate">{title}</p>
+            <p className="text-xl sm:text-2xl font-bold text-white">{value}</p>
         </div>
     </motion.div>
 );
@@ -95,67 +95,67 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-6 sm:space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight dark:text-white">Dashboard Overview</h2>
-                    <p className="text-slate-500 dark:text-slate-400">Welcome back! Here's what's happening today.</p>
+                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Dashboard Overview</h2>
+                    <p className="text-sm sm:text-base text-slate-400 mt-1">Welcome back! Here's what's happening today.</p>
                 </div>
                 <button
                     onClick={handleExportAll}
-                    className="flex items-center space-x-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-all shadow-lg shadow-emerald-500/20 font-bold"
+                    className="flex items-center justify-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white rounded-xl transition-all shadow-lg shadow-emerald-500/20 font-bold btn-touch"
                 >
-                    <FileSpreadsheet size={20} />
-                    <span>Download Full Report</span>
+                    <FileSpreadsheet size={18} />
+                    <span className="text-sm sm:text-base">Download Report</span>
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard title="Total Employees" value={stats.totalEmployees} icon={Users} color="bg-blue-500" />
-                <StatCard title="Available Materials" value={stats.totalMaterials} icon={Package} color="bg-emerald-500" />
-                <StatCard title="Active Borrowings" value={stats.borrowedCount} icon={ClipboardCheck} color="bg-amber-500" />
-                <StatCard title="Waiting Returns" value={stats.waitingCount} icon={Clock} color="bg-purple-500" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <StatCard title="Total Employees" value={stats.totalEmployees} icon={Users} color="bg-gradient-to-br from-blue-500 to-blue-600" />
+                <StatCard title="Available Materials" value={stats.totalMaterials} icon={Package} color="bg-gradient-to-br from-emerald-500 to-emerald-600" />
+                <StatCard title="Active Borrowings" value={stats.borrowedCount} icon={ClipboardCheck} color="bg-gradient-to-br from-amber-500 to-amber-600" />
+                <StatCard title="Waiting Returns" value={stats.waitingCount} icon={Clock} color="bg-gradient-to-br from-purple-500 to-purple-600" />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-                    <h3 className="text-lg font-semibold mb-4 dark:text-white">Quick Actions</h3>
-                    <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                <div className="bg-slate-900/80 backdrop-blur-xl p-5 sm:p-6 rounded-2xl shadow-xl border border-cyan-500/20">
+                    <h3 className="text-base sm:text-lg font-semibold mb-4 text-cyan-300">Quick Actions</h3>
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
                         <button
                             onClick={() => navigate('/employees')}
-                            className="p-4 flex flex-col items-center justify-center space-y-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/10 dark:hover:bg-blue-900/20 rounded-xl transition-colors"
+                            className="p-3 sm:p-4 flex flex-col items-center justify-center space-y-2 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-xl transition-all btn-touch"
                         >
-                            <Users className="text-blue-600" />
-                            <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Add Employee</span>
+                            <Users className="text-blue-400 w-5 h-5 sm:w-6 sm:h-6" />
+                            <span className="text-xs sm:text-sm font-medium text-blue-400">Add Employee</span>
                         </button>
                         <button
                             onClick={() => navigate('/materials')}
-                            className="p-4 flex flex-col items-center justify-center space-y-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/10 dark:hover:bg-emerald-900/20 rounded-xl transition-colors"
+                            className="p-3 sm:p-4 flex flex-col items-center justify-center space-y-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-xl transition-all btn-touch"
                         >
-                            <Package className="text-emerald-600" />
-                            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">Add Material</span>
+                            <Package className="text-emerald-400 w-5 h-5 sm:w-6 sm:h-6" />
+                            <span className="text-xs sm:text-sm font-medium text-emerald-400">Add Material</span>
                         </button>
                         <button
                             onClick={() => navigate('/borrow')}
-                            className="p-4 flex flex-col items-center justify-center space-y-2 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/10 dark:hover:bg-amber-900/20 rounded-xl transition-colors"
+                            className="p-3 sm:p-4 flex flex-col items-center justify-center space-y-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-xl transition-all btn-touch"
                         >
-                            <ClipboardCheck className="text-amber-600" />
-                            <span className="text-sm font-medium text-amber-700 dark:text-amber-400">New Borrow</span>
+                            <ClipboardCheck className="text-amber-400 w-5 h-5 sm:w-6 sm:h-6" />
+                            <span className="text-xs sm:text-sm font-medium text-amber-400">New Borrow</span>
                         </button>
                         <button
                             onClick={() => navigate('/return')}
-                            className="p-4 flex flex-col items-center justify-center space-y-2 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                            className="p-3 sm:p-4 flex flex-col items-center justify-center space-y-2 bg-slate-700/50 hover:bg-slate-700/70 border border-slate-600/20 rounded-xl transition-all btn-touch"
                         >
-                            <CheckCircle className="text-slate-600 dark:text-slate-400" />
-                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Quick Return</span>
+                            <CheckCircle className="text-slate-300 w-5 h-5 sm:w-6 sm:h-6" />
+                            <span className="text-xs sm:text-sm font-medium text-slate-300">Quick Return</span>
                         </button>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-                    <h3 className="text-lg font-semibold mb-4 dark:text-white">Recent Activity</h3>
+                <div className="bg-slate-900/80 backdrop-blur-xl p-5 sm:p-6 rounded-2xl shadow-xl border border-cyan-500/20">
+                    <h3 className="text-base sm:text-lg font-semibold mb-4 text-cyan-300">Recent Activity</h3>
                     <div className="space-y-4">
-                        <p className="text-sm text-slate-500 italic">Feature coming soon: Live activity feed.</p>
+                        <p className="text-sm text-slate-400 italic">Feature coming soon: Live activity feed.</p>
                     </div>
                 </div>
             </div>
