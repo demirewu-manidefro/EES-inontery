@@ -279,14 +279,14 @@ const Employees = () => {
                                                 <div className="flex items-center justify-end space-x-2">
                                                     <button
                                                         onClick={() => addToWaiting(emp.id)}
-                                                        className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/10 rounded-lg transition-all"
+                                                        className="p-2 btn-touch flex items-center justify-center text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/10 rounded-lg transition-all"
                                                         title="Add to Waiting List"
                                                     >
                                                         <Clock size={16} />
                                                     </button>
                                                     <button
                                                         onClick={() => approveLeave(emp.id)}
-                                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-all"
+                                                        className="p-2 btn-touch flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-all"
                                                         title="Add to Leave Out List"
                                                     >
                                                         <UserMinus size={16} />
