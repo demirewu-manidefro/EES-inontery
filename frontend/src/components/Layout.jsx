@@ -42,32 +42,35 @@ const Layout = ({ children }) => {
 
     return (
         <div className="min-h-screen flex bg-slate-950 relative">
-            {/* Futuristic Background - Multi-layer Gradients */}
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950"></div>
+            {/* Fixed Background Container */}
+            <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+                {/* Futuristic Background - Multi-layer Gradients */}
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950"></div>
 
-            {/* Radial Gradients for Depth */}
-            <div className="absolute inset-0" style={{
-                background: 'radial-gradient(circle at 20% 30%, rgba(6, 182, 212, 0.08) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.06) 0%, transparent 40%)'
-            }}></div>
-
-            {/* Grid Pattern */}
-            <div className="absolute inset-0 opacity-20">
+                {/* Radial Gradients for Depth */}
                 <div className="absolute inset-0" style={{
-                    backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.12) 1px, transparent 1px)',
-                    backgroundSize: '60px 60px'
+                    background: 'radial-gradient(circle at 20% 30%, rgba(6, 182, 212, 0.08) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.06) 0%, transparent 40%)'
                 }}></div>
-            </div>
 
-            {/* Diagonal Circuit Lines */}
-            <div className="absolute inset-0 opacity-5">
-                <div className="absolute inset-0" style={{
-                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(6, 182, 212, 0.4) 15px, rgba(6, 182, 212, 0.4) 16px)',
-                }}></div>
-            </div>
+                {/* Grid Pattern */}
+                <div className="absolute inset-0 opacity-20">
+                    <div className="absolute inset-0" style={{
+                        backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.12) 1px, transparent 1px)',
+                        backgroundSize: '60px 60px'
+                    }}></div>
+                </div>
 
-            {/* Ambient Glow Orbs */}
-            <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-cyan-500/3 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 right-1/3 w-[500px] h-[500px] bg-blue-500/3 rounded-full blur-3xl"></div>
+                {/* Diagonal Circuit Lines */}
+                <div className="absolute inset-0 opacity-5">
+                    <div className="absolute inset-0" style={{
+                        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(6, 182, 212, 0.4) 15px, rgba(6, 182, 212, 0.4) 16px)',
+                    }}></div>
+                </div>
+
+                {/* Ambient Glow Orbs */}
+                <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-cyan-500/3 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 right-1/3 w-[500px] h-[500px] bg-blue-500/3 rounded-full blur-3xl"></div>
+            </div>
 
             {/* Sidebar - Fixed on Left */}
             <aside
