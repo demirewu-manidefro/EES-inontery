@@ -58,7 +58,7 @@ const LeaveOut = () => {
                 </div>
                 <button
                     onClick={handleExport}
-                    className="flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
+                    className="flex items-center space-x-2 px-3 sm:px-4 py-2 btn-touch bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
                 >
                     <FileSpreadsheet size={20} />
                     <span className="font-semibold">Export List</span>
@@ -71,14 +71,14 @@ const LeaveOut = () => {
                 </div>
             ) : (
                 <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
                             <tr className="bg-slate-50 dark:bg-slate-800/50">
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">Employee</th>
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">Position</th>
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 text-center">Phone</th>
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">Date Left</th>
-                                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 text-right">Actions</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">Employee</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">Position</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 text-center">Phone</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">Date Left</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
@@ -89,7 +89,7 @@ const LeaveOut = () => {
                             ) : (
                                 leaveList.map((emp) => (
                                     <tr key={emp.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                                        <td className="p-4">
+                                        <td className="p-3 sm:p-4">
                                             <div className="flex items-center space-x-3">
                                                 <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-400 text-sm">
                                                     {emp.name[0]}
@@ -97,15 +97,15 @@ const LeaveOut = () => {
                                                 <span className="font-bold dark:text-white">{emp.name} {emp.father_name}</span>
                                             </div>
                                         </td>
-                                        <td className="p-4 text-sm text-slate-600 dark:text-slate-400 capitalize">{emp.position}</td>
-                                        <td className="p-4 text-sm text-slate-600 dark:text-slate-400 text-center">{emp.phone_number}</td>
-                                        <td className="p-4 text-sm text-slate-600 dark:text-slate-400">
+                                        <td className="p-3 sm:p-4 text-sm text-slate-600 dark:text-slate-400 capitalize">{emp.position}</td>
+                                        <td className="p-3 sm:p-4 text-sm text-slate-600 dark:text-slate-400 text-center">{emp.phone_number}</td>
+                                        <td className="p-3 sm:p-4 text-sm text-slate-600 dark:text-slate-400">
                                             {emp.LeaveOutMember ? new Date(emp.LeaveOutMember.leave_date).toLocaleDateString() : 'N/A'}
                                         </td>
-                                        <td className="p-4 text-right">
+                                        <td className="p-3 sm:p-4 text-right">
                                             <button
                                                 onClick={() => handleReturn(emp.id)}
-                                                className="px-3 py-1.5 text-xs font-bold text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/10 rounded-lg transition-all flex items-center space-x-1.5 ml-auto"
+                                                className="px-3 py-1.5 text-xs font-bold text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/10 rounded-lg transition-all flex items-center space-x-1.5 ml-auto btn-touch justify-center"
                                             >
                                                 <RotateCcw size={14} />
                                                 <span>Reactivate</span>
