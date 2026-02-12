@@ -17,7 +17,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 
 const Layout = ({ children }) => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -86,6 +86,7 @@ const Layout = ({ children }) => {
                             <NavLink
                                 key={item.name}
                                 to={item.path}
+                                onClick={() => setIsSidebarOpen(false)}
                                 className={({ isActive }) =>
                                     `flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${isActive
                                         ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-400 border border-cyan-500/30 shadow-lg shadow-cyan-500/10'
