@@ -63,7 +63,15 @@ exports.bulkUpload = async (req, res) => {
 
 exports.exportMaterials = async (req, res) => {
     try {
-        const materials = await Material.findAll();
+        const { status } = req.query;
+
+        // Build filter based on status parameter
+        const where = {};
+        if (status && status !== 'all') {
+            where.status = status;
+        }
+
+        const materials = await Material.findAll({ where });
 
         const data = materials.map(mat => ({
             "Material Name": mat.name,
@@ -74,11 +82,21 @@ exports.exportMaterials = async (req, res) => {
 
         const wb = xlsx.utils.book_new();
         const ws = xlsx.utils.json_to_sheet(data.length ? data : [{ Note: "No materials found" }]);
-        xlsx.utils.book_append_sheet(wb, ws, "Inventory");
+
+        // Set sheet name based on filter
+        const sheetName = status === 'available' ? 'Available Materials' :
+            status === 'borrowed' ? 'Borrowed Materials' :
+                'All Materials';
+        xlsx.utils.book_append_sheet(wb, ws, sheetName);
         const buf = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=inventory_list.xlsx');
+
+        // Set filename based on filter
+        const filename = status === 'available' ? 'available_materials.xlsx' :
+            status === 'borrowed' ? 'borrowed_materials.xlsx' :
+                'inventory_list.xlsx';
+        res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
         res.send(buf);
     } catch (err) {
         res.status(500).json({ message: err.message });
