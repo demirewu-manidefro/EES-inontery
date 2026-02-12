@@ -11,6 +11,7 @@ import Return from './pages/Return';
 import WaitingReturn from './pages/WaitingReturn';
 import LeaveOut from './pages/LeaveOut';
 import AdminApprovals from './pages/AdminApprovals';
+import Users from './pages/Users';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
@@ -45,6 +46,7 @@ const App = () => {
                     <Route path="/waiting" element={<PrivateRoute><WaitingReturn /></PrivateRoute>} />
                     <Route path="/leave-out" element={<PrivateRoute><LeaveOut /></PrivateRoute>} />
                     <Route path="/admin-approvals" element={<PrivateRoute><AdminApprovals /></PrivateRoute>} />
+                    <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
 
                     <Route path="/" element={<Navigate to="/dashboard" />} />
                 </Routes>

@@ -10,6 +10,73 @@ exports.getPendingUsers = async (req, res) => {
     }
 };
 
+exports.getUsers = async (req, res) => {
+    try {
+        const users = await User.findAll({
+            attributes: { exclude: ['password'] }
+        });
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.createUser = async (req, res) => {
+    try {
+        const { username, password, role } = req.body;
+        // Check if user exists
+        const existingUser = await User.findOne({ where: { username } });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username already exists' });
+        }
+
+        const newUser = await User.create({
+            username,
+            password,
+            role: role || 'user',
+            is_approved: true // Admins creating users directly should be auto-approved
+        });
+
+        res.status(201).json({ message: 'User created successfully', user: { id: newUser.id, username: newUser.username, role: newUser.role } });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.updateUser = async (req, res) => {
+    try {
+        const { username, password, role } = req.body;
+        const user = await User.findByPk(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (username) user.username = username;
+        if (password) user.password = password; // Hook will hash it
+        if (role) user.role = role;
+
+        await user.save();
+
+        res.json({ message: 'User updated successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        await user.destroy();
+        res.json({ message: 'User deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 exports.approveUser = async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);

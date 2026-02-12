@@ -12,7 +12,8 @@ import {
     UserPlus,
     FileUp,
     Settings,
-    RotateCcw
+    RotateCcw,
+    Shield
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -38,6 +39,7 @@ const Layout = ({ children }) => {
 
     if (user?.role === 'admin') {
         navItems.push({ name: 'Admin Approvals', icon: UserPlus, path: '/admin-approvals' });
+        navItems.push({ name: 'User Management', icon: Shield, path: '/users' });
     }
 
     return (
