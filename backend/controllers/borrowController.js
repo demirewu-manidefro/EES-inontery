@@ -61,7 +61,6 @@ exports.returnIndividual = async (req, res) => {
 };
 
 exports.exportData = async (req, res) => {
-    console.log('Export borrow data requested by:', req.user.username);
     try {
         const employees = await Employee.findAll({
             include: [{ model: BorrowedMaterial, where: { is_returned: false }, include: [Material], required: false }]
@@ -103,7 +102,6 @@ exports.exportData = async (req, res) => {
         res.setHeader('Content-Disposition', 'attachment; filename=borrowed_and_available.xlsx');
         res.send(buf);
     } catch (err) {
-        console.error('EXPORT BORROW DATA ERROR:', err);
         res.status(500).json({ message: err.message });
     }
 };

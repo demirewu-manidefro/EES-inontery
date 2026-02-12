@@ -65,7 +65,6 @@ exports.getWaitingList = async (req, res) => {
 };
 
 exports.exportWaitingList = async (req, res) => {
-    console.log('Export waiting list requested by:', req.user.username);
     try {
         const list = await WaitingReturn.findAll({
             include: [{ model: Employee }]
@@ -92,7 +91,6 @@ exports.exportWaitingList = async (req, res) => {
         res.setHeader('Content-Disposition', 'attachment; filename=waiting_list.xlsx');
         res.send(buf);
     } catch (err) {
-        console.error('EXPORT WAITING LIST ERROR:', err);
         res.status(500).json({ message: err.message });
     }
 };

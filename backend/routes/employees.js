@@ -14,7 +14,7 @@ router.post('/return-from-leave/:id', auth, admin, employeeController.returnFrom
 router.post('/waiting/:id', auth, employeeController.addToWaiting);
 router.post('/waiting-remove/:id', auth, employeeController.removeFromWaiting);
 
-router.get('/export', auth, admin, (req, res, next) => { console.log('DEBUG: Hit /employees/export'); next(); }, employeeController.exportEmployees);
+router.get('/export', auth, admin, employeeController.exportEmployees);
 router.get('/export-leave-out', auth, admin, employeeController.exportLeaveOut);
 
 module.exports = router;

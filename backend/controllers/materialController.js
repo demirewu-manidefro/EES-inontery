@@ -62,7 +62,6 @@ exports.bulkUpload = async (req, res) => {
 };
 
 exports.exportMaterials = async (req, res) => {
-    console.log('Export materials requested by:', req.user.username);
     try {
         const materials = await Material.findAll();
 
@@ -82,7 +81,6 @@ exports.exportMaterials = async (req, res) => {
         res.setHeader('Content-Disposition', 'attachment; filename=inventory_list.xlsx');
         res.send(buf);
     } catch (err) {
-        console.error('EXPORT MATERIALS ERROR:', err);
         res.status(500).json({ message: err.message });
     }
 };

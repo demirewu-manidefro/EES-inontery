@@ -131,14 +131,11 @@ exports.removeFromWaiting = async (req, res) => {
 };
 
 exports.exportEmployees = async (req, res) => {
-    console.log('Export employees requested by:', req.user.username);
     try {
-        console.log('Fetching employees...');
         const employees = await Employee.findAll({
             where: { status: { [Op.ne]: 'left' } },
             include: [{ model: BorrowedMaterial, where: { is_returned: false }, required: false, include: [Material] }]
         });
-        console.log(`Found ${employees.length} employees`);
 
         const data = employees.map(emp => {
             const borrowedItems = emp.BorrowedMaterials ? emp.BorrowedMaterials.map(b => `${b.Material.name} (SN: ${b.Material.serial_number})`).join(', ') : 'None';
@@ -153,27 +150,21 @@ exports.exportEmployees = async (req, res) => {
                 "Borrow Count": emp.BorrowedMaterials ? emp.BorrowedMaterials.length : 0
             };
         });
-        console.log('Mapped data, total rows:', data.length);
 
         const wb = xlsx.utils.book_new();
         const ws = xlsx.utils.json_to_sheet(data.length ? data : [{ Note: "No employees found" }]);
         xlsx.utils.book_append_sheet(wb, ws, "Employees");
-        console.log('Workbook created');
         const buf = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
-        console.log('Buffer created, size:', buf.length);
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=employees_list.xlsx');
         res.send(buf);
-        console.log('Response sent for employees');
     } catch (err) {
-        console.error('EXPORT EMPLOYEES ERROR:', err);
         res.status(500).json({ message: err.message });
     }
 };
 
 exports.exportLeaveOut = async (req, res) => {
-    console.log('Export leave-out requested by:', req.user.username);
     try {
         const employees = await Employee.findAll({
             where: { status: 'left' },
@@ -198,9 +189,7 @@ exports.exportLeaveOut = async (req, res) => {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=leave_out_members.xlsx');
         res.send(buf);
-        console.log('Response sent for leave-out');
     } catch (err) {
-        console.error('EXPORT LEAVE OUT ERROR:', err);
         res.status(500).json({ message: err.message });
     }
 };
