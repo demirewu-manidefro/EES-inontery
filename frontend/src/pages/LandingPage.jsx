@@ -38,7 +38,7 @@ const Logo = ({ className = "w-12 h-12" }) => (
     </div>
 );
 
-const NavItem = ({ title, children, hasDropdown = true, isActive = false }) => {
+const NavItem = ({ title, children, hasDropdown = true, isActive = false, path }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -47,26 +47,29 @@ const NavItem = ({ title, children, hasDropdown = true, isActive = false }) => {
             onMouseEnter={() => setIsOpen(true)}
             onMouseLeave={() => setIsOpen(false)}
         >
-            <div className={`flex items-center gap-1 hover:text-blue-200 font-bold text-[13px] tracking-wide transition-colors ${isActive ? 'text-white' : 'text-blue-50'}`}>
+            <Link
+                to={path || "#"}
+                className={`flex items-center gap-1 hover:text-blue-200 font-bold text-[13px] tracking-wide transition-colors ${isActive ? 'text-white' : 'text-blue-50'}`}
+            >
                 {title} {hasDropdown && <ChevronDown size={12} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />}
-            </div>
-            {isActive && <div className="absolute bottom-0 left-0 w-full h-1 bg-[#b38a5d]"></div>}
+            </Link>
+            {isActive && <div className="absolute bottom-0 left-0 w-full h-2 bg-[#b38a5d]"></div>}
 
             {hasDropdown && isOpen && (
-                <div className="absolute top-12 left-0 min-w-[240px] bg-white text-[#1d4e89] shadow-2xl rounded-b-lg py-4 border-t-[3px] border-[#b38a5d] z-[100] animate-in fade-in slide-in-from-top-1 duration-200">
-                    <div className="grid grid-cols-1 gap-0.5">
+                <div className="absolute top-12 left-0 min-w-[260px] bg-white text-[#1d4e89] shadow-2xl rounded-b-xl py-5 border-t-[4px] border-[#b38a5d] z-[100] animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="grid grid-cols-1 gap-1">
                         {children.map((item, i) => (
                             <Link
                                 key={i}
                                 to={item.path || "#"}
-                                className="px-5 py-2 hover:bg-slate-50 flex items-center gap-3 transition-all group/item border-l-4 border-transparent hover:border-[#1d4e89]"
+                                className="px-6 py-2.5 hover:bg-slate-50 flex items-center gap-4 transition-all group/item border-l-4 border-transparent hover:border-[#1d4e89]"
                             >
-                                <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 group-hover/item:bg-[#1d4e89] group-hover/item:text-white transition-colors duration-300">
-                                    {item.icon && <item.icon size={14} />}
+                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 group-hover/item:bg-[#1d4e89] group-hover/item:text-white transition-all duration-300 shadow-sm">
+                                    {item.icon && <item.icon size={16} />}
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="font-black text-xs uppercase tracking-tight leading-none group-hover/item:text-[#1d4e89]">{item.label}</span>
-                                    {item.desc && <span className="text-[9px] text-gray-400 font-medium group-hover/item:text-gray-500 mt-1">{item.desc}</span>}
+                                    <span className="font-black text-[11px] uppercase tracking-tight leading-none group-hover/item:text-[#1d4e89]">{item.label}</span>
+                                    {item.desc && <span className="text-[9px] text-gray-400 font-bold group-hover/item:text-gray-500 mt-1.5">{item.desc}</span>}
                                 </div>
                             </Link>
                         ))}
@@ -84,7 +87,7 @@ const LandingPage = () => {
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            alert(`Searching for: ${searchQuery}\n(Integrated search is coming soon)`);
+            alert(`Searching for: ${searchQuery}\n(This feature is currently being connected to the national data repository)`);
             setSearchQuery('');
         }
     };
@@ -93,6 +96,7 @@ const LandingPage = () => {
         { title: isAmharic ? 'መነሻ' : 'Home', hasDropdown: false, path: '/' },
         {
             title: isAmharic ? 'ስለ ኢ.ስ.አ' : 'About ESS',
+            path: '/about',
             items: [
                 { label: 'Debre Berhan Branch', icon: Building2, desc: 'Regional branch overview', path: '/about' },
                 { label: 'History', icon: BookOpen, desc: 'Our journey since 1956', path: '/about/history' },
@@ -102,6 +106,7 @@ const LandingPage = () => {
         },
         {
             title: isAmharic ? 'መረጃዎች' : 'Find Statistics',
+            path: '/stats/population',
             items: [
                 { label: 'Population', icon: Users, desc: 'Census and projections', path: '/stats/population' },
                 { label: 'Agriculture', icon: PieChart, desc: 'Crops and livestock data', path: '/stats/agriculture' },
@@ -111,6 +116,7 @@ const LandingPage = () => {
         },
         {
             title: isAmharic ? 'ዜናዎች' : 'News ESS',
+            path: '/news',
             items: [
                 { label: 'Announcements', icon: BookOpen, desc: 'Official updates', path: '/news' },
                 { label: 'Tenders', icon: Briefcase, desc: 'Procurement opportunities', path: '/tenders' },
@@ -119,6 +125,7 @@ const LandingPage = () => {
         },
         {
             title: isAmharic ? 'ሚዲያ' : 'Media',
+            path: '/photo-gallery',
             items: [
                 { label: 'Photo Gallery', icon: Globe2, desc: 'Event photography', path: '/photo-gallery' },
                 { label: 'Video Gallery', icon: Globe2, desc: 'Official video content', path: '/video-gallery' },
@@ -136,7 +143,7 @@ const LandingPage = () => {
                     {/* Logo Section */}
                     <Link to="/" className="flex items-center space-x-4 group">
                         <Logo className="w-14 h-14 transition-all group-hover:scale-105 shadow-md" />
-                        <div className="flex flex-col">
+                        <div className="flex flex-col text-left">
                             <span className="text-[10px] font-black text-gray-500 tracking-[0.2em] leading-none mb-1 opacity-70 uppercase">የኢትዮጵያ ስታቲስቲክስ አገልግሎት</span>
                             <span className="text-lg lg:text-2xl font-black text-[#1d4e89] leading-tight uppercase tracking-tighter">ETHIOPIAN STATISTICAL SERVICE</span>
                         </div>
@@ -168,6 +175,15 @@ const LandingPage = () => {
                             </a>
                         </div>
 
+                        <div
+                            className="flex items-center gap-2 border-x border-slate-100 px-6 group cursor-pointer h-10 hover:bg-slate-50 transition-colors"
+                            onClick={() => setIsAmharic(!isAmharic)}
+                        >
+                            <Globe2 size={16} className="text-[#1d4e89]" />
+                            <span className="text-sm font-black text-gray-800 uppercase leading-none">{isAmharic ? 'AM' : 'EN'}</span>
+                            <ChevronDown size={14} className="text-gray-400 group-hover:rotate-180 transition-transform" />
+                        </div>
+
                         <Link to="/login" className="bg-[#1d4e89] text-white px-6 py-2 rounded-md text-[13px] font-black hover:bg-[#153a66] shadow-lg shadow-blue-900/5 transition-all uppercase tracking-wider leading-none">
                             Stat Bank
                         </Link>
@@ -185,6 +201,7 @@ const LandingPage = () => {
                                 title={nav.title}
                                 hasDropdown={nav.hasDropdown !== false}
                                 isActive={nav.isActive}
+                                path={nav.path}
                             >
                                 {nav.items}
                             </NavItem>
