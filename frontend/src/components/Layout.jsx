@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
     Users,
@@ -28,127 +29,139 @@ const Layout = ({ children }) => {
     };
 
     const navItems = [
-        { name: 'Dashboard', icon: Home, path: '/dashboard' },
-        { name: 'Employees', icon: Users, path: '/employees' },
-        { name: 'Inventory', icon: Package, path: '/materials' },
-        { name: 'Borrow', icon: ClipboardCheck, path: '/borrow' },
-        { name: 'Return', icon: RotateCcw, path: '/return' },
-        { name: 'Waiting List', icon: Clock, path: '/waiting' },
-        { name: 'Leave Out', icon: LogOut, path: '/leave-out' },
+        { name: 'Console', icon: Home, path: '/dashboard' },
+        { name: 'Personnel', icon: Users, path: '/employees' },
+        { name: 'Hardware', icon: Package, path: '/materials' },
+        { name: 'Issuance', icon: ClipboardCheck, path: '/borrow' },
+        { name: 'Recovery', icon: RotateCcw, path: '/return' },
+        { name: 'Queue', icon: Clock, path: '/waiting' },
+        { name: 'Archives', icon: LogOut, path: '/leave-out' },
     ];
 
     if (user?.role === 'admin') {
-        navItems.push({ name: 'Admin Approvals', icon: UserPlus, path: '/admin-approvals' });
-        navItems.push({ name: 'User Management', icon: Shield, path: '/users' });
+        navItems.push({ name: 'Requests', icon: UserPlus, path: '/admin-approvals' });
+        navItems.push({ name: 'Security', icon: Shield, path: '/users' });
     }
 
     return (
-        <div className="min-h-screen flex bg-slate-950 relative">
-            {/* Fixed Background Container */}
+        <div className="min-h-screen flex bg-slate-950 relative selection:bg-cyan-500 selection:text-white">
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-                {/* Futuristic Background - Multi-layer Gradients */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950"></div>
-
-                {/* Radial Gradients for Depth */}
-                <div className="absolute inset-0" style={{
-                    background: 'radial-gradient(circle at 20% 30%, rgba(6, 182, 212, 0.08) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.06) 0%, transparent 40%)'
-                }}></div>
-
-                {/* Grid Pattern */}
-                <div className="absolute inset-0 opacity-20">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(15,23,42,1)_0%,rgba(2,6,23,1)_100%)]"></div>
+                <div className="absolute inset-0 opacity-10">
                     <div className="absolute inset-0" style={{
-                        backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.12) 1px, transparent 1px)',
-                        backgroundSize: '60px 60px'
+                        backgroundImage: 'linear-gradient(rgba(34,211,238,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.1) 1px, transparent 1px)',
+                        backgroundSize: '40px 40px'
                     }}></div>
                 </div>
-
-                {/* Diagonal Circuit Lines */}
-                <div className="absolute inset-0 opacity-5">
-                    <div className="absolute inset-0" style={{
-                        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(6, 182, 212, 0.4) 15px, rgba(6, 182, 212, 0.4) 16px)',
-                    }}></div>
-                </div>
-
-                {/* Ambient Glow Orbs */}
-                <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-cyan-500/3 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 right-1/3 w-[500px] h-[500px] bg-blue-500/3 rounded-full blur-3xl"></div>
+                <div className="absolute top-0 left-1/4 w-[800px] h-[600px] bg-cyan-500/5 rounded-full blur-[120px] -translate-y-1/2"></div>
+                <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[100px] translate-y-1/2"></div>
             </div>
 
-            {/* Sidebar - Fixed on Left */}
             <aside
-                className={`fixed top-0 left-0 h-screen w-64 bg-slate-900/95 backdrop-blur-xl shadow-2xl border-r border-cyan-500/20 z-40 transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
+                className={`fixed top-0 left-0 h-screen w-72 bg-slate-900/60 backdrop-blur-3xl shadow-[5px_0_30px_rgba(0,0,0,0.5)] border-r border-cyan-500/10 z-40 transform transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
             >
-                <div className="h-full flex flex-col">
-                    <div className="p-6 flex items-center justify-between border-b border-cyan-500/20">
-                        <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">EMS Pro</h1>
-                        <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-slate-400 hover:text-cyan-400">
+                <div className="h-full flex flex-col relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+
+                    <div className="p-8 flex items-center justify-between relative">
+                        <div className="flex items-center space-x-3 group cursor-pointer" onClick={() => navigate('/dashboard')}>
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:rotate-12 transition-transform">
+                                <Shield size={20} className="text-white" />
+                            </div>
+                            <h1 className="text-2xl font-black tracking-tighter bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent uppercase">Matrix<span className="text-cyan-500">_</span>Sys</h1>
+                        </div>
+                        <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-slate-500 hover:text-white transition-colors">
                             <X size={24} />
                         </button>
                     </div>
 
-                    <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+                    <div className="flex-1 px-6 py-8 space-y-2 overflow-y-auto scrollbar-hide">
+                        <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-4 ml-2">Navigation Matrix</p>
                         {navItems.map((item) => (
                             <NavLink
                                 key={item.name}
                                 to={item.path}
                                 onClick={() => setIsSidebarOpen(false)}
                                 className={({ isActive }) =>
-                                    `flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${isActive
-                                        ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-400 border border-cyan-500/30 shadow-lg shadow-cyan-500/10'
-                                        : 'text-slate-400 hover:bg-slate-800/50 hover:text-cyan-300 hover:border hover:border-cyan-500/20'
+                                    `flex items-center space-x-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group ${isActive
+                                        ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-2xl shadow-cyan-500/5'
+                                        : 'text-slate-500 hover:text-slate-200 hover:bg-slate-800/40'
                                     }`
                                 }
                             >
-                                <item.icon size={20} />
-                                <span className="font-medium">{item.name}</span>
+                                <item.icon size={20} className="group-hover:scale-110 transition-transform" />
+                                <span className="text-[11px] font-black uppercase tracking-widest">{item.name}</span>
                             </NavLink>
                         ))}
-                    </nav>
+                    </div>
 
-                    <div className="p-4 mt-auto border-t border-cyan-500/20">
-                        <div className="flex items-center space-x-3 mb-4 px-2">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center text-white font-bold shadow-lg shadow-cyan-500/30">
+                    <div className="p-6 mt-auto bg-slate-950/50 border-t border-cyan-500/10 backdrop-blur-md">
+                        <div className="flex items-center space-x-4 mb-6 p-4 bg-slate-900 shadow-inner rounded-3xl border border-slate-800">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-black text-lg shadow-xl shadow-cyan-500/10">
                                 {user?.username?.[0]?.toUpperCase()}
                             </div>
-                            <div className="flex-1 overflow-hidden">
-                                <p className="text-sm font-semibold truncate text-cyan-100">{user?.username}</p>
-                                <p className="text-xs text-slate-400 capitalize">{user?.role}</p>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs font-black text-white uppercase tracking-tight truncate leading-none mb-1">{user?.username}</p>
+                                <span className="text-[9px] text-cyan-500/60 font-black uppercase tracking-widest">{user?.role} clearance</span>
                             </div>
                         </div>
                         <button
                             onClick={handleLogout}
-                            className="w-full flex items-center space-x-3 p-2 rounded-lg text-red-400 hover:bg-red-900/20 hover:border hover:border-red-500/30 transition-all"
+                            className="w-full flex items-center justify-center space-x-3 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] text-red-500/60 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/10 transition-all active:scale-95"
                         >
-                            <LogOut size={20} />
-                            <span className="font-medium">Logout</span>
+                            <LogOut size={18} />
+                            <span>Terminate Link</span>
                         </button>
                     </div>
                 </div>
             </aside>
 
-            {/* Main Content - Offset by Sidebar Width */}
-            <div className="flex-1 flex flex-col md:ml-64 relative z-10">
-                <header className="h-16 flex items-center justify-between px-6 bg-slate-900/80 backdrop-blur-xl shadow-lg border-b border-cyan-500/20">
+            <div className="flex-1 flex flex-col md:ml-72 relative min-h-screen">
+                <header className="h-20 flex items-center justify-between px-8 bg-slate-900/40 backdrop-blur-2xl border-b border-cyan-500/10 sticky top-0 z-30">
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="md:hidden p-2 rounded-lg hover:bg-slate-800/50 text-cyan-400"
+                        className="md:hidden p-3 rounded-2xl bg-slate-800/50 text-cyan-400 border border-cyan-500/10"
                     >
                         <Menu size={24} />
                     </button>
-                    <div className="flex items-center space-x-4 ml-auto">
-                        {/* Placeholder for future header items if needed */}
+
+                    <div className="flex items-center space-x-6 ml-auto">
+                        <div className="flex flex-col items-end">
+                            <span className="text-[9px] text-slate-600 font-black uppercase tracking-widest">System Status</span>
+                            <div className="flex items-center space-x-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-tight">All Cores Active</span>
+                            </div>
+                        </div>
+                        <div className="h-8 w-[1px] bg-slate-800"></div>
+                        <div className="w-10 h-10 rounded-xl bg-slate-800/50 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-colors cursor-pointer group">
+                            <Settings size={20} className="group-hover:rotate-90 transition-transform duration-500" />
+                        </div>
                     </div>
                 </header>
 
-                <main className="flex-1 p-6 overflow-y-auto">
-                    {children}
+                <main className="flex-1 p-8 sm:p-10 container mx-auto max-w-7xl">
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        {children}
+                    </motion.div>
                 </main>
+
+                <footer className="p-8 border-t border-slate-900 flex flex-col md:flex-row items-center justify-between gap-4 grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+                    <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em]">© 2026 Matrix Command Systems. All rights reserved.</p>
+                    <div className="flex items-center space-x-6">
+                        <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest cursor-wait hover:text-cyan-500 transition-colors uppercase tracking-[0.3em]">Privacy protocols</span>
+                        <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest cursor-wait hover:text-cyan-500 transition-colors uppercase tracking-[0.3em]">Security policy</span>
+                    </div>
+                </footer>
             </div>
 
-            {/* Mobile Overlay */}
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
+                    className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-30 md:hidden animate-in fade-in duration-300"
                     onClick={() => setIsSidebarOpen(false)}
                 ></div>
             )}
