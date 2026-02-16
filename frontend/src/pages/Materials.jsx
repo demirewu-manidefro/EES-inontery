@@ -118,19 +118,20 @@ const Materials = () => {
     });
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight dark:text-white">Inventory</h2>
-                    <p className="text-slate-500 dark:text-slate-400">Manage and track company materials.</p>
+        <div className="space-y-6 sm:space-y-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="space-y-1">
+                    <h2 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent uppercase">Inventory Core</h2>
+                    <p className="text-slate-400 font-bold text-sm tracking-wide">National asset tracking and hardware lifecycle management.</p>
+                    <div className="h-1 w-24 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full shadow-lg shadow-cyan-500/20"></div>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex flex-wrap items-center gap-3">
                     <button
                         onClick={() => setShowAddModal(true)}
-                        className="flex items-center space-x-2 px-3 sm:px-4 py-2 btn-touch bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors shadow-lg shadow-primary-500/20"
+                        className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl transition-all shadow-xl shadow-cyan-500/20 font-black uppercase tracking-widest text-[11px] border border-cyan-400/30 active:scale-95"
                     >
                         <Plus size={20} />
-                        <span className="font-bold">Add Material</span>
+                        <span>Add Hardware</span>
                     </button>
                     <input
                         type="file"
@@ -141,49 +142,49 @@ const Materials = () => {
                     />
                     <button
                         onClick={() => fileInputRef.current.click()}
-                        className="flex items-center space-x-2 px-3 sm:px-4 py-2 btn-touch bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors border border-slate-700"
+                        className="flex items-center space-x-2 px-5 py-2.5 bg-slate-900/50 hover:bg-slate-800/80 border border-cyan-500/20 text-cyan-400 rounded-xl transition-all font-black uppercase tracking-widest text-[11px] backdrop-blur-sm"
                     >
                         <Upload size={20} />
-                        <span className="font-bold">Import</span>
+                        <span>Import Matrix</span>
                     </button>
                     <button
                         onClick={handleExport}
-                        className="flex items-center space-x-2 px-3 sm:px-4 py-2 btn-touch bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors shadow-lg shadow-emerald-500/20"
+                        className="flex items-center space-x-2 px-5 py-2.5 bg-slate-800/40 hover:bg-emerald-600/20 border border-emerald-500/20 text-emerald-400 rounded-xl transition-all font-black uppercase tracking-widest text-[11px] backdrop-blur-sm"
                     >
                         <FileSpreadsheet size={20} />
-                        <span className="font-bold">Export</span>
+                        <span>Export</span>
                     </button>
                 </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 bg-slate-900/60 backdrop-blur-xl p-3 sm:p-4 rounded-xl border border-cyan-500/20">
-                <div className="flex items-center space-x-2 overflow-x-auto">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-slate-900/40 backdrop-blur-3xl p-4 rounded-2xl border border-cyan-500/10 shadow-2xl">
+                <div className="flex items-center space-x-3 overflow-x-auto scrollbar-hide shrink-0">
                     <button
                         onClick={() => setActiveTab('all')}
-                        className={`px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'all' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shadow-lg shadow-cyan-500/10' : 'text-slate-400 hover:text-cyan-300 hover:bg-slate-800/50'}`}
+                        className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'all' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'text-slate-500 hover:text-cyan-400 hover:bg-slate-800/50'}`}
                     >
-                        All Materials
+                        Full Repository
                     </button>
                     <button
                         onClick={() => setActiveTab('available')}
-                        className={`px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'available' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-lg shadow-emerald-500/10' : 'text-slate-400 hover:text-emerald-300 hover:bg-slate-800/50'}`}
+                        className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'available' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_15px_rgba(52,211,153,0.1)]' : 'text-slate-500 hover:text-emerald-400 hover:bg-slate-800/50'}`}
                     >
-                        Available Only
+                        Available
                     </button>
                     <button
                         onClick={() => setActiveTab('borrowed')}
-                        className={`px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'borrowed' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-lg shadow-amber-500/10' : 'text-slate-400 hover:text-amber-300 hover:bg-slate-800/50'}`}
+                        className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'borrowed' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-[0_0_15px_rgba(251,191,36,0.1)]' : 'text-slate-500 hover:text-amber-400 hover:bg-slate-800/50'}`}
                     >
-                        Borrowed Only
+                        Tier 1 Allocated
                     </button>
                 </div>
 
-                <div className="relative flex-1 sm:max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-400/50" size={18} />
+                <div className="relative flex-1 sm:max-w-md group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-cyan-400 transition-colors" size={16} />
                     <input
                         type="text"
-                        placeholder="Search by name or serial number..."
-                        className="w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-cyan-500/20 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-white placeholder-slate-500 text-sm"
+                        placeholder="SCAN HARDWARE SERIALS..."
+                        className="w-full pl-12 pr-4 py-2.5 bg-slate-950/50 border border-cyan-500/10 rounded-xl focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all text-white placeholder-slate-700 text-[11px] font-black tracking-widest shadow-inner overflow-hidden"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -191,120 +192,133 @@ const Materials = () => {
             </div>
 
             {loading ? (
-                <div className="flex justify-center py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                <div className="flex flex-col items-center justify-center py-32 space-y-4">
+                    <div className="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
+                    <p className="text-cyan-500/50 font-black uppercase tracking-[0.2em] text-[10px]">Scanning Inventory Matrix...</p>
                 </div>
             ) : (
-                <div className="bg-slate-900/50 rounded-3xl shadow-sm border border-slate-800 overflow-hidden overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr className="bg-slate-900">
-                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">Material Name</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 font-mono">Serial Number</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">Status</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">Added Date</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-800">
-                            {filteredMaterials.length === 0 ? (
-                                <tr>
-                                    <td colSpan="5" className="p-12 text-center text-slate-500 italic">No materials found matching your search.</td>
+                <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[2rem] shadow-3xl border border-cyan-500/10 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent"></div>
+                    <div className="overflow-x-auto scrollbar-hide">
+                        <table className="w-full text-left border-collapse min-w-[1000px]">
+                            <thead>
+                                <tr className="bg-slate-950/50 border-b border-cyan-500/10">
+                                    <th className="px-6 py-5 text-[10px] font-black text-cyan-500/60 uppercase tracking-[0.2em] whitespace-nowrap">Hardware Identifier</th>
+                                    <th className="px-6 py-5 text-[10px] font-black text-cyan-400/60 uppercase tracking-[0.2em] whitespace-nowrap font-mono">Serial_Index</th>
+                                    <th className="px-6 py-5 text-[10px] font-black text-cyan-400/60 uppercase tracking-[0.2em] whitespace-nowrap">Status_Code</th>
+                                    <th className="px-6 py-5 text-[10px] font-black text-cyan-400/60 uppercase tracking-[0.2em] whitespace-nowrap">Entry_Log</th>
+                                    <th className="px-6 py-5 text-[10px] font-black text-cyan-400/60 uppercase tracking-[0.2em] text-right whitespace-nowrap">Operations</th>
                                 </tr>
-                            ) : (
-                                filteredMaterials.map((mat) => (
-                                    <tr key={mat.id} className="hover:bg-slate-800/30 transition-colors group">
-                                        <td className="p-3 sm:p-4">
-                                            <div className="flex items-center space-x-3">
-                                                <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-primary-400 flex items-center justify-center">
-                                                    <Package size={20} />
-                                                </div>
-                                                <span className="font-bold text-slate-100">{mat.name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-3 sm:p-4 text-sm font-mono text-slate-400">
-                                            {mat.serial_number}
-                                        </td>
-                                        <td className="p-3 sm:p-4">
-                                            <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest ${mat.status === 'available' ? 'bg-emerald-900/30 text-emerald-400' :
-                                                mat.status === 'borrowed' ? 'bg-amber-900/30 text-amber-500' :
-                                                    'bg-slate-800 text-slate-400'
-                                                }`}>
-                                                {mat.status}
-                                            </span>
-                                        </td>
-                                        <td className="p-3 sm:p-4 text-sm text-slate-400">
-                                            {new Date(mat.createdAt).toLocaleDateString()}
-                                        </td>
-                                        <td className="p-3 sm:p-4 text-right">
-                                            <button
-                                                onClick={() => setEditingMat(mat)}
-                                                className="px-3 py-2 btn-touch flex items-center justify-center bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400 rounded-lg text-xs font-bold hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-colors"
-                                            >
-                                                Edit Details
-                                            </button>
-                                        </td>
+                            </thead>
+                            <tbody className="divide-y divide-slate-800/50">
+                                {filteredMaterials.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="5" className="px-6 py-20 text-center text-slate-700 font-black uppercase tracking-widest italic">No hardware profiles found in database.</td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                ) : (
+                                    filteredMaterials.map((mat) => (
+                                        <tr key={mat.id} className="hover:bg-cyan-500/5 transition-all group/row">
+                                            <td className="px-6 py-5">
+                                                <div className="flex items-center space-x-4">
+                                                    <div className="w-11 h-11 rounded-xl bg-slate-950 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shadow-inner group-hover/row:scale-110 group-hover/row:border-cyan-500 transition-all duration-500">
+                                                        <Package size={22} className="group-hover/row:rotate-12 transition-transform" />
+                                                    </div>
+                                                    <span className="font-black text-slate-100 uppercase tracking-tight text-sm">{mat.name}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-5 text-[11px] font-mono font-bold text-slate-400 tracking-wider">
+                                                {mat.serial_number}
+                                            </td>
+                                            <td className="px-6 py-5">
+                                                <span className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-[0.1em] border ${mat.status === 'available' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]' :
+                                                    mat.status === 'borrowed' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]' :
+                                                        'bg-slate-800/50 text-slate-500 border-slate-700'
+                                                    }`}>
+                                                    {mat.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-5 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                                                {new Date(mat.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' })}
+                                            </td>
+                                            <td className="px-6 py-5 text-right">
+                                                <button
+                                                    onClick={() => setEditingMat(mat)}
+                                                    className="px-5 py-2.5 bg-slate-800/50 hover:bg-cyan-600/20 text-cyan-400 border border-cyan-500/10 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
+                                                >
+                                                    Modify Profile
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
 
-            {/* Add Material Modal */}
             <AnimatePresence>
                 {showAddModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white dark:bg-slate-900 rounded-3xl p-8 w-full max-w-md shadow-2xl border border-slate-100 dark:border-slate-800"
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="bg-slate-900/95 backdrop-blur-2xl rounded-[2.5rem] p-10 w-full max-w-md shadow-3xl border border-cyan-500/20 relative overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-8">
-                                <h3 className="text-xl font-bold dark:text-white">Add New Material</h3>
-                                <button onClick={() => setShowAddModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
-                                    <X className="dark:text-white" />
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl -z-10"></div>
+
+                            <div className="flex items-center justify-between mb-10">
+                                <div className="flex items-center space-x-4">
+                                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-xl shadow-cyan-500/10">
+                                        <Package size={28} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-black text-white uppercase tracking-tighter">New Asset</h3>
+                                        <p className="text-[10px] text-cyan-500/60 font-black uppercase tracking-widest mt-1">Registry Protocol 4.0</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setShowAddModal(false)} className="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
+                                    <X size={24} />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleAddSubmit} className="space-y-6">
+                            <form onSubmit={handleAddSubmit} className="space-y-8">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-500">Material Name</label>
+                                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-2 block">Hardware Nomenclature</label>
                                     <input
                                         required
                                         type="text"
-                                        placeholder="e.g. Laptop, GPS, Camera"
-                                        className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                        placeholder="e.g. RADIOMETRIC SCANNER, GPS UNIT"
+                                        className="w-full px-5 py-3.5 bg-slate-950/50 border border-cyan-500/10 rounded-2xl text-white outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all font-bold text-sm shadow-inner placeholder-slate-800"
                                         value={newMat.name}
                                         onChange={(e) => setNewMat({ ...newMat, name: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-500">Serial Number</label>
+                                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-2 block">Serial Authentication Index</label>
                                     <input
                                         required
                                         type="text"
-                                        placeholder="e.g. SN-123456"
-                                        className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                        placeholder="SN-XXXX-XXXX-XXXX"
+                                        className="w-full px-5 py-3.5 bg-slate-950/50 border border-cyan-500/10 rounded-2xl text-white outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all font-bold text-sm shadow-inner placeholder-slate-800"
                                         value={newMat.serial_number}
                                         onChange={(e) => setNewMat({ ...newMat, serial_number: e.target.value })}
                                     />
                                 </div>
 
-                                <div className="pt-4">
+                                <div className="pt-6">
                                     <button
                                         disabled={submitting}
                                         type="submit"
-                                        className="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-bold transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary-500/20"
+                                        className="w-full py-5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-[1.5rem] font-black shadow-2xl shadow-cyan-500/30 transition-all active:scale-95 flex items-center justify-center space-x-3 uppercase tracking-[0.2em] text-[13px] border border-cyan-400/30"
                                     >
                                         {submitting ? (
-                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                                         ) : (
                                             <>
                                                 <Save size={20} />
-                                                <span>Save Material</span>
+                                                <span>Register Asset</span>
                                             </>
                                         )}
                                     </button>
@@ -318,67 +332,69 @@ const Materials = () => {
             {/* Edit Material Modal */}
             <AnimatePresence>
                 {editingMat && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white dark:bg-slate-900 rounded-3xl p-8 w-full max-w-md shadow-2xl border border-slate-100 dark:border-slate-800"
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="bg-slate-900/95 backdrop-blur-2xl rounded-[2.5rem] p-10 w-full max-w-md shadow-3xl border border-cyan-500/20 relative overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-8">
-                                <h3 className="text-xl font-bold dark:text-white">Edit Material</h3>
-                                <button onClick={() => setEditingMat(null)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
-                                    <X className="dark:text-white" />
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl -z-10"></div>
+
+                            <div className="flex items-center justify-between mb-10">
+                                <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Modify Asset</h3>
+                                <button onClick={() => setEditingMat(null)} className="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
+                                    <X size={24} />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleEditSubmit} className="space-y-6">
+                            <form onSubmit={handleEditSubmit} className="space-y-8">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-500">Material Name</label>
+                                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-2 block">Hardware Nomenclature</label>
                                     <input
                                         required
                                         type="text"
-                                        className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                        className="w-full px-5 py-3.5 bg-slate-950/50 border border-cyan-500/10 rounded-2xl text-white outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all font-bold text-sm shadow-inner"
                                         value={editingMat.name}
                                         onChange={(e) => setEditingMat({ ...editingMat, name: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-500">Serial Number</label>
+                                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-2 block">Serial Authentication Index</label>
                                     <input
                                         required
                                         type="text"
-                                        className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                        className="w-full px-5 py-3.5 bg-slate-950/50 border border-cyan-500/10 rounded-2xl text-white outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all font-bold text-sm shadow-inner"
                                         value={editingMat.serial_number}
                                         onChange={(e) => setEditingMat({ ...editingMat, serial_number: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-500">Status</label>
+                                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-2 block">Status Designation</label>
                                     <select
-                                        className="w-full px-4 py-2 border border-slate-200 dark:border-slate-800 dark:bg-slate-800 dark:text-white rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                        className="w-full px-5 py-3.5 bg-slate-950/50 border border-cyan-500/10 rounded-2xl text-white outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all font-bold text-sm shadow-inner appearance-none relative"
                                         value={editingMat.status}
                                         onChange={(e) => setEditingMat({ ...editingMat, status: e.target.value })}
                                     >
-                                        <option value="available">Available</option>
-                                        <option value="borrowed">Borrowed</option>
-                                        <option value="maintenance">Maintenance</option>
-                                        <option value="lost">Lost</option>
+                                        <option value="available">AVAILABLE</option>
+                                        <option value="borrowed">BORROWED</option>
+                                        <option value="maintenance">MAINTENANCE</option>
+                                        <option value="lost">LOST</option>
                                     </select>
                                 </div>
 
-                                <div className="pt-4">
+                                <div className="pt-6">
                                     <button
                                         disabled={submitting}
                                         type="submit"
-                                        className="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-bold transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary-500/20"
+                                        className="w-full py-5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-[1.5rem] font-black shadow-2xl shadow-cyan-500/30 transition-all active:scale-95 flex items-center justify-center space-x-3 uppercase tracking-[0.2em] text-[13px] border border-cyan-400/30"
                                     >
                                         {submitting ? (
-                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                                         ) : (
                                             <>
                                                 <Save size={20} />
-                                                <span>Update Material</span>
+                                                <span>Update Repository</span>
                                             </>
                                         )}
                                     </button>
