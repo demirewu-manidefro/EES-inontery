@@ -4,21 +4,22 @@ import api from '../api/axios';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-const StatCard = ({ title, value, icon: Icon, color, onClick }) => (
+const StatCard = ({ title, value, icon: Icon, gradient, shadowColor, onClick }) => (
     <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.02 }}
+        whileHover={{ scale: 1.02, y: -5 }}
         whileTap={{ scale: 0.98 }}
         onClick={onClick}
-        className="bg-slate-900/80 backdrop-blur-xl p-4 sm:p-6 rounded-2xl shadow-xl border border-cyan-500/20 flex items-center space-x-3 sm:space-x-4 cursor-pointer hover:shadow-2xl hover:shadow-cyan-500/10 transition-all"
+        className="bg-slate-900/40 backdrop-blur-3xl p-6 rounded-[2rem] border border-cyan-500/10 flex items-center space-x-5 cursor-pointer shadow-2xl relative overflow-hidden group"
     >
-        <div className={`p-3 sm:p-4 rounded-xl ${color} flex-shrink-0`}>
-            <Icon size={20} className="text-white sm:w-6 sm:h-6" />
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
+        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-lg ${shadowColor} flex-shrink-0 group-hover:rotate-6 transition-transform duration-500`}>
+            <Icon size={24} className="drop-shadow-md" />
         </div>
         <div className="min-w-0 flex-1">
-            <p className="text-xs sm:text-sm font-medium text-cyan-300 truncate">{title}</p>
-            <p className="text-xl sm:text-2xl font-bold text-white">{value}</p>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1 group-hover:text-cyan-400 transition-colors">{title}</p>
+            <p className="text-3xl font-black text-white tracking-tighter leading-none">{value}</p>
         </div>
     </motion.div>
 );
@@ -44,7 +45,6 @@ const Dashboard = () => {
                 });
             } catch (err) {
                 console.error('Failed to fetch stats:', err);
-                // Fallback to fetch individual counts if /admin/stats fails for some reason
                 try {
                     const [emps, mats] = await Promise.all([
                         api.get('/employees'),
@@ -80,109 +80,111 @@ const Dashboard = () => {
             link.remove();
         } catch (err) {
             console.error(err);
-            if (err.response?.data instanceof Blob) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    try {
-                        const errorData = JSON.parse(reader.result);
-                        alert('Failed to export report: ' + (errorData.message || 'Unknown error'));
-                    } catch (e) {
-                        alert('Failed to export report: ' + err.message);
-                    }
-                };
-                reader.readAsText(err.response.data);
-            } else {
-                alert('Failed to export report: ' + (err.response?.data?.message || err.message));
-            }
         }
     };
 
     return (
-        <div className="space-y-6 sm:space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Dashboard Overview</h2>
-                    <p className="text-sm sm:text-base text-slate-400 mt-1">Welcome back! Here's what's happening today.</p>
+        <div className="space-y-10 sm:space-y-12">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                <div className="space-y-1">
+                    <h2 className="text-4xl font-black tracking-tighter bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent uppercase">Command Console</h2>
+                    <p className="text-slate-400 font-bold text-sm tracking-wide">Real-time telemetry and resource allocation metrics.</p>
+                    <div className="h-1.5 w-32 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 rounded-full shadow-lg shadow-cyan-500/20"></div>
                 </div>
                 <button
                     onClick={handleExportAll}
-                    className="flex items-center justify-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white rounded-xl transition-all shadow-lg shadow-emerald-500/20 font-bold btn-touch"
+                    className="flex items-center justify-center space-x-3 px-6 py-4 bg-slate-800/40 hover:bg-emerald-600/20 border border-emerald-500/20 text-emerald-400 rounded-2xl transition-all font-black uppercase tracking-widest text-[11px] backdrop-blur-sm shadow-2xl active:scale-95 group"
                 >
-                    <FileSpreadsheet size={18} />
-                    <span className="text-sm sm:text-base">Download Report</span>
+                    <FileSpreadsheet size={20} className="group-hover:rotate-12 transition-transform" />
+                    <span>Download Master Report</span>
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                 <StatCard
-                    title="Total Employees"
+                    title="Active Units"
                     value={stats.totalEmployees}
                     icon={Users}
-                    color="bg-gradient-to-br from-blue-500 to-blue-600"
+                    gradient="from-blue-600 to-indigo-600"
+                    shadowColor="shadow-blue-500/30"
                     onClick={() => navigate('/employees')}
                 />
                 <StatCard
-                    title="Available Materials"
+                    title="Hardware Inventory"
                     value={stats.totalMaterials}
                     icon={Package}
-                    color="bg-gradient-to-br from-emerald-500 to-emerald-600"
+                    gradient="from-emerald-500 to-teal-600"
+                    shadowColor="shadow-emerald-500/30"
                     onClick={() => navigate('/materials')}
                 />
                 <StatCard
-                    title="Active Borrowings"
+                    title="Deployed Assets"
                     value={stats.borrowedCount}
                     icon={ClipboardCheck}
-                    color="bg-gradient-to-br from-amber-500 to-amber-600"
+                    gradient="from-amber-500 to-orange-600"
+                    shadowColor="shadow-amber-500/30"
                     onClick={() => navigate('/borrow')}
                 />
                 <StatCard
-                    title="Waiting Returns"
+                    title="Recovery Queue"
                     value={stats.waitingCount}
                     icon={Clock}
-                    color="bg-gradient-to-br from-purple-500 to-purple-600"
-                    onClick={() => navigate('/return')} // Or /waiting if that's more appropriate, but waiting returns usually implies returning. Actually /return page handles returns.
+                    gradient="from-purple-500 to-pink-600"
+                    shadowColor="shadow-purple-500/30"
+                    onClick={() => navigate('/return')}
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-                <div className="bg-slate-900/80 backdrop-blur-xl p-5 sm:p-6 rounded-2xl shadow-xl border border-cyan-500/20">
-                    <h3 className="text-base sm:text-lg font-semibold mb-4 text-cyan-300">Quick Actions</h3>
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                        <button
-                            onClick={() => navigate('/employees')}
-                            className="p-3 sm:p-4 flex flex-col items-center justify-center space-y-2 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-xl transition-all btn-touch"
-                        >
-                            <Users className="text-blue-400 w-5 h-5 sm:w-6 sm:h-6" />
-                            <span className="text-xs sm:text-sm font-medium text-blue-400">Add Employee</span>
-                        </button>
-                        <button
-                            onClick={() => navigate('/materials')}
-                            className="p-3 sm:p-4 flex flex-col items-center justify-center space-y-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-xl transition-all btn-touch"
-                        >
-                            <Package className="text-emerald-400 w-5 h-5 sm:w-6 sm:h-6" />
-                            <span className="text-xs sm:text-sm font-medium text-emerald-400">Add Material</span>
-                        </button>
-                        <button
-                            onClick={() => navigate('/borrow')}
-                            className="p-3 sm:p-4 flex flex-col items-center justify-center space-y-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-xl transition-all btn-touch"
-                        >
-                            <ClipboardCheck className="text-amber-400 w-5 h-5 sm:w-6 sm:h-6" />
-                            <span className="text-xs sm:text-sm font-medium text-amber-400">New Borrow</span>
-                        </button>
-                        <button
-                            onClick={() => navigate('/return')}
-                            className="p-3 sm:p-4 flex flex-col items-center justify-center space-y-2 bg-slate-700/50 hover:bg-slate-700/70 border border-slate-600/20 rounded-xl transition-all btn-touch"
-                        >
-                            <CheckCircle className="text-slate-300 w-5 h-5 sm:w-6 sm:h-6" />
-                            <span className="text-xs sm:text-sm font-medium text-slate-300">Quick Return</span>
-                        </button>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div className="lg:col-span-12">
+                    <div className="bg-slate-900/40 backdrop-blur-3xl p-8 rounded-[2.5rem] shadow-3xl border border-cyan-500/10 relative overflow-hidden group/actions">
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent"></div>
+                        <h3 className="text-[10px] font-black mb-8 text-cyan-500/60 uppercase tracking-[0.4em]">Rapid Deployment Sub-Modules</h3>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                            {[
+                                { label: 'Personnel Registry', icon: Users, color: 'blue', path: '/employees', desc: 'Add new unit' },
+                                { label: 'Hardware Registry', icon: Package, color: 'emerald', path: '/materials', desc: 'Register asset' },
+                                { label: 'Asset Issuance', icon: ClipboardCheck, color: 'amber', path: '/borrow', desc: 'Initiate link' },
+                                { label: 'Resource recovery', icon: CheckCircle, color: 'indigo', path: '/return', desc: 'Sync return' }
+                            ].map((action, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => navigate(action.path)}
+                                    className={`p-6 flex flex-col items-center justify-center space-y-4 bg-slate-950/40 hover:bg-${action.color}-500/10 border border-slate-800/50 hover:border-${action.color}-500/30 rounded-[2rem] transition-all duration-500 group/btn active:scale-95 shadow-lg`}
+                                >
+                                    <div className={`p-4 rounded-2xl bg-${action.color}-500/10 text-${action.color}-400 group-hover/btn:scale-110 group-hover/btn:rotate-12 transition-all duration-500`}>
+                                        <action.icon size={28} />
+                                    </div>
+                                    <div className="text-center">
+                                        <span className={`text-[10px] font-black uppercase text-slate-100 tracking-widest block group-hover/btn:text-${action.color}-400 transition-colors`}>{action.label}</span>
+                                        <span className="text-[9px] text-slate-500 font-bold uppercase tracking-tight mt-1 block italic">{action.desc}</span>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
-                <div className="bg-slate-900/80 backdrop-blur-xl p-5 sm:p-6 rounded-2xl shadow-xl border border-cyan-500/20">
-                    <h3 className="text-base sm:text-lg font-semibold mb-4 text-cyan-300">Recent Activity</h3>
-                    <div className="space-y-4">
-                        <p className="text-sm text-slate-400 italic">Feature coming soon: Live activity feed.</p>
+                <div className="lg:col-span-12">
+                    <div className="bg-slate-900/40 backdrop-blur-3xl p-8 rounded-[2.5rem] shadow-3xl border border-cyan-500/10 relative overflow-hidden h-full">
+                        <div className="absolute top-0 left-0 w-[1px] h-full bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent"></div>
+                        <div className="flex items-center justify-between mb-8">
+                            <h3 className="text-[10px] font-black text-cyan-500/60 uppercase tracking-[0.4em]">Telemetry Feed</h3>
+                            <div className="flex items-center space-x-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+                                <span className="text-[9px] font-black text-cyan-500/60 uppercase tracking-widest leading-none mt-0.5">Live Uplink</span>
+                            </div>
+                        </div>
+                        <div className="space-y-6 py-10 flex flex-col items-center justify-center border border-dashed border-slate-800 rounded-[2rem]">
+                            <div className="w-20 h-20 bg-slate-950 border border-slate-800 rounded-full flex items-center justify-center relative">
+                                <div className="absolute inset-0 border border-cyan-500/20 rounded-full animate-ping"></div>
+                                <Clock size={32} className="text-slate-800" />
+                            </div>
+                            <div className="text-center">
+                                <p className="text-xs font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Queue Synchronizing</p>
+                                <p className="text-[10px] text-slate-700 font-bold uppercase leading-relaxed max-w-[200px]">Temporal event stream mapping will be accessible in revision 5.0.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
