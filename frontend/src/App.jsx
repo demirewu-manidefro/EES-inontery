@@ -15,6 +15,7 @@ import Users from './pages/Users';
 import LandingPage from './pages/LandingPage';
 import News from './pages/News';
 import Gallery from './pages/Gallery';
+import AboutBranch from './pages/AboutBranch';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
@@ -43,6 +44,7 @@ const App = () => {
                     <Route path="/events" element={<News />} />
                     <Route path="/photo-gallery" element={<Gallery />} />
                     <Route path="/video-gallery" element={<Gallery />} />
+                    <Route path="/about" element={<AboutBranch />} />
                     <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                     <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 

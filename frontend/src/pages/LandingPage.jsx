@@ -85,10 +85,10 @@ const LandingPage = () => {
         {
             title: 'About ESS',
             items: [
+                { label: 'Debre Berhan Branch', icon: Building2, desc: 'Regional branch overview', path: '/about' },
                 { label: 'History', icon: BookOpen, desc: 'Our journey since 1956', path: '/about/history' },
                 { label: 'Organization Structure', icon: Building2, desc: 'Governance and management', path: '/about/structure' },
-                { label: 'Strategies', icon: Target, desc: 'NSDS and strategic plans', path: '/about/strategies' },
-                { label: 'Branch Offices', icon: Map, desc: 'Regional operations nationwide', path: '/about/branches' }
+                { label: 'Strategies', icon: Target, desc: 'NSDS and strategic plans', path: '/about/strategies' }
             ]
         },
         {
