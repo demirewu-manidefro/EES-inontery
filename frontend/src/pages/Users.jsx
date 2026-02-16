@@ -63,28 +63,25 @@ const Users = () => {
                 const payload = { ...formData };
                 if (!payload.password) delete payload.password; // Don't send empty password if not changing
                 await api.put(`/admin/user/${selectedUser.id}`, payload);
-                alert('User updated successfully');
             } else {
                 await api.post('/admin/user', formData);
-                alert('User created successfully');
             }
             setShowModal(false);
             fetchUsers();
         } catch (err) {
-            alert(err.response?.data?.message || 'Operation failed');
+            console.error(err);
         } finally {
             setSubmitting(false);
         }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
+        if (!window.confirm('Terminate this access credential? This action is irreversible.')) return;
         try {
             await api.delete(`/admin/user/${id}`);
-            alert('User deleted successfully');
             fetchUsers();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to delete user');
+            console.error(err);
         }
     };
 
@@ -93,71 +90,93 @@ const Users = () => {
     );
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">User Management</h2>
-                    <p className="text-sm sm:text-base text-slate-400 mt-1">Manage system access and security credentials.</p>
+        <div className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                <div className="space-y-1">
+                    <h2 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-500 bg-clip-text text-transparent uppercase">Access Matrix</h2>
+                    <p className="text-slate-400 font-bold text-sm tracking-wide">Managing system authority and cryptographic identifiers.</p>
+                    <div className="h-1 w-24 bg-gradient-to-r from-indigo-500 to-cyan-600 rounded-full shadow-lg shadow-indigo-500/20"></div>
                 </div>
+                <button
+                    onClick={handleAddClick}
+                    className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-2xl transition-all font-black uppercase tracking-widest text-[11px] shadow-2xl shadow-indigo-500/20 active:scale-95"
+                >
+                    <Plus size={18} />
+                    <span>Initialize Credential</span>
+                </button>
             </div>
 
-            <div className="flex items-center justify-between bg-slate-900/60 backdrop-blur-xl p-4 rounded-xl border border-cyan-500/20">
-                <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-400/50" size={18} />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-slate-900/40 backdrop-blur-3xl p-4 rounded-2xl border border-indigo-500/10 shadow-2xl">
+                <div className="relative flex-1 sm:max-w-md group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-indigo-400 transition-colors" size={16} />
                     <input
                         type="text"
-                        placeholder="Search by username..."
-                        className="w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-cyan-500/20 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all text-white placeholder-slate-500 text-sm"
+                        placeholder="SCAN ACCESS LOGS..."
+                        className="w-full pl-12 pr-4 py-2.5 bg-slate-950/50 border border-indigo-500/10 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-white placeholder-slate-700 text-[11px] font-black tracking-widest shadow-inner"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
+                <div className="flex items-center space-x-4 px-4 border-l border-slate-800/50">
+                    <div className="flex flex-col items-end">
+                        <span className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Active Links</span>
+                        <span className="text-sm font-mono font-black text-indigo-400">{filteredUsers.length}</span>
+                    </div>
+                </div>
             </div>
 
             {loading ? (
-                <div className="flex justify-center py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
+                <div className="flex flex-col items-center justify-center py-32 space-y-4">
+                    <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+                    <p className="text-indigo-500/50 font-black uppercase tracking-[0.2em] text-[10px]">Synchronizing Matrix...</p>
                 </div>
             ) : (
-                <div className="bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-xl border border-cyan-500/20 overflow-hidden">
-                    <div className="overflow-x-auto">
+                <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[2rem] shadow-3xl border border-indigo-500/10 overflow-hidden relative">
+                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+                    <div className="overflow-x-auto scrollbar-hide">
                         <table className="w-full text-left border-collapse min-w-[600px]">
                             <thead>
-                                <tr className="bg-slate-800/50 border-b border-cyan-500/20">
-                                    <th className="p-4 text-xs font-bold text-cyan-300 uppercase tracking-wider">User</th>
-                                    <th className="p-4 text-xs font-bold text-cyan-300 uppercase tracking-wider">Role</th>
-                                    <th className="p-4 text-xs font-bold text-cyan-300 uppercase tracking-wider text-right">Actions</th>
+                                <tr className="bg-slate-950/50 border-b border-indigo-500/10">
+                                    <th className="px-8 py-5 text-[10px] font-black text-indigo-500/60 uppercase tracking-[0.2em] whitespace-nowrap">Subject Identifier</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-indigo-400/60 uppercase tracking-[0.2em] whitespace-nowrap">Security Clearance</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-indigo-400/60 uppercase tracking-[0.2em] text-right whitespace-nowrap">Operations</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-800">
+                            <tbody className="divide-y divide-slate-800/50">
                                 {filteredUsers.map((user) => (
-                                    <tr key={user.id} className="hover:bg-slate-800/50 transition-colors">
-                                        <td className="p-4">
-                                            <div className="flex items-center space-x-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-cyan-400 flex items-center justify-center font-bold">
+                                    <tr key={user.id} className="hover:bg-indigo-500/5 transition-all group/row">
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center space-x-5">
+                                                <div className="w-12 h-12 rounded-2xl bg-slate-950 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-lg shadow-inner group-hover/row:scale-110 group-hover/row:border-indigo-500 transition-all duration-500">
                                                     {user.username[0].toUpperCase()}
                                                 </div>
-                                                <span className="font-medium text-white">{user.username}</span>
+                                                <div className="flex flex-col">
+                                                    <span className="font-black text-slate-100 uppercase tracking-tight text-sm leading-none mb-1">{user.username}</span>
+                                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest group-hover/row:text-indigo-400/60 transition-colors">Credential Verified</span>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="p-4">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${user.role === 'admin' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}`}>
+                                        <td className="px-8 py-5">
+                                            <span className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] border shadow-sm transition-all duration-500 ${user.role === 'admin'
+                                                    ? 'bg-purple-500/10 text-purple-400 border-purple-500/20 group-hover/row:shadow-[0_0_15px_rgba(168,85,247,0.2)]'
+                                                    : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20 group-hover/row:shadow-[0_0_15px_rgba(99,102,241,0.2)]'
+                                                }`}>
                                                 {user.role}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-right">
-                                            <div className="flex items-center justify-end space-x-2">
+                                        <td className="px-8 py-5 text-right">
+                                            <div className="flex items-center justify-end space-x-3 opacity-40 group-hover/row:opacity-100 transition-all">
                                                 <button
                                                     onClick={() => handleEditClick(user)}
-                                                    className="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-all"
-                                                    title="Edit User"
+                                                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 border border-transparent hover:border-cyan-500/20 rounded-xl transition-all active:scale-95"
+                                                    title="Modify Access Rights"
                                                 >
                                                     <Edit2 size={18} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(user.id)}
-                                                    className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
-                                                    title="Delete User"
+                                                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 rounded-xl transition-all active:scale-95"
+                                                    title="De-Authorize Subject"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
@@ -173,82 +192,92 @@ const Users = () => {
 
             <AnimatePresence>
                 {showModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-slate-900 rounded-3xl p-8 w-full max-w-md shadow-2xl border border-cyan-500/20"
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="bg-slate-900/95 backdrop-blur-2xl rounded-[2.5rem] p-10 w-full max-w-md shadow-3xl border border-indigo-500/20 relative overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-8">
-                                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                    <Shield className="text-cyan-400" />
-                                    {isEditing ? 'Edit User Credentials' : 'Add User'}
-                                </h3>
-                                <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-white transition-colors">
-                                    <X />
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl -z-10"></div>
+
+                            <div className="flex items-center justify-between mb-10">
+                                <div className="flex items-center space-x-4">
+                                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-xl shadow-indigo-500/10">
+                                        <Shield size={28} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-black text-white uppercase tracking-tighter">{isEditing ? 'Sync Access' : 'New Link'}</h3>
+                                        <p className="text-[10px] text-indigo-500/60 font-black uppercase tracking-widest mt-1">Registry Protocol 7.2</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setShowModal(false)} className="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
+                                    <X size={24} />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Username</label>
-                                    <div className="relative">
-                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                            <form onSubmit={handleSubmit} className="space-y-8">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] ml-1">Subject Alias</label>
+                                    <div className="relative group">
+                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-indigo-400 transition-colors" size={18} />
                                         <input
                                             required
                                             type="text"
-                                            className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+                                            className="w-full pl-12 pr-4 py-4 bg-slate-950/50 border border-indigo-500/10 rounded-2xl text-white focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder-slate-700 text-sm font-bold tracking-tight"
                                             value={formData.username}
                                             onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                            placeholder="Enter identity alias..."
                                         />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">
-                                        Password {isEditing && <span className="text-slate-500 lowercase font-normal">(leave blank to keep current)</span>}
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] ml-1">
+                                        Cryptographic Key {isEditing && <span className="text-slate-600 lowercase font-normal italic">(bypass if unchanged)</span>}
                                     </label>
-                                    <div className="relative">
-                                        <Key className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                                    <div className="relative group">
+                                        <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-indigo-400 transition-colors" size={18} />
                                         <input
                                             type="password"
-                                            className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+                                            className="w-full pl-12 pr-4 py-4 bg-slate-950/50 border border-indigo-500/10 rounded-2xl text-white focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder-slate-700 text-sm font-bold tracking-tight"
                                             value={formData.password}
                                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                            placeholder={isEditing ? "••••••••" : "Enter password"}
+                                            placeholder={isEditing ? "••••••••" : "Define access key..."}
                                             required={!isEditing}
                                         />
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Role</label>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] ml-1">Clearance Tier</label>
                                     <select
-                                        className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+                                        className="w-full px-5 py-4 bg-slate-950/50 border border-indigo-500/10 rounded-2xl text-white focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-sm font-bold tracking-tight appearance-none cursor-pointer"
                                         value={formData.role}
                                         onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                     >
-                                        <option value="admin">Admin</option>
-                                        <option value="manager">Manager</option>
-                                        <option value="user">User</option>
+                                        <option value="admin">LEVEL_0: ARCHITECT (ADMIN)</option>
+                                        <option value="manager">LEVEL_1: OVERSEER (MANAGER)</option>
+                                        <option value="user">LEVEL_2: OPERATOR (USER)</option>
                                     </select>
                                 </div>
 
-                                <button
-                                    disabled={submitting}
-                                    type="submit"
-                                    className="w-full py-3.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center space-x-2"
-                                >
-                                    {submitting ? (
-                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                    ) : (
-                                        <>
-                                            <Save size={18} />
-                                            <span>{isEditing ? 'Save Changes' : 'Create User'}</span>
-                                        </>
-                                    )}
-                                </button>
+                                <div className="pt-6">
+                                    <button
+                                        disabled={submitting}
+                                        type="submit"
+                                        className="w-full py-5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-[1.5rem] font-black shadow-2xl shadow-indigo-500/30 transition-all active:scale-95 flex items-center justify-center space-x-3 uppercase tracking-[0.2em] text-[13px] border border-indigo-400/30"
+                                    >
+                                        {submitting ? (
+                                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                                        ) : (
+                                            <>
+                                                <Save size={20} />
+                                                <span>{isEditing ? 'Verify Changes' : 'Finalize Matrix'}</span>
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
                             </form>
                         </motion.div>
                     </div>
