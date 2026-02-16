@@ -17,6 +17,7 @@ import {
     Target,
     Map,
     UserCircle,
+    Bell,
     ClipboardList,
     Cpu,
     Database,
