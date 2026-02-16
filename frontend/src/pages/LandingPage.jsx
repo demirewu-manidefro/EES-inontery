@@ -17,23 +17,25 @@ import {
     Target,
     Map,
     UserCircle,
-    ClipboardList
+    ClipboardList,
+    Cpu,
+    Database,
+    Zap
 } from 'lucide-react';
 
 const Logo = ({ className = "w-12 h-12" }) => (
-    <div className={`${className} bg-white rounded-full flex items-center justify-center p-1.5 shadow-md border border-gray-100 overflow-hidden`}>
-        <svg viewBox="0 0 100 100" className="w-full h-full">
+    <div className={`${className} bg-slate-900/50 rounded-2xl flex items-center justify-center p-2 shadow-2xl border border-cyan-500/30 backdrop-blur-xl overflow-hidden`}>
+        <svg viewBox="0 0 100 100" className="w-full h-full animate-pulse-slow">
             <defs>
-                <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#1d4e89" />
-                    <stop offset="100%" stopColor="#2c75cc" />
+                <linearGradient id="cyanBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#22d3ee" />
+                    <stop offset="100%" stopColor="#3b82f6" />
                 </linearGradient>
             </defs>
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#1d4e89" strokeWidth="2" strokeDasharray="4 2" />
-            <path d="M20 70 Q 35 30 50 70 T 80 70" fill="none" stroke="#b38a5d" strokeWidth="5" strokeLinecap="round" />
-            <path d="M20 70 Q 35 45 50 70 T 80 70" fill="none" stroke="#1d4e89" strokeWidth="5" strokeLinecap="round" opacity="0.8" />
-            <circle cx="50" cy="50" r="15" fill="url(#blueGrad)" />
-            <path d="M45 50 L50 40 L55 50 Z" fill="white" />
+            <circle cx="50" cy="50" r="45" fill="none" stroke="url(#cyanBlue)" strokeWidth="1" strokeDasharray="6 3" />
+            <path d="M20 70 Q 35 30 50 70 T 80 70" fill="none" stroke="#22d3ee" strokeWidth="4" strokeLinecap="round" />
+            <path d="M20 70 Q 35 45 50 70 T 80 70" fill="none" stroke="#3b82f6" strokeWidth="4" strokeLinecap="round" opacity="0.6" />
+            <circle cx="50" cy="50" r="12" fill="url(#cyanBlue)" className="shadow-lg shadow-cyan-500/50" />
         </svg>
     </div>
 );
@@ -49,27 +51,27 @@ const NavItem = ({ title, children, hasDropdown = true, isActive = false, path }
         >
             <Link
                 to={path || "#"}
-                className={`flex items-center gap-1 hover:text-blue-200 font-bold text-[13px] tracking-wide transition-colors ${isActive ? 'text-white' : 'text-blue-50'}`}
+                className={`flex items-center gap-1 hover:text-cyan-400 font-bold text-[13px] tracking-wide transition-all ${isActive ? 'text-cyan-400' : 'text-slate-300'}`}
             >
                 {title} {hasDropdown && <ChevronDown size={12} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />}
             </Link>
-            {isActive && <div className="absolute bottom-0 left-0 w-full h-2 bg-[#b38a5d]"></div>}
+            {isActive && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg shadow-cyan-500/50"></div>}
 
             {hasDropdown && isOpen && (
-                <div className="absolute top-12 left-0 min-w-[260px] bg-white text-[#1d4e89] shadow-2xl rounded-b-xl py-5 border-t-[4px] border-[#b38a5d] z-[100] animate-in fade-in slide-in-from-top-1 duration-200">
-                    <div className="grid grid-cols-1 gap-1">
+                <div className="absolute top-12 left-0 min-w-[280px] bg-slate-900/95 text-slate-100 shadow-2xl rounded-b-2xl py-6 border-t-2 border-cyan-500/50 backdrop-blur-2xl z-[100] animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="grid grid-cols-1 gap-1 px-2">
                         {children.map((item, i) => (
                             <Link
                                 key={i}
                                 to={item.path || "#"}
-                                className="px-6 py-2.5 hover:bg-slate-50 flex items-center gap-4 transition-all group/item border-l-4 border-transparent hover:border-[#1d4e89]"
+                                className="px-5 py-3 rounded-xl hover:bg-cyan-500/10 flex items-center gap-4 transition-all group/item border border-transparent hover:border-cyan-500/20"
                             >
-                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 group-hover/item:bg-[#1d4e89] group-hover/item:text-white transition-all duration-300 shadow-sm">
+                                <div className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-cyan-400 group-hover/item:bg-gradient-to-br group-hover/item:from-cyan-500 group-hover/item:to-blue-500 group-hover/item:text-white transition-all duration-500 shadow-inner">
                                     {item.icon && <item.icon size={16} />}
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="font-black text-[11px] uppercase tracking-tight leading-none group-hover/item:text-[#1d4e89]">{item.label}</span>
-                                    {item.desc && <span className="text-[9px] text-gray-400 font-bold group-hover/item:text-gray-500 mt-1.5">{item.desc}</span>}
+                                    <span className="font-black text-[11px] uppercase tracking-wider group-hover/item:text-cyan-300">{item.label}</span>
+                                    {item.desc && <span className="text-[9px] text-slate-500 font-bold mt-1 leading-none group-hover/item:text-slate-400">{item.desc}</span>}
                                 </div>
                             </Link>
                         ))}
@@ -87,7 +89,7 @@ const LandingPage = () => {
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            alert(`Searching for: ${searchQuery}\n(This feature is currently being connected to the national data repository)`);
+            alert(`Initiating system-wide scan for: ${searchQuery}\n(Backend neural link processing...)`);
             setSearchQuery('');
         }
     };
@@ -98,103 +100,104 @@ const LandingPage = () => {
             title: isAmharic ? 'ስለ ኢ.ስ.አ' : 'About ESS',
             path: '/about',
             items: [
-                { label: 'Debre Berhan Branch', icon: Building2, desc: 'Regional branch overview', path: '/about' },
-                { label: 'History', icon: BookOpen, desc: 'Our journey since 1956', path: '/about/history' },
-                { label: 'Organization Structure', icon: Building2, desc: 'Governance and management', path: '/about/structure' },
-                { label: 'Strategies', icon: Target, desc: 'NSDS and strategic plans', path: '/about/strategies' }
+                { label: 'Debre Berhan Branch', icon: Building2, desc: 'Regional Data Hub', path: '/about' },
+                { label: 'History', icon: BookOpen, desc: 'Legacy since 1956', path: '/about/history' },
+                { label: 'Management', icon: UserCircle, desc: 'Strategic Governance', path: '/about/structure' },
+                { label: 'NSDS Roadmap', icon: Target, desc: 'Future Framework', path: '/about/strategies' }
             ]
         },
         {
             title: isAmharic ? 'መረጃዎች' : 'Find Statistics',
             path: '/stats/population',
             items: [
-                { label: 'Population', icon: Users, desc: 'Census and projections', path: '/stats/population' },
-                { label: 'Agriculture', icon: PieChart, desc: 'Crops and livestock data', path: '/stats/agriculture' },
-                { label: 'Economy', icon: FileBarChart, desc: 'GDP and trade statistics', path: '/stats/economy' },
-                { label: 'Business', icon: ClipboardList, desc: 'Industrial and commercial data', path: '/stats/business' }
+                { label: 'Demographics', icon: Users, desc: 'National Census Data', path: '/stats/population' },
+                { label: 'Agri-Metrics', icon: PieChart, desc: 'Yield & Livestock', path: '/stats/agriculture' },
+                { label: 'Economic Core', icon: FileBarChart, desc: 'GDP & Indices', path: '/stats/economy' },
+                { label: 'Industry Scan', icon: Cpu, desc: 'Manufacturing data', path: '/stats/business' }
             ]
         },
         {
             title: isAmharic ? 'ዜናዎች' : 'News ESS',
             path: '/news',
             items: [
-                { label: 'Announcements', icon: BookOpen, desc: 'Official updates', path: '/news' },
-                { label: 'Tenders', icon: Briefcase, desc: 'Procurement opportunities', path: '/tenders' },
-                { label: 'Vacancies', icon: UserCircle, desc: 'Join our official team', path: '/jobs' }
+                { label: 'Core Bulletins', icon: Bell, desc: 'Official releases', path: '/news' },
+                { label: 'Active Tenders', icon: Briefcase, desc: 'Sourcing data', path: '/tenders' },
+                { label: 'Data Careers', icon: Cpu, desc: 'Join the mission', path: '/jobs' }
             ]
         },
         {
             title: isAmharic ? 'ሚዲያ' : 'Media',
             path: '/photo-gallery',
             items: [
-                { label: 'Photo Gallery', icon: Globe2, desc: 'Event photography', path: '/photo-gallery' },
-                { label: 'Video Gallery', icon: Globe2, desc: 'Official video content', path: '/video-gallery' },
-                { label: 'Events', icon: Globe2, desc: 'Seminars and workshops', path: '/events' }
+                { label: 'Visual Archives', icon: Globe2, desc: 'Image repository', path: '/photo-gallery' },
+                { label: 'Video Stream', icon: Zap, desc: 'Motion data', path: '/video-gallery' }
             ],
             isActive: true
         }
     ];
 
     return (
-        <div className="min-h-screen bg-[#f3f6f9] font-sans text-slate-900 overflow-x-hidden">
+        <div className="min-h-screen bg-slate-950 font-sans text-slate-100 overflow-x-hidden selection:bg-cyan-500/30">
+            {/* Background Effects */}
+            <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950/20 -z-10"></div>
+            <div className="fixed inset-0 opacity-20 -z-10" style={{
+                backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.2) 1px, transparent 1px)',
+                backgroundSize: '80px 80px'
+            }}></div>
+            <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.05),transparent_70%)]"></div>
+
             {/* Top Header */}
-            <div className="hidden md:block bg-white py-3 border-b border-gray-100 relative z-[110]">
-                <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+            <header className="hidden md:block bg-slate-950/50 border-b border-cyan-500/10 backdrop-blur-xl relative z-[110]">
+                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     {/* Logo Section */}
-                    <Link to="/" className="flex items-center space-x-4 group">
-                        <Logo className="w-14 h-14 transition-all group-hover:scale-105 shadow-md" />
+                    <Link to="/" className="flex items-center space-x-5 group">
+                        <Logo className="w-14 h-14 transition-all group-hover:scale-110 shadow-3xl shadow-cyan-500/10" />
                         <div className="flex flex-col text-left">
-                            <span className="text-[10px] font-black text-gray-500 tracking-[0.2em] leading-none mb-1 opacity-70 uppercase">የኢትዮጵያ ስታቲስቲክስ አገልግሎት</span>
-                            <span className="text-lg lg:text-2xl font-black text-[#1d4e89] leading-tight uppercase tracking-tighter">ETHIOPIAN STATISTICAL SERVICE</span>
+                            <span className="text-[9px] font-black text-slate-500 tracking-[0.3em] leading-none mb-1 uppercase opacity-60">የኢትዮጵያ ስታቲስቲክስ አገልግሎት</span>
+                            <span className="text-xl lg:text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent uppercase tracking-tighter">ETHIOPIAN STATISTICAL SERVICE</span>
                         </div>
                     </Link>
 
-                    {/* Search and Social */}
+                    {/* Interaction Hub */}
                     <div className="flex items-center gap-6">
-                        <div className="relative group/search">
-                            <form className="flex items-center" onSubmit={handleSearch}>
-                                <input
-                                    type="text"
-                                    placeholder={isAmharic ? "ፈልግ..." : "Search..."}
-                                    className="pl-4 pr-10 py-2 w-64 border border-gray-200 rounded-l-md text-xs focus:outline-none focus:border-[#1d4e89] transition-all bg-slate-50"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <button type="submit" className="px-4 py-2 h-[32px] bg-[#b38a5d] rounded-r-md text-white border border-[#b38a5d] hover:bg-[#a07a50] transition-all flex items-center justify-center">
-                                    <Search size={16} strokeWidth={3} />
-                                </button>
-                            </form>
+                        <form className="relative group/search" onSubmit={handleSearch}>
+                            <input
+                                type="text"
+                                placeholder={isAmharic ? "መረጃ ፈልግ..." : "Scan Data Grid..."}
+                                className="pl-4 pr-12 py-2.5 w-72 bg-slate-900/50 border border-cyan-500/20 rounded-xl text-xs focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 outline-none transition-all text-white placeholder-slate-600 backdrop-blur-sm shadow-inner"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <button className="absolute right-1 top-1 bottom-1 px-3 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-lg text-white shadow-lg shadow-cyan-500/20 hover:scale-105 transition-transform">
+                                <Search size={14} strokeWidth={3} />
+                            </button>
+                        </form>
+
+                        <div className="flex items-center gap-4 border-x border-slate-800 px-6">
+                            <button
+                                onClick={() => setIsAmharic(!isAmharic)}
+                                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-cyan-500/20 hover:border-cyan-500/50 transition-all group/lang"
+                            >
+                                <Globe2 size={14} className="text-cyan-400 group-hover:rotate-12 transition-transform" />
+                                <span className="text-[10px] font-black tracking-widest text-slate-300">{isAmharic ? 'AM' : 'EN'}</span>
+                            </button>
+                            <div className="flex items-center gap-2">
+                                <a href="#" className="p-2 text-slate-500 hover:text-cyan-400 transition-colors"><Facebook size={16} /></a>
+                                <a href="#" className="p-2 text-slate-500 hover:text-cyan-400 transition-colors"><Send size={16} /></a>
+                            </div>
                         </div>
 
-                        <div className="flex items-center gap-3 border-x border-slate-100 px-6">
-                            <a href="https://facebook.com/essethiopia" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#1d4e89] flex items-center justify-center text-white hover:scale-110 transition-transform shadow-md">
-                                <Facebook size={16} fill="currentColor" />
-                            </a>
-                            <a href="https://t.me/ess_statistics" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-[#1d4e89] flex items-center justify-center text-white hover:scale-110 transition-transform shadow-md">
-                                <Send size={16} fill="currentColor" />
-                            </a>
-                        </div>
-
-                        <div
-                            className="flex items-center gap-2 border-x border-slate-100 px-6 group cursor-pointer h-10 hover:bg-slate-50 transition-colors"
-                            onClick={() => setIsAmharic(!isAmharic)}
-                        >
-                            <Globe2 size={16} className="text-[#1d4e89]" />
-                            <span className="text-sm font-black text-gray-800 uppercase leading-none">{isAmharic ? 'AM' : 'EN'}</span>
-                            <ChevronDown size={14} className="text-gray-400 group-hover:rotate-180 transition-transform" />
-                        </div>
-
-                        <Link to="/login" className="bg-[#1d4e89] text-white px-6 py-2 rounded-md text-[13px] font-black hover:bg-[#153a66] shadow-lg shadow-blue-900/5 transition-all uppercase tracking-wider leading-none">
-                            Stat Bank
+                        <Link to="/login" className="px-6 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl text-[12px] font-black shadow-xl shadow-cyan-500/20 transition-all active:scale-95 uppercase tracking-widest border border-cyan-400/30 flex items-center gap-2">
+                            <Database size={14} /> Stat Bank
                         </Link>
                     </div>
                 </div>
-            </div>
+            </header>
 
-            {/* Blue Navigation Bar */}
-            <nav className="bg-[#1d4e89] text-white shadow-lg relative z-[105]">
+            {/* Navigation Matrix */}
+            <nav className="bg-slate-900/80 border-b border-cyan-500/20 sticky top-0 z-[105] backdrop-blur-2xl">
                 <div className="max-w-7xl mx-auto px-6">
-                    <ul className="flex items-center justify-center space-x-10 h-10 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                    <ul className="flex items-center justify-center space-x-12 h-11">
                         {navData.map((nav, i) => (
                             <NavItem
                                 key={i}
@@ -211,159 +214,177 @@ const LandingPage = () => {
             </nav>
 
             {/* Breadcrumbs Section */}
-            <div className="bg-white border-b border-gray-100 mb-8">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <nav className="flex" aria-label="Breadcrumb">
-                        <ol className="flex items-center space-x-2">
-                            <li><Link to="/" className="text-slate-400 hover:text-[#1d4e89] font-black uppercase text-[10px] tracking-[0.2em] transition-colors">Home</Link></li>
-                            <li className="text-slate-200">/</li>
-                            <li className="text-[#1d4e89] font-black uppercase text-[10px] tracking-[0.2em]">Media</li>
-                        </ol>
+            <div className="bg-slate-950/30 border-b border-cyan-500/5 mb-16">
+                <div className="max-w-7xl mx-auto px-6 py-5">
+                    <nav className="flex items-center space-x-3 text-[9px] font-black uppercase tracking-[0.3em]">
+                        <Link to="/" className="text-slate-600 hover:text-cyan-400 transition-colors">Home</Link>
+                        <span className="text-slate-800">/</span>
+                        <span className="text-cyan-500/80 underline decoration-cyan-500/50 underline-offset-4">Media Grid</span>
                     </nav>
                 </div>
             </div>
 
             {/* Main Content Area */}
-            <main className="max-w-7xl mx-auto px-6 pb-24">
-                <div className="flex items-end justify-between mb-12 gap-8">
-                    <div className="space-y-3">
-                        <div className="inline-flex items-center gap-2 bg-[#b38a5d]/10 text-[#b38a5d] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-[#b38a5d]/20">
-                            <Globe2 size={10} /> Public Media Portal
+            <main className="max-w-7xl mx-auto px-6 pb-32">
+                <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between mb-20 gap-10">
+                    <div className="space-y-4">
+                        <div className="inline-flex items-center gap-2 bg-cyan-500/10 text-cyan-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-cyan-500/20 shadow-lg shadow-cyan-500/5 animate-pulse">
+                            <div className="w-1.5 h-1.5 rounded-full bg-cyan-400"></div> System Active: Portal 04
                         </div>
-                        <h1 className="text-5xl font-black text-[#1d4e89] tracking-tighter leading-none mb-2 uppercase">MEDIA</h1>
-                        <div className="h-1.5 w-24 bg-[#b38a5d] rounded-full"></div>
+                        <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-none m-0 uppercase flex flex-col">
+                            <span>MEDIA</span>
+                            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">INTERFACE</span>
+                        </h1>
+                        <div className="h-2 w-32 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-lg shadow-cyan-500/30"></div>
                     </div>
-                    <div className="hidden lg:block max-w-xs text-right">
-                        <p className="text-slate-500 font-bold leading-relaxed text-sm">
-                            Official multimedia archives and event coverage from the Ethiopian Statistical Service nationwide branches.
+                    <div className="max-w-sm text-left lg:text-right">
+                        <p className="text-slate-400 font-bold leading-relaxed text-sm">
+                            Access real-time multimedia repositories and official event streams from the ESS national data network.
                         </p>
                     </div>
                 </div>
 
-                <div className="grid lg:grid-cols-2 gap-8">
-                    {/* Activity Card: News */}
-                    <Link to="/news" className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 flex items-stretch min-h-[140px]">
-                        <div className="w-2 bg-[#1d4e89] group-hover:w-4 transition-all duration-500 h-full"></div>
-                        <div className="flex-1 p-8 flex items-center justify-between">
-                            <div className="space-y-1">
-                                <h2 className="text-3xl font-black text-[#1d4e89] group-hover:translate-x-2 transition-transform duration-500 tracking-tighter uppercase">News</h2>
-                                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest group-hover:text-[#b38a5d] transition-colors">Latest updates & announcements</p>
+                <div className="grid lg:grid-cols-2 gap-10">
+                    {/* Activity Cell: News */}
+                    <Link to="/news" className="group relative bg-slate-900/40 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-700 border border-cyan-500/10 hover:border-cyan-500/40 flex items-stretch min-h-[160px] group drop-shadow-2xl">
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        <div className="w-2 bg-gradient-to-b from-cyan-600 to-blue-600 group-hover:w-3 transition-all duration-500 h-full"></div>
+                        <div className="flex-1 p-10 flex items-center justify-between relative z-10">
+                            <div className="space-y-2">
+                                <h2 className="text-4xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">News</h2>
+                                <p className="text-cyan-400/50 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-cyan-400 transition-colors">Broadcast Stream v1.02</p>
                             </div>
-                            <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#1d4e89] group-hover:text-white transition-all duration-500 shadow-inner group-hover:rotate-45">
-                                <ArrowRight size={28} strokeWidth={3} />
-                            </div>
-                        </div>
-                    </Link>
-
-                    {/* Activity Card: Events */}
-                    <Link to="/events" className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 flex items-stretch min-h-[140px]">
-                        <div className="w-2 bg-[#1d4e89] group-hover:w-4 transition-all duration-500 h-full"></div>
-                        <div className="flex-1 p-8 flex items-center justify-between">
-                            <div className="space-y-1">
-                                <h2 className="text-3xl font-black text-[#1d4e89] group-hover:translate-x-2 transition-transform duration-500 tracking-tighter uppercase">Events</h2>
-                                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest group-hover:text-[#b38a5d] transition-colors">Seminars, workshops & releases</p>
-                            </div>
-                            <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#1d4e89] group-hover:text-white transition-all duration-500 shadow-inner group-hover:rotate-45">
-                                <ArrowRight size={28} strokeWidth={3} />
+                            <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white group-hover:border-cyan-400 transition-all duration-500 shadow-2xl group-hover:rotate-12 group-hover:scale-110">
+                                <Zap size={32} strokeWidth={2.5} />
                             </div>
                         </div>
                     </Link>
 
-                    {/* Activity Card: Photo Gallery */}
-                    <Link to="/photo-gallery" className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 flex items-stretch min-h-[140px]">
-                        <div className="w-2 bg-[#1d4e89] group-hover:w-4 transition-all duration-500 h-full"></div>
-                        <div className="flex-1 p-8 flex items-center justify-between">
-                            <div className="space-y-1">
-                                <h2 className="text-3xl font-black text-[#1d4e89] group-hover:translate-x-2 transition-transform duration-500 tracking-tighter uppercase">Photo Gallery</h2>
-                                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest group-hover:text-[#b38a5d] transition-colors">Visual archives from branches</p>
+                    {/* Activity Cell: Events */}
+                    <Link to="/events" className="group relative bg-slate-900/40 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-700 border border-cyan-500/10 hover:border-cyan-500/40 flex items-stretch min-h-[160px] drop-shadow-2xl">
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        <div className="w-2 bg-gradient-to-b from-blue-600 to-indigo-600 group-hover:w-3 transition-all duration-500 h-full"></div>
+                        <div className="flex-1 p-10 flex items-center justify-between relative z-10">
+                            <div className="space-y-2">
+                                <h2 className="text-4xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Events</h2>
+                                <p className="text-blue-400/50 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-blue-400 transition-colors">Scheduled Symposium Grid</p>
                             </div>
-                            <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#1d4e89] group-hover:text-white transition-all duration-500 shadow-inner group-hover:rotate-45">
-                                <ArrowRight size={28} strokeWidth={3} />
+                            <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-400 transition-all duration-500 shadow-2xl group-hover:rotate-12 group-hover:scale-110">
+                                <Cpu size={32} strokeWidth={2.5} />
                             </div>
                         </div>
                     </Link>
 
-                    {/* Activity Card: Video Gallery */}
-                    <Link to="/video-gallery" className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 flex items-stretch min-h-[140px]">
-                        <div className="w-1a h-1 bg-[#1d4e89] group-hover:w-4 transition-all duration-500 h-full"></div>
-                        <div className="flex-1 p-8 flex items-center justify-between">
-                            <div className="space-y-1">
-                                <h2 className="text-3xl font-black text-[#1d4e89] group-hover:translate-x-2 transition-transform duration-500 tracking-tighter uppercase">Video Gallery</h2>
-                                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest group-hover:text-[#b38a5d] transition-colors">Official video reports & media</p>
+                    {/* Activity Cell: Photo Gallery */}
+                    <Link to="/photo-gallery" className="group relative bg-slate-900/40 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-700 border border-cyan-500/10 hover:border-cyan-500/40 flex items-stretch min-h-[160px] drop-shadow-2xl">
+                        <div className="w-2 bg-slate-800 group-hover:bg-cyan-600 group-hover:w-3 transition-all duration-500 h-full"></div>
+                        <div className="flex-1 p-10 flex items-center justify-between shrink-0 h-full relative z-10">
+                            <div className="space-y-2">
+                                <h2 className="text-4xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Photos</h2>
+                                <p className="text-slate-600 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-cyan-400 transition-colors">Visual Archive Database</p>
                             </div>
-                            <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#1d4e89] group-hover:text-white transition-all duration-500 shadow-inner group-hover:rotate-45">
-                                <ArrowRight size={28} strokeWidth={3} />
+                            <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:bg-cyan-500 group-hover:text-white group-hover:border-cyan-400 transition-all duration-500 shadow-2xl group-hover:-rotate-12 group-hover:scale-110">
+                                <Globe2 size={32} strokeWidth={2.5} />
+                            </div>
+                        </div>
+                    </Link>
+
+                    {/* Activity Cell: Video Gallery */}
+                    <Link to="/video-gallery" className="group relative bg-slate-900/40 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-700 border border-cyan-500/10 hover:border-cyan-500/40 flex items-stretch min-h-[160px] drop-shadow-2xl">
+                        <div className="w-2 bg-slate-800 group-hover:bg-blue-600 group-hover:w-3 transition-all duration-500 h-full"></div>
+                        <div className="flex-1 p-10 flex items-center justify-between relative z-10">
+                            <div className="space-y-2">
+                                <h2 className="text-4xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Videos</h2>
+                                <p className="text-slate-600 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-blue-400 transition-colors">Motion Feed Repository</p>
+                            </div>
+                            <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-400 transition-all duration-500 shadow-2xl group-hover:-rotate-12 group-hover:scale-110">
+                                <Zap size={32} strokeWidth={2.5} />
                             </div>
                         </div>
                     </Link>
                 </div>
             </main>
 
-            {/* Footer Section */}
-            <footer className="bg-[#1d4e89] text-white pt-20 pb-12 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+            {/* Footer Section: Deep Slate */}
+            <footer className="bg-slate-950 text-white pt-24 pb-12 relative overflow-hidden border-t border-cyan-500/10 mt-12">
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <div className="grid lg:grid-cols-3 gap-16 mb-16">
-                        {/* Company Info */}
-                        <div className="space-y-8 group">
-                            <Link to="/" className="flex items-center space-x-5">
-                                <Logo className="w-16 h-16 transition-all duration-700 shadow-xl brightness-110" />
+                    <div className="grid lg:grid-cols-3 gap-20 mb-20">
+                        {/* Company Identity */}
+                        <div className="space-y-8">
+                            <Link to="/" className="flex items-center space-x-6 group">
+                                <Logo className="w-16 h-16 transition-all duration-700 shadow-3xl brightness-125" />
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-black tracking-[0.2em] leading-none mb-1 opacity-60 uppercase">የኢትዮጵያ ስታቲስቲክስ አገልግሎት</span>
-                                    <span className="text-lg font-black leading-none uppercase tracking-tighter">ETHIOPIAN STATISTICAL<br /><span className="text-[#b38a5d]">SERVICE</span></span>
+                                    <span className="text-[10px] font-black tracking-[0.4em] leading-none mb-1 text-slate-500 uppercase">የኢ.ስ.አ</span>
+                                    <span className="text-2xl font-black leading-none uppercase tracking-tighter bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent italic">
+                                        ESS DATA<br /><span className="text-cyan-500 underline decoration-cyan-500/20 underline-offset-8">CORE</span>
+                                    </span>
                                 </div>
                             </Link>
-                            <p className="text-blue-100 text-sm leading-relaxed max-w-sm font-bold italic opacity-85 border-l-4 border-[#b38a5d] pl-5 py-2">
-                                "Providing reliable and timely statistical data for national planning and research excellence since 1956."
+                            <p className="text-slate-400 text-[13px] leading-relaxed max-w-sm font-bold opacity-80 border-l-2 border-cyan-500/30 pl-6 py-1">
+                                Empowering the nation with high-fidelity statistical infrastructure since 1956.
                             </p>
                         </div>
 
-                        {/* Middle Links */}
+                        {/* Navigation Matrix */}
                         <div className="text-left">
-                            <h3 className="text-lg font-black mb-8 border-b-4 border-[#b38a5d] pb-1 inline-block uppercase tracking-widest text-[#b38a5d]">Navigation</h3>
-                            <div className="grid grid-cols-1 gap-4">
+                            <h3 className="text-xs font-black mb-10 border-b-2 border-cyan-500/20 pb-2 inline-block uppercase tracking-[0.3em] text-cyan-500/80">Navigation Matrix</h3>
+                            <div className="grid grid-cols-1 gap-5">
                                 {[
-                                    { label: 'Official Home', path: '/' },
-                                    { label: 'About Branches', path: '/about' },
-                                    { label: 'Statistical Portal', path: '/login' },
-                                    { label: 'Media Center', path: '/photo-gallery' }
+                                    { label: 'Central Hub', path: '/' },
+                                    { label: 'Regional Branches', path: '/about' },
+                                    { label: 'Neural Stat Bank', path: '/login' },
+                                    { label: 'Visual Archives', path: '/photo-gallery' }
                                 ].map((item, i) => (
-                                    <Link key={i} to={item.path} className="text-base font-black text-blue-100 hover:text-white transition-all flex items-center gap-3 hover:translate-x-2 group/link">
-                                        <ArrowRight size={16} className="text-[#b38a5d]" />
+                                    <Link key={i} to={item.path} className="text-sm font-black text-slate-400 hover:text-cyan-400 transition-all flex items-center gap-4 hover:translate-x-3 group/link">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-slate-800 group-hover/link:bg-cyan-500 shadow-lg shadow-cyan-500/50 transition-colors"></div>
                                         {item.label}
                                     </Link>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Contact Panel */}
-                        <div className="bg-white/5 p-8 rounded-2xl backdrop-blur-xl border border-white/10 shadow-xl">
-                            <h3 className="text-lg font-black mb-6 border-b-4 border-[#b38a5d] pb-1 inline-block uppercase tracking-widest text-[#b38a5d]">Connect</h3>
-                            <div className="space-y-6">
-                                <div className="space-y-1">
-                                    <p className="font-black text-[#b38a5d] uppercase tracking-[0.2em] text-[10px]">OFFICIAL HQ</p>
-                                    <p className="text-white font-black text-lg tracking-tighter leading-tight">Ethiopian Statistical Service</p>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="w-9 h-9 rounded-lg bg-[#b38a5d] flex items-center justify-center shadow-lg shrink-0">
-                                        <MapPin size={18} className="text-white" />
+                        {/* Contact Node */}
+                        <div className="bg-slate-900/50 p-10 rounded-[2.5rem] backdrop-blur-3xl border border-cyan-500/10 shadow-3xl">
+                            <h3 className="text-xs font-black mb-8 border-b-2 border-cyan-500/20 pb-2 inline-block uppercase tracking-[0.3em] text-cyan-500/80">Contact Node</h3>
+                            <div className="space-y-8">
+                                <div className="flex items-start gap-5 group/item">
+                                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center shadow-lg group-hover/item:bg-cyan-500 group-hover/item:text-white transition-all">
+                                        <MapPin size={20} className="text-cyan-400 group-hover/item:text-white" />
                                     </div>
-                                    <p className="font-black text-sm leading-snug tracking-tight">Arada Sub City, Piassa,<br />Addis Ababa, Ethiopia</p>
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1 leading-none">Primary HQ</p>
+                                        <p className="text-sm font-black text-slate-300">Arada District, Piassa<br />Addis Ababa, ETH</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[9px] text-blue-300 font-black uppercase tracking-[0.3em] opacity-60">
-                        <p>© 2026 ETHIOPIAN STATISTICAL SERVICE - ALL RIGHTS RESERVED</p>
-                        <div className="flex space-x-10 mt-6 md:mt-0">
-                            <span className="hover:text-white cursor-pointer transition-colors">Privacy</span>
-                            <span className="hover:text-white cursor-pointer transition-colors">Transparency</span>
-                            <span className="hover:text-white cursor-pointer transition-colors">Contact</span>
+                    <div className="pt-10 border-t border-cyan-500/5 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">
+                        <p>© 2026 ESS SYSTEM CORE // ALL PROTOCOLS RESERVED</p>
+                        <div className="flex space-x-12 mt-8 md:mt-0">
+                            <span className="hover:text-cyan-400 cursor-pointer transition-colors">Security</span>
+                            <span className="hover:text-cyan-400 cursor-pointer transition-colors">Transparency</span>
+                            <span className="hover:text-cyan-400 cursor-pointer transition-colors">Link</span>
                         </div>
                     </div>
                 </div>
             </footer>
+
+            {/* Global Smooth CSS Animations */}
+            <style sx>{`
+                @keyframes pulse-slow {
+                    0%, 100% { opacity: 0.8; transform: scale(1); }
+                    50% { opacity: 1; transform: scale(1.02); }
+                }
+                .animate-pulse-slow {
+                    animation: pulse-slow 4s ease-in-out infinite;
+                }
+                .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
         </div>
     );
 };
