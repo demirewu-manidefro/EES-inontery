@@ -13,6 +13,8 @@ import LeaveOut from './pages/LeaveOut';
 import AdminApprovals from './pages/AdminApprovals';
 import Users from './pages/Users';
 import LandingPage from './pages/LandingPage';
+import News from './pages/News';
+import Gallery from './pages/Gallery';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
@@ -37,6 +39,10 @@ const App = () => {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<LandingPage />} />
+                    <Route path="/news" element={<News />} />
+                    <Route path="/events" element={<News />} />
+                    <Route path="/photo-gallery" element={<Gallery />} />
+                    <Route path="/video-gallery" element={<Gallery />} />
                     <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                     <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 
