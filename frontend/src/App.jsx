@@ -16,6 +16,7 @@ import LandingPage from './pages/LandingPage';
 import News from './pages/News';
 import Gallery from './pages/Gallery';
 import AboutBranch from './pages/AboutBranch';
+import GenericContent from './pages/GenericContent';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
@@ -45,6 +46,17 @@ const App = () => {
                     <Route path="/photo-gallery" element={<Gallery />} />
                     <Route path="/video-gallery" element={<Gallery />} />
                     <Route path="/about" element={<AboutBranch />} />
+
+                    {/* Generic Informational Routes */}
+                    <Route path="/about/history" element={<GenericContent />} />
+                    <Route path="/about/structure" element={<GenericContent />} />
+                    <Route path="/about/strategies" element={<GenericContent />} />
+                    <Route path="/stats/population" element={<GenericContent />} />
+                    <Route path="/stats/agriculture" element={<GenericContent />} />
+                    <Route path="/stats/economy" element={<GenericContent />} />
+                    <Route path="/tenders" element={<GenericContent />} />
+                    <Route path="/jobs" element={<GenericContent />} />
+
                     <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                     <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 

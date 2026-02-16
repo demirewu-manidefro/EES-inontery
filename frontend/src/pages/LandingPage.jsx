@@ -79,11 +79,20 @@ const NavItem = ({ title, children, hasDropdown = true, isActive = false }) => {
 
 const LandingPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [isAmharic, setIsAmharic] = useState(false);
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            alert(`Searching for: ${searchQuery}\n(Integrated search is coming soon)`);
+            setSearchQuery('');
+        }
+    };
 
     const navData = [
-        { title: 'Home', hasDropdown: false, path: '/' },
+        { title: isAmharic ? 'መነሻ' : 'Home', hasDropdown: false, path: '/' },
         {
-            title: 'About ESS',
+            title: isAmharic ? 'ስለ ኢ.ስ.አ' : 'About ESS',
             items: [
                 { label: 'Debre Berhan Branch', icon: Building2, desc: 'Regional branch overview', path: '/about' },
                 { label: 'History', icon: BookOpen, desc: 'Our journey since 1956', path: '/about/history' },
@@ -92,7 +101,7 @@ const LandingPage = () => {
             ]
         },
         {
-            title: 'Find Statistics',
+            title: isAmharic ? 'መረጃዎች' : 'Find Statistics',
             items: [
                 { label: 'Population', icon: Users, desc: 'Census and projections', path: '/stats/population' },
                 { label: 'Agriculture', icon: PieChart, desc: 'Crops and livestock data', path: '/stats/agriculture' },
@@ -101,7 +110,7 @@ const LandingPage = () => {
             ]
         },
         {
-            title: 'News ESS',
+            title: isAmharic ? 'ዜናዎች' : 'News ESS',
             items: [
                 { label: 'Announcements', icon: BookOpen, desc: 'Official updates', path: '/news' },
                 { label: 'Tenders', icon: Briefcase, desc: 'Procurement opportunities', path: '/tenders' },
@@ -109,7 +118,7 @@ const LandingPage = () => {
             ]
         },
         {
-            title: 'Media',
+            title: isAmharic ? 'ሚዲያ' : 'Media',
             items: [
                 { label: 'Photo Gallery', icon: Globe2, desc: 'Event photography', path: '/photo-gallery' },
                 { label: 'Video Gallery', icon: Globe2, desc: 'Official video content', path: '/video-gallery' },
@@ -136,18 +145,18 @@ const LandingPage = () => {
                     {/* Search and Social */}
                     <div className="flex items-center gap-6">
                         <div className="relative group/search">
-                            <div className="flex items-center">
+                            <form className="flex items-center" onSubmit={handleSearch}>
                                 <input
                                     type="text"
-                                    placeholder="Search..."
+                                    placeholder={isAmharic ? "ፈልግ..." : "Search..."}
                                     className="pl-4 pr-10 py-2 w-64 border border-gray-200 rounded-l-md text-xs focus:outline-none focus:border-[#1d4e89] transition-all bg-slate-50"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
-                                <button className="px-4 py-2 h-[32px] bg-[#b38a5d] rounded-r-md text-white border border-[#b38a5d] hover:bg-[#a07a50] transition-all flex items-center justify-center">
+                                <button type="submit" className="px-4 py-2 h-[32px] bg-[#b38a5d] rounded-r-md text-white border border-[#b38a5d] hover:bg-[#a07a50] transition-all flex items-center justify-center">
                                     <Search size={16} strokeWidth={3} />
                                 </button>
-                            </div>
+                            </form>
                         </div>
 
                         <div className="flex items-center gap-3 border-x border-slate-100 px-6">
