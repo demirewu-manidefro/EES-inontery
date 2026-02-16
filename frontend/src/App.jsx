@@ -12,6 +12,7 @@ import WaitingReturn from './pages/WaitingReturn';
 import LeaveOut from './pages/LeaveOut';
 import AdminApprovals from './pages/AdminApprovals';
 import Users from './pages/Users';
+import LandingPage from './pages/LandingPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
@@ -35,6 +36,7 @@ const App = () => {
         <AuthProvider>
             <BrowserRouter>
                 <Routes>
+                    <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                     <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 
@@ -47,8 +49,6 @@ const App = () => {
                     <Route path="/leave-out" element={<PrivateRoute><LeaveOut /></PrivateRoute>} />
                     <Route path="/admin-approvals" element={<PrivateRoute><AdminApprovals /></PrivateRoute>} />
                     <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
-
-                    <Route path="/" element={<Navigate to="/dashboard" />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
