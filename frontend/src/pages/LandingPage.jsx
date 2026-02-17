@@ -148,7 +148,8 @@ const LandingPage = () => {
             <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.05),transparent_70%)]"></div>
 
             {/* Top Header */}
-            <header className="hidden md:block bg-slate-950/50 border-b border-cyan-500/10 backdrop-blur-xl relative z-[110]">
+            {/* Top Header */}
+            <header className="hidden md:block bg-slate-950/90 border-b border-cyan-500/10 backdrop-blur-xl fixed top-0 w-full z-[110]">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     {/* Logo Section */}
                     <Link to="/" className="flex items-center space-x-5 group">
@@ -196,7 +197,8 @@ const LandingPage = () => {
             </header>
 
             {/* Navigation Matrix */}
-            <nav className="bg-slate-900/80 border-b border-cyan-500/20 sticky top-0 z-[105] backdrop-blur-2xl">
+            {/* Navigation Matrix */}
+            <nav className="bg-slate-900/90 border-b border-cyan-500/20 fixed top-0 md:top-[89px] w-full z-[105] backdrop-blur-2xl">
                 <div className="max-w-7xl mx-auto px-6">
                     <ul className="flex items-center justify-center space-x-12 h-11">
                         {navData.map((nav, i) => (
@@ -215,7 +217,7 @@ const LandingPage = () => {
             </nav>
 
             {/* Breadcrumbs Section */}
-            <div className="bg-slate-950/30 border-b border-cyan-500/5 mb-16">
+            <div className="bg-slate-950/30 border-b border-cyan-500/5 mb-16 mt-[45px] md:mt-[134px]">
                 <div className="max-w-7xl mx-auto px-6 py-5">
                     <nav className="flex items-center space-x-3 text-[9px] font-black uppercase tracking-[0.3em]">
                         <Link to="/" className="text-slate-600 hover:text-cyan-400 transition-colors">Home</Link>
@@ -232,9 +234,9 @@ const LandingPage = () => {
                         <div className="inline-flex items-center gap-2 bg-cyan-500/10 text-cyan-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-cyan-500/20 shadow-lg shadow-cyan-500/5 animate-pulse">
                             <div className="w-1.5 h-1.5 rounded-full bg-cyan-400"></div> System Active: Portal 04
                         </div>
-                        <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter leading-none m-0 uppercase flex flex-col">
+                        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none m-0 uppercase flex flex-col">
                             <span>MEDIA</span>
-                            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">INTERFACE</span>
+                            <span className="bg-gradient-to-r from-white via-cyan-100 to-blue-200 bg-clip-text text-transparent">INTERFACE</span>
                         </h1>
                         <div className="h-2 w-32 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-lg shadow-cyan-500/30"></div>
                     </div>
@@ -252,8 +254,8 @@ const LandingPage = () => {
                         <div className="w-2 bg-gradient-to-b from-cyan-600 to-blue-600 group-hover:w-3 transition-all duration-500 h-full"></div>
                         <div className="flex-1 p-10 flex items-center justify-between relative z-10">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">News</h2>
-                                <p className="text-cyan-400/50 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-cyan-400 transition-colors">Broadcast Stream v1.02</p>
+                                <h2 className="text-3xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">News</h2>
+                                <p className="text-cyan-400/80 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-cyan-400 transition-colors">Broadcast Stream v1.02</p>
                             </div>
                             <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white group-hover:border-cyan-400 transition-all duration-500 shadow-2xl group-hover:rotate-12 group-hover:scale-110">
                                 <Zap size={32} strokeWidth={2.5} />
@@ -267,8 +269,8 @@ const LandingPage = () => {
                         <div className="w-2 bg-gradient-to-b from-blue-600 to-indigo-600 group-hover:w-3 transition-all duration-500 h-full"></div>
                         <div className="flex-1 p-10 flex items-center justify-between relative z-10">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Events</h2>
-                                <p className="text-blue-400/50 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-blue-400 transition-colors">Scheduled Symposium Grid</p>
+                                <h2 className="text-3xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Events</h2>
+                                <p className="text-blue-400/80 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-blue-400 transition-colors">Scheduled Symposium Grid</p>
                             </div>
                             <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-400 transition-all duration-500 shadow-2xl group-hover:rotate-12 group-hover:scale-110">
                                 <Cpu size={32} strokeWidth={2.5} />
@@ -281,7 +283,7 @@ const LandingPage = () => {
                         <div className="w-2 bg-slate-800 group-hover:bg-cyan-600 group-hover:w-3 transition-all duration-500 h-full"></div>
                         <div className="flex-1 p-10 flex items-center justify-between shrink-0 h-full relative z-10">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Photos</h2>
+                                <h2 className="text-3xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Photos</h2>
                                 <p className="text-slate-600 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-cyan-400 transition-colors">Visual Archive Database</p>
                             </div>
                             <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:bg-cyan-500 group-hover:text-white group-hover:border-cyan-400 transition-all duration-500 shadow-2xl group-hover:-rotate-12 group-hover:scale-110">
@@ -295,7 +297,7 @@ const LandingPage = () => {
                         <div className="w-2 bg-slate-800 group-hover:bg-blue-600 group-hover:w-3 transition-all duration-500 h-full"></div>
                         <div className="flex-1 p-10 flex items-center justify-between relative z-10">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Videos</h2>
+                                <h2 className="text-3xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Videos</h2>
                                 <p className="text-slate-600 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-blue-400 transition-colors">Motion Feed Repository</p>
                             </div>
                             <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-400 transition-all duration-500 shadow-2xl group-hover:-rotate-12 group-hover:scale-110">
