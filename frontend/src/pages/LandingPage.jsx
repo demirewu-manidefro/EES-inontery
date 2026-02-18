@@ -21,11 +21,13 @@ import {
     ClipboardList,
     Cpu,
     Database,
-    Zap
+    Zap,
+    Sun,
+    Moon
 } from 'lucide-react';
 
-const Logo = ({ className = "w-12 h-12" }) => (
-    <div className={`${className} bg-slate-900/50 rounded-2xl flex items-center justify-center p-2 shadow-2xl border border-cyan-500/30 backdrop-blur-xl overflow-hidden`}>
+const Logo = ({ className = "w-12 h-12", isDark }) => (
+    <div className={`${className} ${isDark ? 'bg-[#163b6b]' : 'bg-white/50'} rounded-2xl flex items-center justify-center p-2 shadow-2xl border border-cyan-500/30 backdrop-blur-xl overflow-hidden transition-colors duration-500`}>
         <svg viewBox="0 0 100 100" className="w-full h-full animate-pulse-slow">
             <defs>
                 <linearGradient id="cyanBlue" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -41,7 +43,7 @@ const Logo = ({ className = "w-12 h-12" }) => (
     </div>
 );
 
-const NavItem = ({ title, children, hasDropdown = true, isActive = false, path }) => {
+const NavItem = ({ title, children, hasDropdown = true, isActive = false, path, isDark }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -52,27 +54,27 @@ const NavItem = ({ title, children, hasDropdown = true, isActive = false, path }
         >
             <Link
                 to={path || "#"}
-                className={`flex items-center gap-1 hover:text-cyan-400 font-bold text-[13px] tracking-wide transition-all ${isActive ? 'text-cyan-400' : 'text-slate-300'}`}
+                className={`flex items-center gap-1 font-bold text-[13px] tracking-wide transition-all ${isActive ? 'text-cyan-400' : (isDark ? 'text-blue-100 hover:text-white' : 'text-slate-600 hover:text-cyan-600')}`}
             >
                 {title} {hasDropdown && <ChevronDown size={12} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />}
             </Link>
-            {isActive && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg shadow-cyan-500/50"></div>}
+            {isActive && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-cyan-400 to-blue-400 shadow-lg shadow-cyan-500/50"></div>}
 
             {hasDropdown && isOpen && (
-                <div className="absolute top-12 left-0 min-w-[280px] bg-slate-900/95 text-slate-100 shadow-2xl rounded-b-2xl py-6 border-t-2 border-cyan-500/50 backdrop-blur-2xl z-[100] animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className={`absolute top-12 left-0 min-w-[280px] ${isDark ? 'bg-[#163b6b]/95 text-white border-cyan-500/30' : 'bg-white/95 text-slate-900 border-cyan-500/10'} shadow-2xl rounded-b-2xl py-6 border-t-2 backdrop-blur-2xl z-[100] animate-in fade-in slide-in-from-top-2 duration-300`}>
                     <div className="grid grid-cols-1 gap-1 px-2">
                         {children.map((item, i) => (
                             <Link
                                 key={i}
                                 to={item.path || "#"}
-                                className="px-5 py-3 rounded-xl hover:bg-cyan-500/10 flex items-center gap-4 transition-all group/item border border-transparent hover:border-cyan-500/20"
+                                className={`px-5 py-3 rounded-xl flex items-center gap-4 transition-all group/item border border-transparent ${isDark ? 'hover:bg-blue-900/50 hover:border-cyan-500/30' : 'hover:bg-cyan-50/50 hover:border-cyan-500/20'}`}
                             >
-                                <div className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-cyan-400 group-hover/item:bg-gradient-to-br group-hover/item:from-cyan-500 group-hover/item:to-blue-500 group-hover/item:text-white transition-all duration-500 shadow-inner">
+                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-500 shadow-inner ${isDark ? 'bg-[#0f2942] text-cyan-400 group-hover/item:bg-cyan-500 group-hover/item:text-white' : 'bg-slate-100 text-cyan-600 group-hover/item:bg-cyan-500 group-hover/item:text-white'}`}>
                                     {item.icon && <item.icon size={16} />}
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="font-black text-[11px] uppercase tracking-wider group-hover/item:text-cyan-300">{item.label}</span>
-                                    {item.desc && <span className="text-[9px] text-slate-500 font-bold mt-1 leading-none group-hover/item:text-slate-400">{item.desc}</span>}
+                                    <span className={`font-black text-[11px] uppercase tracking-wider ${isDark ? 'group-hover/item:text-cyan-300' : 'group-hover/item:text-cyan-700'}`}>{item.label}</span>
+                                    {item.desc && <span className={`text-[9px] font-bold mt-1 leading-none ${isDark ? 'text-blue-200 group-hover/item:text-blue-100' : 'text-slate-400 group-hover/item:text-slate-500'}`}>{item.desc}</span>}
                                 </div>
                             </Link>
                         ))}
@@ -86,6 +88,7 @@ const NavItem = ({ title, children, hasDropdown = true, isActive = false, path }
 const LandingPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isAmharic, setIsAmharic] = useState(false);
+    const [isDark, setIsDark] = useState(false); // Toggle state, default bright
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -138,24 +141,25 @@ const LandingPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-950 font-sans text-slate-100 overflow-x-hidden selection:bg-cyan-500/30">
+        <div className={`min-h-screen font-sans overflow-x-hidden selection:bg-cyan-500/30 transition-colors duration-700 ${isDark ? 'bg-[#1d4e89] text-white' : 'bg-slate-50 text-slate-900'}`}>
             {/* Background Effects */}
-            <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950/20 -z-10"></div>
+            <div className={`fixed inset-0 bg-gradient-to-br -z-10 transition-colors duration-700 ${isDark ? 'from-[#1d4e89] via-[#163b6b] to-[#0f2942]' : 'from-slate-50 via-white to-cyan-50/20'}`}></div>
             <div className="fixed inset-0 opacity-20 -z-10" style={{
-                backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.2) 1px, transparent 1px)',
+                backgroundImage: 'linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px)',
                 backgroundSize: '80px 80px'
             }}></div>
-            <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.05),transparent_70%)]"></div>
+            <div className={`fixed inset-0 -z-10 transition-opacity duration-700 ${isDark ? 'opacity-30 bg-[radial-gradient(circle_at_50%_50%,rgba(34,211,238,0.15),transparent_70%)]' : 'opacity-100 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.05),transparent_70%)]'}`}></div>
 
             {/* Top Header */}
             {/* Top Header */}
-            <header className="hidden md:block bg-slate-950/90 border-b border-cyan-500/10 backdrop-blur-xl fixed top-0 w-full z-[110]">
+            {/* Top Header */}
+            <header className={`hidden md:block border-b backdrop-blur-xl fixed top-0 w-full z-[110] shadow-sm transition-colors duration-500 ${isDark ? 'bg-[#1d4e89]/95 border-cyan-500/20' : 'bg-white/90 border-cyan-500/10'}`}>
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     {/* Logo Section */}
                     <Link to="/" className="flex items-center space-x-5 group">
-                        <Logo className="w-14 h-14 transition-all group-hover:scale-110 shadow-3xl shadow-cyan-500/10" />
+                        <Logo className="w-14 h-14 transition-all group-hover:scale-110 shadow-3xl shadow-cyan-500/10" isDark={isDark} />
                         <div className="flex flex-col text-left">
-                            <span className="text-[9px] font-black text-slate-500 tracking-[0.3em] leading-none mb-1 uppercase opacity-60">የኢትዮጵያ ስታቲስቲክስ አገልግሎት</span>
+                            <span className={`text-[9px] font-black tracking-[0.3em] leading-none mb-1 uppercase opacity-60 ${isDark ? 'text-blue-200' : 'text-slate-500'}`}>የኢትዮጵያ ስታቲስቲክስ አገልግሎት</span>
                             <span className="text-xl lg:text-2xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent uppercase tracking-tighter">ETHIOPIAN STATISTICAL SERVICE</span>
                         </div>
                     </Link>
@@ -166,7 +170,7 @@ const LandingPage = () => {
                             <input
                                 type="text"
                                 placeholder={isAmharic ? "መረጃ ፈልግ..." : "Scan Data Grid..."}
-                                className="pl-4 pr-12 py-2.5 w-72 bg-slate-900/50 border border-cyan-500/20 rounded-xl text-xs focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 outline-none transition-all text-white placeholder-slate-600 backdrop-blur-sm shadow-inner"
+                                className={`pl-4 pr-12 py-2.5 w-72 border rounded-xl text-xs focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 outline-none transition-all backdrop-blur-sm shadow-inner ${isDark ? 'bg-[#163b6b]/50 border-cyan-500/30 text-white placeholder-blue-300' : 'bg-slate-100/50 border-cyan-500/20 text-slate-800 placeholder-slate-400'}`}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -175,17 +179,26 @@ const LandingPage = () => {
                             </button>
                         </form>
 
-                        <div className="flex items-center gap-4 border-x border-slate-800 px-6">
+                        <div className="flex items-center gap-4 border-x border-slate-500/20 px-6">
                             <button
                                 onClick={() => setIsAmharic(!isAmharic)}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-cyan-500/20 hover:border-cyan-500/50 transition-all group/lang"
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border hover:border-cyan-500/50 transition-all group/lang ${isDark ? 'bg-[#163b6b] border-cyan-500/30' : 'bg-slate-100 border-cyan-500/20'}`}
                             >
-                                <Globe2 size={14} className="text-cyan-400 group-hover:rotate-12 transition-transform" />
-                                <span className="text-[10px] font-black tracking-widest text-slate-300">{isAmharic ? 'AM' : 'EN'}</span>
+                                <Globe2 size={14} className={`${isDark ? 'text-cyan-400' : 'text-cyan-600'} group-hover:rotate-12 transition-transform`} />
+                                <span className={`text-[10px] font-black tracking-widest ${isDark ? 'text-blue-100' : 'text-slate-600'}`}>{isAmharic ? 'AM' : 'EN'}</span>
                             </button>
+
+                            {/* Theme Toggle */}
+                            <button
+                                onClick={() => setIsDark(!isDark)}
+                                className={`p-2 rounded-lg border hover:border-cyan-500/50 transition-all ${isDark ? 'bg-[#163b6b] border-cyan-500/30 text-yellow-400' : 'bg-slate-100 border-cyan-500/20 text-slate-500'}`}
+                            >
+                                {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                            </button>
+
                             <div className="flex items-center gap-2">
-                                <a href="#" className="p-2 text-slate-500 hover:text-cyan-400 transition-colors"><Facebook size={16} /></a>
-                                <a href="#" className="p-2 text-slate-500 hover:text-cyan-400 transition-colors"><Send size={16} /></a>
+                                <a href="#" className={`p-2 transition-colors ${isDark ? 'text-blue-200 hover:text-cyan-400' : 'text-slate-500 hover:text-cyan-600'}`}><Facebook size={16} /></a>
+                                <a href="#" className={`p-2 transition-colors ${isDark ? 'text-blue-200 hover:text-cyan-400' : 'text-slate-500 hover:text-cyan-600'}`}><Send size={16} /></a>
                             </div>
                         </div>
 
@@ -198,7 +211,7 @@ const LandingPage = () => {
 
             {/* Navigation Matrix */}
             {/* Navigation Matrix */}
-            <nav className="bg-slate-900/90 border-b border-cyan-500/20 fixed top-0 md:top-[89px] w-full z-[105] backdrop-blur-2xl">
+            <nav className={`border-b border-cyan-500/20 fixed top-0 md:top-[89px] w-full z-[105] backdrop-blur-2xl shadow-sm transition-colors duration-500 ${isDark ? 'bg-[#1d4e89]/95' : 'bg-white/90'}`}>
                 <div className="max-w-7xl mx-auto px-6">
                     <ul className="flex items-center justify-center space-x-12 h-11">
                         {navData.map((nav, i) => (
@@ -208,6 +221,7 @@ const LandingPage = () => {
                                 hasDropdown={nav.hasDropdown !== false}
                                 isActive={nav.isActive}
                                 path={nav.path}
+                                isDark={isDark}
                             >
                                 {nav.items}
                             </NavItem>
@@ -217,11 +231,11 @@ const LandingPage = () => {
             </nav>
 
             {/* Breadcrumbs Section */}
-            <div className="bg-slate-950/30 border-b border-cyan-500/5 mb-16 mt-[45px] md:mt-[134px]">
+            <div className={`border-b border-cyan-500/5 mb-16 mt-[45px] md:mt-[134px] transition-colors duration-500 ${isDark ? 'bg-[#163b6b]/30' : 'bg-slate-50/50'}`}>
                 <div className="max-w-7xl mx-auto px-6 py-5">
                     <nav className="flex items-center space-x-3 text-[9px] font-black uppercase tracking-[0.3em]">
-                        <Link to="/" className="text-slate-600 hover:text-cyan-400 transition-colors">Home</Link>
-                        <span className="text-slate-800">/</span>
+                        <Link to="/" className={`transition-colors ${isDark ? 'text-blue-200 hover:text-white' : 'text-slate-600 hover:text-cyan-600'}`}>Home</Link>
+                        <span className={`${isDark ? 'text-blue-400' : 'text-slate-400'}`}>/</span>
                         <span className="text-cyan-500/80 underline decoration-cyan-500/50 underline-offset-4">Media Grid</span>
                     </nav>
                 </div>
@@ -234,14 +248,14 @@ const LandingPage = () => {
                         <div className="inline-flex items-center gap-2 bg-cyan-500/10 text-cyan-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-cyan-500/20 shadow-lg shadow-cyan-500/5 animate-pulse">
                             <div className="w-1.5 h-1.5 rounded-full bg-cyan-400"></div> System Active: Portal 04
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none m-0 uppercase flex flex-col">
+                        <h1 className={`text-4xl md:text-6xl font-black tracking-tighter leading-none m-0 uppercase flex flex-col ${isDark ? 'text-white' : 'text-slate-900'}`}>
                             <span>MEDIA</span>
-                            <span className="bg-gradient-to-r from-white via-cyan-100 to-blue-200 bg-clip-text text-transparent">INTERFACE</span>
+                            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">INTERFACE</span>
                         </h1>
                         <div className="h-2 w-32 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-lg shadow-cyan-500/30"></div>
                     </div>
                     <div className="max-w-sm text-left lg:text-right">
-                        <p className="text-slate-400 font-bold leading-relaxed text-sm">
+                        <p className={`font-bold leading-relaxed text-sm ${isDark ? 'text-blue-100' : 'text-slate-500'}`}>
                             Access real-time multimedia repositories and official event streams from the ESS national data network.
                         </p>
                     </div>
@@ -249,58 +263,58 @@ const LandingPage = () => {
 
                 <div className="grid lg:grid-cols-2 gap-10">
                     {/* Activity Cell: News */}
-                    <Link to="/news" className="group relative bg-slate-900/40 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-700 border border-cyan-500/10 hover:border-cyan-500/40 flex items-stretch min-h-[160px] group drop-shadow-2xl">
+                    <Link to="/news" className={`group relative rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-700 border flex items-stretch min-h-[140px] group ${isDark ? 'bg-[#163b6b] border-cyan-500/20 hover:border-cyan-500/40' : 'bg-white border-slate-200 hover:border-cyan-500/40'}`}>
                         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                         <div className="w-2 bg-gradient-to-b from-cyan-600 to-blue-600 group-hover:w-3 transition-all duration-500 h-full"></div>
-                        <div className="flex-1 p-10 flex items-center justify-between relative z-10">
+                        <div className="flex-1 p-6 flex items-center justify-between relative z-10">
                             <div className="space-y-2">
-                                <h2 className="text-3xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">News</h2>
-                                <p className="text-cyan-400/80 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-cyan-400 transition-colors">Broadcast Stream v1.02</p>
+                                <h2 className={`text-2xl font-black group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase ${isDark ? 'text-white' : 'text-slate-900'}`}>News</h2>
+                                <p className={`font-black text-[11px] uppercase tracking-[0.2em] transition-colors ${isDark ? 'text-cyan-400 group-hover:text-cyan-300' : 'text-cyan-600/80 group-hover:text-cyan-600'}`}>Broadcast Stream v1.02</p>
                             </div>
-                            <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white group-hover:border-cyan-400 transition-all duration-500 shadow-2xl group-hover:rotate-12 group-hover:scale-110">
+                            <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center transition-all duration-500 shadow-md group-hover:rotate-12 group-hover:scale-110 ${isDark ? 'bg-[#0f2942] border-cyan-500/30 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white' : 'bg-slate-50 border-cyan-500/20 text-cyan-600 group-hover:bg-cyan-500 group-hover:text-white'}`}>
                                 <Zap size={32} strokeWidth={2.5} />
                             </div>
                         </div>
                     </Link>
 
                     {/* Activity Cell: Events */}
-                    <Link to="/events" className="group relative bg-slate-900/40 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-700 border border-cyan-500/10 hover:border-cyan-500/40 flex items-stretch min-h-[160px] drop-shadow-2xl">
+                    <Link to="/events" className={`group relative rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-700 border flex items-stretch min-h-[140px] drop-shadow-md ${isDark ? 'bg-[#163b6b] border-cyan-500/20 hover:border-cyan-500/40' : 'bg-white border-slate-200 hover:border-cyan-500/40'}`}>
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                         <div className="w-2 bg-gradient-to-b from-blue-600 to-indigo-600 group-hover:w-3 transition-all duration-500 h-full"></div>
-                        <div className="flex-1 p-10 flex items-center justify-between relative z-10">
+                        <div className="flex-1 p-6 flex items-center justify-between relative z-10">
                             <div className="space-y-2">
-                                <h2 className="text-3xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Events</h2>
-                                <p className="text-blue-400/80 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-blue-400 transition-colors">Scheduled Symposium Grid</p>
+                                <h2 className={`text-2xl font-black group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase ${isDark ? 'text-white' : 'text-slate-900'}`}>Events</h2>
+                                <p className={`font-black text-[11px] uppercase tracking-[0.2em] transition-colors ${isDark ? 'text-blue-300 group-hover:text-blue-200' : 'text-blue-600/80 group-hover:text-blue-600'}`}>Scheduled Symposium Grid</p>
                             </div>
-                            <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-400 transition-all duration-500 shadow-2xl group-hover:rotate-12 group-hover:scale-110">
+                            <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center transition-all duration-500 shadow-md group-hover:rotate-12 group-hover:scale-110 ${isDark ? 'bg-[#0f2942] border-blue-500/30 text-blue-400 group-hover:bg-blue-500 group-hover:text-white' : 'bg-slate-50 border-blue-500/20 text-blue-600 group-hover:bg-blue-500 group-hover:text-white'}`}>
                                 <Cpu size={32} strokeWidth={2.5} />
                             </div>
                         </div>
                     </Link>
 
                     {/* Activity Cell: Photo Gallery */}
-                    <Link to="/photo-gallery" className="group relative bg-slate-900/40 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-700 border border-cyan-500/10 hover:border-cyan-500/40 flex items-stretch min-h-[160px] drop-shadow-2xl">
-                        <div className="w-2 bg-slate-800 group-hover:bg-cyan-600 group-hover:w-3 transition-all duration-500 h-full"></div>
-                        <div className="flex-1 p-10 flex items-center justify-between shrink-0 h-full relative z-10">
+                    <Link to="/photo-gallery" className={`group relative rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-700 border flex items-stretch min-h-[140px] drop-shadow-md ${isDark ? 'bg-[#163b6b] border-cyan-500/20 hover:border-cyan-500/40' : 'bg-white border-slate-200 hover:border-cyan-500/40'}`}>
+                        <div className={`w-2 group-hover:bg-cyan-600 group-hover:w-3 transition-all duration-500 h-full ${isDark ? 'bg-[#0f2942]' : 'bg-slate-300'}`}></div>
+                        <div className="flex-1 p-6 flex items-center justify-between shrink-0 h-full relative z-10">
                             <div className="space-y-2">
-                                <h2 className="text-3xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Photos</h2>
-                                <p className="text-slate-600 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-cyan-400 transition-colors">Visual Archive Database</p>
+                                <h2 className={`text-2xl font-black group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase ${isDark ? 'text-white' : 'text-slate-900'}`}>Photos</h2>
+                                <p className={`font-black text-[11px] uppercase tracking-[0.2em] transition-colors ${isDark ? 'text-blue-200 group-hover:text-cyan-400' : 'text-slate-500 group-hover:text-cyan-600'}`}>Visual Archive Database</p>
                             </div>
-                            <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:bg-cyan-500 group-hover:text-white group-hover:border-cyan-400 transition-all duration-500 shadow-2xl group-hover:-rotate-12 group-hover:scale-110">
+                            <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center transition-all duration-500 shadow-md group-hover:-rotate-12 group-hover:scale-110 ${isDark ? 'bg-[#0f2942] border-slate-700 text-slate-400 group-hover:bg-cyan-500 group-hover:text-white' : 'bg-slate-50 border-slate-200 text-slate-500 group-hover:bg-cyan-500 group-hover:text-white'}`}>
                                 <Globe2 size={32} strokeWidth={2.5} />
                             </div>
                         </div>
                     </Link>
 
                     {/* Activity Cell: Video Gallery */}
-                    <Link to="/video-gallery" className="group relative bg-slate-900/40 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-700 border border-cyan-500/10 hover:border-cyan-500/40 flex items-stretch min-h-[160px] drop-shadow-2xl">
-                        <div className="w-2 bg-slate-800 group-hover:bg-blue-600 group-hover:w-3 transition-all duration-500 h-full"></div>
-                        <div className="flex-1 p-10 flex items-center justify-between relative z-10">
+                    <Link to="/video-gallery" className={`group relative rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-700 border flex items-stretch min-h-[140px] drop-shadow-md ${isDark ? 'bg-[#163b6b] border-cyan-500/20 hover:border-cyan-500/40' : 'bg-white border-slate-200 hover:border-cyan-500/40'}`}>
+                        <div className={`w-2 group-hover:bg-blue-600 group-hover:w-3 transition-all duration-500 h-full ${isDark ? 'bg-[#0f2942]' : 'bg-slate-300'}`}></div>
+                        <div className="flex-1 p-6 flex items-center justify-between relative z-10">
                             <div className="space-y-2">
-                                <h2 className="text-3xl font-black text-white group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase">Videos</h2>
-                                <p className="text-slate-600 font-black text-[11px] uppercase tracking-[0.2em] group-hover:text-blue-400 transition-colors">Motion Feed Repository</p>
+                                <h2 className={`text-2xl font-black group-hover:translate-x-3 transition-transform duration-500 tracking-tighter uppercase ${isDark ? 'text-white' : 'text-slate-900'}`}>Videos</h2>
+                                <p className={`font-black text-[11px] uppercase tracking-[0.2em] transition-colors ${isDark ? 'text-blue-200 group-hover:text-blue-400' : 'text-slate-500 group-hover:text-blue-600'}`}>Motion Feed Repository</p>
                             </div>
-                            <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-400 transition-all duration-500 shadow-2xl group-hover:-rotate-12 group-hover:scale-110">
+                            <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center transition-all duration-500 shadow-md group-hover:-rotate-12 group-hover:scale-110 ${isDark ? 'bg-[#0f2942] border-slate-700 text-slate-400 group-hover:bg-blue-500 group-hover:text-white' : 'bg-slate-50 border-slate-200 text-slate-500 group-hover:bg-blue-500 group-hover:text-white'}`}>
                                 <Zap size={32} strokeWidth={2.5} />
                             </div>
                         </div>
@@ -308,8 +322,8 @@ const LandingPage = () => {
                 </div>
             </main>
 
-            {/* Footer Section: Deep Slate */}
-            <footer className="bg-slate-950 text-white pt-24 pb-12 relative overflow-hidden border-t border-cyan-500/10 mt-12">
+            {/* Footer Section */}
+            <footer className={`pt-24 pb-12 relative overflow-hidden border-t mt-12 transition-colors duration-500 ${isDark ? 'bg-[#0f2942] text-white border-cyan-500/10' : 'bg-slate-950 text-white border-cyan-500/10'}`}>
                 <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <div className="grid lg:grid-cols-3 gap-20 mb-20">
@@ -348,7 +362,7 @@ const LandingPage = () => {
                         </div>
 
                         {/* Contact Node */}
-                        <div className="bg-slate-900/50 p-10 rounded-[2.5rem] backdrop-blur-3xl border border-cyan-500/10 shadow-3xl">
+                        <div className={`p-10 rounded-[2.5rem] backdrop-blur-3xl border shadow-3xl ${isDark ? 'bg-[#163b6b]/50 border-cyan-500/20' : 'bg-slate-900/50 border-cyan-500/10'}`}>
                             <h3 className="text-xs font-black mb-8 border-b-2 border-cyan-500/20 pb-2 inline-block uppercase tracking-[0.3em] text-cyan-500/80">Contact Node</h3>
                             <div className="space-y-8">
                                 <div className="flex items-start gap-5 group/item">
