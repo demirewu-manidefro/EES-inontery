@@ -1,4 +1,4 @@
-# EES Inventory System
+# ESS Inventory System
 
 An Equipment & Employee Management System (EES) designed to handle inventory management, employee records, and material borrowing/returning processes.
 
@@ -82,6 +82,4 @@ The project is structured as a full-stack web application:
    ```
 4. Open your browser and navigate to the provided Vite URL (typically `http://localhost:5173`).
 
-## Default Credentials
-- **Username:** admin
-- **Password:** admin123
+
